@@ -1,29 +1,34 @@
 <template>
   <div id="app">
-    <hello-world msg="Welcome to Your Vue.js + TypeScript App" />
-    <Button></Button> 
-    <list></list>
-
+    <hello-world :list-items="listItems" />
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from "vue";
 import HelloWorld from "./components/HelloWorld.vue";
-import Button from "./components/Button.vue"; 
-import List from "./components/List.vue"; 
 
 export default Vue.extend({
   name: "App",
   components: {
     HelloWorld,
-    Button, // Adding the custom Button component to the components object
-    List,
+  },
+  data() {
+    return {
+      listItems: [
+        { id: 1, text: "Sin" },
+        { id: 2, text: "Cos" },
+        { id: 3, text: "Tan" },
+        { id: 1, text: "Substraction" },
+        
+      ],
+    };
   },
 });
 </script>
 
 <style>
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
