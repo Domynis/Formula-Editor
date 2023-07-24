@@ -1,34 +1,36 @@
-
 <template>
   <div class="input-container">
     <div class="input-button-container">
-      <v-text-field v-model="searchText" placeholder="Edit me" class="red-input" />
-      <button @click="handleButtonClick" class="arrow-button"><img style = "width:30px" :src="require('@/assets/independent-variable.png')" alt="My Photo" /></button>
+      <v-text-field v-model="searchText" placeholder="Search items" class="red-input" />
+      <button @click="handleButtonClick" class="arrow-button">
+        <img style="width: 30px" :src="require('@/assets/independent-variable.png')" alt="My Photo" />
+      </button>
     </div>
-    <div class="list-container" v-if="showList">
-      <v-list class="list">
-        <v-list-item
-          v-for="item in filteredList"
-          :key="item.id"
-          class="custom-list-item"
-        >
-          <v-list-item-content>{{ item.text }}</v-list-item-content>
-        </v-list-item>
-      </v-list>
+    <div class="list-container-wrapper">
+      <list-container
+        :list-items="listItems"
+        :search-text="searchText"
+        :show-list="showList"
+        :filtered-list="filteredList"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import ListContainer from "./ListContainer.vue";
 import axios from "axios";
 
 export default {
+  components: {
+    ListContainer,
+  },
   data() {
     return {
       message: "",
       searchText: "",
-      showList: false, // Add a flag to control whether to show the list or not
-      filteredList: [], 
+      showList: false,
+      filteredList: [],
     };
   },
   props: {
@@ -47,20 +49,10 @@ export default {
         console.error(error);
       });
   },
-  watch: {
-    searchText() {
-      if (this.showList) {
-        // Perform filtering only when the flag is true
-        this.filteredList = this.listItems.filter((item) =>
-          item.text.toLowerCase().startsWith(this.searchText.toLowerCase())
-        );
-      }
-    },
-  },
+  /*find a match for the text in the input field within the list of functions*/
   methods: {
     handleButtonClick() {
-      this.showList = true; // Set the flag to true when the button is clicked
-      // Perform initial filtering when the button is clicked
+      this.showList = true;
       this.filteredList = this.listItems.filter((item) =>
         item.text.toLowerCase().startsWith(this.searchText.toLowerCase())
       );
@@ -69,53 +61,80 @@ export default {
 };
 </script>
 
-
-
-
 <style>
 .input-container {
   margin: 50px;
   display: flex;
-  flex-direction: column; /* Display the content in a column */
-  align-items: center; /* Center items horizontally in the container */
+  flex-direction: column;
+  align-items: center;
   background-color: #f1f1f1;
   width: 400px;
   border-radius: 10px;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .input-button-container {
   display: flex;
-  align-items: center; /* Align items vertically in the container */
-  width: 100%;
-  margin-bottom: 10px; /* Add some space between the input and the list */
+  align-items: center;
+  flex: 1;
 }
 
 .red-input {
-  flex: 1;
   border: none;
-  border-radius: 10px; /* Make the input field rounded */
-  background-color: #f1f1f1;
-  padding: 10px; /* Adjust the padding for better alignment */
+  border-radius: 10px;
+  background-color: #ffffff; 
+  padding: 10px;
   margin-top: 20px;
+  flex: 1;
+  height: 2;
+  size:20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box-shadow */
+  resize: none; /* Prevent the input field from being resizable */
+  max-height: 7.5em; /* Limit the input field to a maximum of 5 lines (7.5em = 5 lines x 1.5em line-height) */
+  overflow-y: auto; /* Enable vertical scrolling when content exceeds the maximum height */
 }
-
 .arrow-button {
   background-color: #f1f1f1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  min-width: 40px; /* Adjust the min-width to make the button wider */
+  height: 30px;
+  width: 30px;
   cursor: pointer;
   color: #666;
   font-weight: bold;
-  border-radius: 0px 10px 10px 0px; /* Make the button rounded */
+  border-radius: 50%; /* Make the button circular */
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box-shadow */
+}
+
+.list-container-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-top: 20px;
+  background-color: #f1f1f1;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box-shadow */
 }
 
 .list {
   display: block;
-  width: 400px;
+  width: 400px; /* Adjust the width of the list container */
+  max-height: 200px; /* Limit the maximum height to create a scrollable list */
+  overflow-y: auto; /* Enable vertical scrolling when list exceeds the height */
+  font-size: 10px;
 }
 
-
+.list-item {
+  background-color: #ffffff; /* White background for each list item */
+  padding: 8px;
+  border-radius: 5px;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box-shadow */
+  height: 10px;
+}
 </style>

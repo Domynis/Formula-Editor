@@ -16,11 +16,10 @@ export default Vue.extend({
   data() {
     return {
       listItems: [
-        { id: 1, text: "Sin" },
-        { id: 2, text: "Cos" },
-        { id: 3, text: "Tan" },
-        { id: 1, text: "Substraction" },
-        
+        { id: 1, text: "Sin", category: "Trigonometry" },
+        { id: 2, text: "Cos", category: "Trigonometric" },
+        { id: 3, text: "Tan", category: "Trigonometry" },
+        { id: 4, text: "xor", category: "Logical" },
       ],
     };
   },
@@ -28,7 +27,6 @@ export default Vue.extend({
 </script>
 
 <style>
-
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
