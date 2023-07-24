@@ -1,13 +1,24 @@
 <template>
   <div id="app">
-    <!-- Use the HelloWorld component -->
-    <HelloWorld :listItems="listItems" />
+    <v-container>
+      <v-row>
+        <v-col>
+          <HelloWorld :listItems="listItems" />
+        </v-col>
+        <v-col>
+          <getMathJSONButton 
+          @incoming="handleButtonEmit"/>
+        </v-col>
+      </v-row>
+    </v-container>
+
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import HelloWorld from "./components/HelloWorld.vue";
+import getMathJSONButton from "./components/getMathJSONButton.vue";
 
 interface ListItem {
   id: number;
@@ -19,6 +30,7 @@ export default defineComponent({
   name: "App",
   components: {
     HelloWorld,
+    getMathJSONButton,
   },
   data() {
     return {
@@ -31,6 +43,19 @@ export default defineComponent({
         { id: 6, text: "Substraction", category: "Algebra" },
       ] as ListItem[], // Add the type assertion for the listItems
     };
+  },
+  methods: {
+    handleButtonEmit: function(mathFunctionsArr : any[]) {
+      this.listItems.length = 0;
+      mathFunctionsArr.forEach((element, index) => {
+        let newObj : ListItem = {
+          id : index,
+          text : element.name,
+          category : element.category,
+        }
+        this.listItems.push(newObj);
+      });
+    }
   },
 });
 </script>

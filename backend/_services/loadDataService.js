@@ -1,13 +1,13 @@
-// export enum statusEnum {
-//     success = 0,
-//     failed = 1
-//   };
 const math = require('mathjs');
 class LoadMathService{
     constructor(){
 
     }
+    mathJsonString = "";
     loadData () {
+        if(this.mathJsonString.length != 0) { //do not redo the calculations
+          return this.mathJsonString;
+        }
         // get an array of all the property names of the mathjs object
         const allFunctions = [];
         const functionsObjects = [];
@@ -34,7 +34,7 @@ class LoadMathService{
         return this.mathJsonString; 
     }
 
-    mathJsonString = "";
+    
 }
 
 module.exports = LoadMathService;

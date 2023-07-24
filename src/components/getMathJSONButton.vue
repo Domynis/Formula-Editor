@@ -20,6 +20,7 @@ export default defineComponent({
         .post("http://localhost:3000/api/loadData", "loadMathData") // will console.log the mathJs functions objects found in an array (wip)
         .then((response) => {
           console.log(response.data);
+          this.$emit('incoming', response.data);
         })
         .catch((error) => {
           console.error(error);
@@ -33,6 +34,9 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .get-math-json-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   
 }
 </style>

@@ -26,11 +26,6 @@
           </div>
         </div>
       </v-col>
-      <v-col>
-        <div class="input-container">
-          <getMathJSONButton />
-        </div>
-      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -39,7 +34,6 @@
 import { defineComponent } from 'vue';
 import ListContainer from "./ListContainer.vue";
 import axios from "axios";
-import getMathJSONButton from "./getMathJSONButton.vue";
 
 interface ListItem {
   id: number;
@@ -50,7 +44,6 @@ interface ListItem {
 export default defineComponent({
   name: "hello-world",
   components: {
-    getMathJSONButton,
     ListContainer,
   },
   data() {
