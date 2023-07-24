@@ -4,7 +4,8 @@
       <v-col>
         <div class="input-container">
           <div class="input-button-container">
-            <v-text-field v-model="searchText" @input="handleInputChange" placeholder="Search items" class="red-input"></v-text-field>
+            <v-text-field v-model="searchText" @input="handleInputChange" placeholder="Search items"
+              class="red-input"></v-text-field>
             <button @click="handleButtonClick" class="arrow-button">
               <img style="width: 30px" :src="require('@/assets/independent-variable.png')" alt="My Photo" />
             </button>
@@ -17,11 +18,18 @@
                   <img style="width: 30px" :src="require('@/assets/close.png')" alt="My Photo" />
                 </button>
               </div>
-              <v-list-item v-for="item in filteredList" :key="item.id" class="custom-list-item list-item">
-                <v-list-item-content>
-                  <div>{{ item.id + ". " + item.text + " " + item.category }}</div>
-                </v-list-item-content>
-              </v-list-item>
+              <template v-for="item in filteredList">
+                <v-hover v-slot:default="{ hover }">
+                  <v-list-item :key="item.id" class="custom-list-item list-item">
+                    <v-list-item-content>
+                      <div>{{ item.id + ". " + item.text + " " + item.category }}</div>
+                      <div v-if="hover">
+                        {{ item.description }}
+                      </div>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-hover>
+              </template>
             </v-list>
           </div>
         </div>
@@ -36,10 +44,12 @@ import ListContainer from "./ListContainer.vue";
 import axios from "axios";
 import getMathJSONButton from "./getMathJSONButton.vue";
 
-interface ListItem {
+interface ListItem { //mby import from App?
   id: number;
   text: string;
   category: string;
+  description: string;
+  syntax: string;
 }
 
 export default defineComponent({
@@ -53,7 +63,6 @@ export default defineComponent({
       message: "",
       searchText: "",
       showList: false,
-      
     };
   },
   props: {
@@ -73,11 +82,15 @@ export default defineComponent({
       });
   },
   computed: {
-    filteredList(): ListItem[] {
+    filteredList(): ListItem[] { //fix warn!
       // Computed property to filter the listItems based on the searchText
-      return this.listItems.filter((item: ListItem) =>
+      let tempList = this.listItems.filter((item: ListItem) =>
         item.text.toLowerCase().startsWith(this.searchText.toLowerCase())
       );
+
+      this.updateIndexesOfItemArr(tempList);
+
+      return tempList;
     },
   },
   methods: {
@@ -101,6 +114,13 @@ export default defineComponent({
       this.filteredList = this.listItems.filter((item: ListItem) =>
         item.text.toLowerCase().startsWith(this.searchText.toLowerCase())
       ); // Filter the list based on the changed input value
+
+      this.updateIndexesOfItemArr(this.filteredList);
+    },
+    updateIndexesOfItemArr(listToUpdate: any[]) {
+      listToUpdate.forEach((element, index) => { //updates indexes
+        element.id = index + 1;
+      });
     },
   },
 });
@@ -137,12 +157,17 @@ export default defineComponent({
   margin-top: 20px;
   flex: 1;
   height: 2;
-  size:20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box-shadow */
-  resize: none; /* Prevent the input field from being resizable */
-  max-height: 7.5em; /* Limit the input field to a maximum of 5 lines (7.5em = 5 lines x 1.5em line-height) */
-  overflow-y: auto; /* Enable vertical scrolling when content exceeds the maximum height */
+  size: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Add a subtle box-shadow */
+  resize: none;
+  /* Prevent the input field from being resizable */
+  max-height: 7.5em;
+  /* Limit the input field to a maximum of 5 lines (7.5em = 5 lines x 1.5em line-height) */
+  overflow-y: auto;
+  /* Enable vertical scrolling when content exceeds the maximum height */
 }
+
 .arrow-button {
   background-color: #f1f1f1;
   height: 30px;
@@ -150,13 +175,15 @@ export default defineComponent({
   cursor: pointer;
   color: #666;
   font-weight: bold;
-  border-radius: 50%; /* Make the button circular */
+  border-radius: 50%;
+  /* Make the button circular */
   margin-left: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box-shadow */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Add a subtle box-shadow */
 }
 
 .list-container-wrapper {
@@ -167,23 +194,29 @@ export default defineComponent({
   background-color: #f1f1f1;
   padding: 10px;
   border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box-shadow */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Add a subtle box-shadow */
 }
 
 .list {
   display: block;
-  width: 400px; /* Adjust the width of the list container */
-  max-height: 200px; /* Limit the maximum height to create a scrollable list */
-  overflow-y: auto; /* Enable vertical scrolling when list exceeds the height */
+  width: 400px;
+  /* Adjust the width of the list container */
+  max-height: 200px;
+  /* Limit the maximum height to create a scrollable list */
+  overflow-y: auto;
+  /* Enable vertical scrolling when list exceeds the height */
   font-size: 10px;
 }
 
 .list-item {
-  background-color: #ffffff; /* White background for each list item */
+  background-color: #ffffff;
+  /* White background for each list item */
   padding: 8px;
   border-radius: 5px;
   margin-bottom: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box-shadow */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Add a subtle box-shadow */
   height: 10px;
 }
 </style>
