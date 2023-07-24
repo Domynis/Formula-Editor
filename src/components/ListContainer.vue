@@ -1,6 +1,6 @@
 <!--list that contains each function-->
 <template>
-  <div class="list-container" v-if="showList">
+  <div class="list-container" v-if="showList" @mouseover="handleMouseOver">
     <v-list class="list">
       <div class="list-item-header">
         <div class="formula">Write Formula</div>
@@ -43,6 +43,7 @@ export default {
       console.log(document.getElementById("#button"));
       
     },
+    
   },
 };
 </script>
@@ -75,6 +76,11 @@ export default {
 .close-button {
   width: 40px; /*width and height of the button*/
   height: 30px;
+}
+
+.list-item:hover {
+  background-color: lightgray;
+  cursor: pointer;
 }
 
 </style>
