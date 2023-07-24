@@ -34,6 +34,7 @@
 import { defineComponent } from 'vue';
 import ListContainer from "./ListContainer.vue";
 import axios from "axios";
+import getMathJSONButton from "./getMathJSONButton.vue";
 
 interface ListItem {
   id: number;
@@ -44,6 +45,7 @@ interface ListItem {
 export default defineComponent({
   name: "hello-world",
   components: {
+    getMathJSONButton,
     ListContainer,
   },
   data() {
@@ -51,7 +53,7 @@ export default defineComponent({
       message: "",
       searchText: "",
       showList: false,
-      filteredList: [] as ListItem[],
+      
     };
   },
   props: {
