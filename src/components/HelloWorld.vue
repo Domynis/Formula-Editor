@@ -4,7 +4,7 @@
       <v-col>
         <div class="input-container">
           <div class="input-button-container">
-            <v-text-field v-model="searchText" placeholder="Search items" class="red-input"></v-text-field>
+            <v-text-field v-model="searchText" @input="handleInputChange" placeholder="Search items" class="red-input"></v-text-field>
             <button @click="handleButtonClick" class="arrow-button">
               <img style="width: 30px" :src="require('@/assets/independent-variable.png')" alt="My Photo" />
             </button>
@@ -71,26 +71,41 @@ export default defineComponent({
     axios
       .get("http://localhost:3000/api/hello")
       .then((response) => {
-        this.message = response.data.message;
+        this.message = response.data.message; // Setting the message data property with the response data
       })
       .catch((error) => {
-        console.error(error);
+        console.error(error); // Handling errors if the request fails
       });
   },
-  methods: {
-    handleButtonClick() {
-      this.showList = true;
-      this.filteredList = this.listItems.filter((item: ListItem) =>
+  computed: {
+    filteredList(): ListItem[] {
+      // Computed property to filter the listItems based on the searchText
+      return this.listItems.filter((item: ListItem) =>
         item.text.toLowerCase().startsWith(this.searchText.toLowerCase())
       );
     },
+  },
+  methods: {
+    handleButtonClick() {
+      // Method to handle button click event
+      this.showList = true; // Show the list when the button is clicked
+      this.filteredList = this.listItems.filter((item: ListItem) =>
+        item.text.toLowerCase().startsWith(this.searchText.toLowerCase())
+      ); // Filter the list based on the searchText
+    },
     handleMouseOver() {
-      this.showList = true;
+      // Method to handle mouse over event
+      this.showList = true; // Show the list when mouse is over the component
     },
     handleCloseList() {
-      this.showList = false;
-      console.log("Hello");
-      console.log(document.getElementById("#button"));
+      // Method to close the list
+      this.showList = false; // Hide the list
+    },
+    handleInputChange() {
+      // Method to handle input change event
+      this.filteredList = this.listItems.filter((item: ListItem) =>
+        item.text.toLowerCase().startsWith(this.searchText.toLowerCase())
+      ); // Filter the list based on the changed input value
     },
   },
 });

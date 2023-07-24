@@ -28,6 +28,7 @@ export default defineComponent({
         { id: 3, text: "Tan", category: "Trigonometry" },
         { id: 4, text: "xor", category: "Logical" },
         { id: 5, text: "or", category: "Logical" },
+        { id: 6, text: "Substraction", category: "Algebra" },
       ] as ListItem[], // Add the type assertion for the listItems
     };
   },
