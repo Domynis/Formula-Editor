@@ -1,35 +1,50 @@
 <template>
-  <div class="input-container">
-    <div class="input-button-container">
-      <v-text-field v-model="searchText" placeholder="Search items" class="red-input" />
-      <button @click="handleButtonClick" class="arrow-button">
-        <img style="width: 30px" :src="require('@/assets/independent-variable.png')" alt="My Photo" />
-      </button>
-    </div>
-    <div class="list-container-wrapper">
-      <list-container
-        :list-items="listItems"
-        :search-text="searchText"
-        :show-list="showList"
-        :filtered-list="filteredList"
-      />
-    </div>
-  </div>
+  <v-container>
+    <v-row align="center"> 
+      <v-col>
+        <div class="input-container">
+          <div class="input-button-container">
+            <v-text-field v-model="searchText" placeholder="Search items" class="red-input"></v-text-field>
+            <button @click="handleButtonClick" class="arrow-button">
+              <img style="width: 30px" :src="require('@/assets/independent-variable.png')" alt="My Photo" />
+            </button>
+          </div>
+          <div class="list-container-wrapper">
+            <list-container
+              :list-items="listItems"
+              :search-text="searchText"
+              :show-list="showList"
+              :filtered-list="filteredList"
+            />
+          </div>
+        </div>
+      </v-col>
+      <v-col>
+        <div class="input-container">
+          <getMathJSONButton/>
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
+
 
 <script>
 import ListContainer from "./ListContainer.vue";
 import axios from "axios";
-
+import getMathJSONButton from "./getMathJSONButton.vue";
 export default {
+ 
+  name: "hello-world",
   components: {
+    getMathJSONButton,
     ListContainer,
   },
   data() {
     return {
       message: "",
       searchText: "",
-      showList: false,
+      showList: false, // Add a flag to control whether to show the list or not
       filteredList: [],
     };
   },
@@ -63,10 +78,12 @@ export default {
 
 <style>
 .input-container {
-  margin: 50px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
+  /* Display the content in a column */
   align-items: center;
+  /* Center items horizontally in the container */
   background-color: #f1f1f1;
   width: 400px;
   border-radius: 10px;
@@ -83,8 +100,10 @@ export default {
 .red-input {
   border: none;
   border-radius: 10px;
-  background-color: #ffffff; 
+  /* Make the input field rounded */
+  background-color: #f1f1f1;
   padding: 10px;
+  /* Adjust the padding for better alignment */
   margin-top: 20px;
   flex: 1;
   height: 2;

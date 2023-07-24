@@ -20,6 +20,7 @@ export default Vue.extend({
         { id: 2, text: "Cos", category: "Trigonometric" },
         { id: 3, text: "Tan", category: "Trigonometry" },
         { id: 4, text: "xor", category: "Logical" },
+        { id: 5, text: "or", category: "Logical" },
       ],
     };
   },

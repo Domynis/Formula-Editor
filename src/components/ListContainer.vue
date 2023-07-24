@@ -73,7 +73,7 @@ export default {
 }
 
 .close-button {
-  width: 40px;
+  width: 40px; /*width and height of the button*/
   height: 30px;
 }
 
