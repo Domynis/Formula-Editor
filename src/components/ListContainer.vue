@@ -1,6 +1,6 @@
 <!--list that contains each function-->
 <template>
-  <div class="list-container" v-if="showList" @mouseover="handleMouseOver">
+  <div class="list-container" v-if="showList">
     <v-list class="list">
       <div class="list-item-header">
         <div class="formula">Write Formula</div>
@@ -15,37 +15,58 @@
   </div>
 </template>
 
-<script>
-export default {
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+import axios from "axios";
+
+interface ListItem {
+  id: number;
+  text: string;
+  category: string;
+}
+
+export default defineComponent({
   props: {
     listItems: {
-      type: Array,
+      type: Array as () => ListItem[],
       default: () => [],
     },
     searchText: String,
     showList: Boolean,
-    filteredList: Array,
   },
-  /*display the list only when it is the case (the button for the extended part is clicked)*/
+  data() {
+    return {
+      message: "",
+      filteredList: [] as ListItem[], // Use a local data property for the filteredList
+    };
+  },
   watch: {
-    searchText(newVal) {
+    searchText(newVal: string) {
       if (this.showList) {
-        this.filteredList = this.listItems.filter((item) =>
+        this.filteredList = this.listItems.filter((item: ListItem) =>
           item.text.toLowerCase().startsWith(newVal.toLowerCase())
         );
       }
     },
   },
-  /*when the button is clicked, the list will no longer be displayed.*/
+  mounted() {
+    axios
+      .get("http://localhost:3000/api/hello")
+      .then((response) => {
+        this.message = response.data.message;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  },
   methods: {
     handleCloseList() {
       console.log("Hello");
-      console.log(document.getElementById("#button"));
-      
+      console.log(document.getElementById("button"));
     },
-    
   },
-};
+});
 </script>
 
 <style>

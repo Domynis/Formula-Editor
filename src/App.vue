@@ -1,14 +1,21 @@
 <template>
   <div id="app">
-    <hello-world :list-items="listItems" />
+    <!-- Use the HelloWorld component -->
+    <HelloWorld :listItems="listItems" />
   </div>
 </template>
 
-<script>
-import Vue from "vue";
+<script lang="ts">
+import { defineComponent } from 'vue';
 import HelloWorld from "./components/HelloWorld.vue";
 
-export default Vue.extend({
+interface ListItem {
+  id: number;
+  text: string;
+  category: string;
+}
+
+export default defineComponent({
   name: "App",
   components: {
     HelloWorld,
@@ -21,19 +28,9 @@ export default Vue.extend({
         { id: 3, text: "Tan", category: "Trigonometry" },
         { id: 4, text: "xor", category: "Logical" },
         { id: 5, text: "or", category: "Logical" },
-      ],
+      ] as ListItem[], // Add the type assertion for the listItems
     };
   },
 });
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

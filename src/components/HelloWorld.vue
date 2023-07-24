@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-row align="center"> 
+    <v-row align="center">
       <v-col>
         <div class="input-container">
           <div class="input-button-container">
@@ -9,32 +9,45 @@
               <img style="width: 30px" :src="require('@/assets/independent-variable.png')" alt="My Photo" />
             </button>
           </div>
-          <div class="list-container-wrapper">
-            <list-container
-              :list-items="listItems"
-              :search-text="searchText"
-              :show-list="showList"
-              :filtered-list="filteredList"
-            />
+          <div class="list-container-wrapper" v-if="showList" @mouseover="handleMouseOver">
+            <v-list class="list">
+              <div class="list-item-header">
+                <div class="formula">Write Formula</div>
+                <button @click="handleCloseList" class="close-button" id="#button">
+                  <img style="width: 30px" :src="require('@/assets/close.png')" alt="My Photo" />
+                </button>
+              </div>
+              <v-list-item v-for="item in filteredList" :key="item.id" class="custom-list-item list-item">
+                <v-list-item-content>
+                  <div>{{ item.id + ". " + item.text + " " + item.category }}</div>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
           </div>
         </div>
       </v-col>
       <v-col>
         <div class="input-container">
-          <getMathJSONButton/>
+          <getMathJSONButton />
         </div>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
-
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue';
 import ListContainer from "./ListContainer.vue";
 import axios from "axios";
 import getMathJSONButton from "./getMathJSONButton.vue";
-export default {
- 
+
+interface ListItem {
+  id: number;
+  text: string;
+  category: string;
+}
+
+export default defineComponent({
   name: "hello-world",
   components: {
     getMathJSONButton,
@@ -44,13 +57,13 @@ export default {
     return {
       message: "",
       searchText: "",
-      showList: false, // Add a flag to control whether to show the list or not
-      filteredList: [],
+      showList: false,
+      filteredList: [] as ListItem[],
     };
   },
   props: {
     listItems: {
-      type: Array,
+      type: Array as () => ListItem[],
       default: () => [],
     },
   },
@@ -64,16 +77,23 @@ export default {
         console.error(error);
       });
   },
-  /*find a match for the text in the input field within the list of functions*/
   methods: {
     handleButtonClick() {
       this.showList = true;
-      this.filteredList = this.listItems.filter((item) =>
+      this.filteredList = this.listItems.filter((item: ListItem) =>
         item.text.toLowerCase().startsWith(this.searchText.toLowerCase())
       );
     },
+    handleMouseOver() {
+      this.showList = true;
+    },
+    handleCloseList() {
+      this.showList = false;
+      console.log("Hello");
+      console.log(document.getElementById("#button"));
+    },
   },
-};
+});
 </script>
 
 <style>
