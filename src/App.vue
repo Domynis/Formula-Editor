@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col>
-          <HelloWorld :listItems="listItems" />
+          <Input :listItems="listItems" />
         </v-col>
         <v-col>
           <getMathJSONButton 
@@ -17,14 +17,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import HelloWorld from "./components/HelloWorld.vue";
+import Input from "./components/Input.vue";
 import getMathJSONButton from "./components/getMathJSONButton.vue";
 import { mathFunctionModel } from './models/mathFunction.model';
 
 export default defineComponent({
   name: "App",
   components: {
-    HelloWorld,
+    Input,
     getMathJSONButton,
   },
   data() {

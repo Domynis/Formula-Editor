@@ -4,25 +4,50 @@
       <v-col>
         <div class="input-container">
           <div class="input-button-container">
-            <v-text-field v-model="searchText" @input="handleInputChange" placeholder="Search items"
-              class="red-input"></v-text-field>
+            <v-text-field
+              v-model="searchText"
+              @input="handleInputChange"
+              placeholder="Search items"
+              class="red-input"
+            ></v-text-field>
             <button @click="handleButtonClick" class="arrow-button">
-              <img style="width: 30px" :src="require('@/assets/independent-variable.png')" alt="My Photo" />
+              <img
+                style="width: 40px"
+                :src="require('@/assets/independent-variable.png')"
+                alt="My Photo"
+              />
             </button>
           </div>
-          <div class="list-container-wrapper" v-if="showList" @mouseover="handleMouseOver">
+          <div
+            class="list-container-wrapper"
+            v-if="showList"
+            @click="handleMouseOver"
+          >
             <v-list class="list">
               <div class="list-item-header">
                 <div class="formula">Write Formula</div>
-                <button @click="handleCloseList" class="close-button" id="#button">
-                  <img style="width: 30px" :src="require('@/assets/close.png')" alt="My Photo" />
+                <button
+                  @click="handleCloseList"
+                  class="close-button"
+                  id="#button"
+                >
+                  <img
+                    style="width: 30px"
+                    :src="require('@/assets/close.png')"
+                    alt="My Photo"
+                  />
                 </button>
               </div>
-              <template v-for="(item, index) in filteredList" @key = "item.name">
+              <template v-for="(item, index) in filteredList" @key="item.name">
                 <v-hover v-slot:default="{ hover }">
-                  <v-list-item :key="item.name" class="custom-list-item list-item">
+                  <v-list-item
+                    :key="item.name"
+                    class="custom-list-item list-item"
+                  >
                     <v-list-item-content>
-                      <div>{{ (index + 1) + ". " + item.name + " " + item.category }}</div>
+                      <div>
+                        {{ index + 1 + ". " + item.name + " " + item.category }}
+                      </div>
                       <div v-if="hover">
                         {{ item.description }}
                       </div>
@@ -39,7 +64,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from "vue";
 import ListContainer from "./ListContainer.vue";
 import axios from "axios";
 import getMathJSONButton from "./getMathJSONButton.vue";
@@ -56,6 +81,8 @@ export default defineComponent({
       message: "",
       searchText: "",
       showList: false,
+      letter: "",
+      searchTextCopy: "",
     };
   },
   props: {
@@ -75,7 +102,7 @@ export default defineComponent({
       });
   },
   computed: {
-    filteredList(): mathFunctionModel[] { //fix warn!
+    filteredList(): mathFunctionModel[] {
       // Computed property to filter the listItems based on the searchText
       return this.listItems.filter((item: mathFunctionModel) =>
         item.name.toLowerCase().startsWith(this.searchText.toLowerCase())
@@ -86,23 +113,50 @@ export default defineComponent({
     handleButtonClick() {
       // Method to handle button click event
       this.showList = true; // Show the list when the button is clicked
-      this.filteredList = this.listItems.filter((item: mathFunctionModel) =>
-        item.name.toLowerCase().startsWith(this.searchText.toLowerCase())
-      ); // Filter the list based on the searchText
     },
-    handleMouseOver() {
-      // Method to handle mouse over event
-      this.showList = true; // Show the list when mouse is over the component
+    handleMouseOver(event: Event) {
+      // Type guard to ensure event.target is not null
+      if (event.target instanceof HTMLElement) {
+        // Method to handle mouse over event
+        this.showList = true; // Show the list when mouse is over the component
+        const elementMouseOver = event.target;
+        const textContent = elementMouseOver.textContent!.trim(); // Use ! to assert that textContent is not null
+        const indexOfDot = textContent.indexOf(".");
+        const result = textContent.substring(indexOfDot + 2);
+        const firstSpaceIndex = result.indexOf(" ");
+        const finalResult = result.substring(0, firstSpaceIndex);
+        console.log(finalResult);
+
+        for (let i = 0; i < this.filteredList.length; i++) {
+          if (finalResult == this.filteredList[i].name) {
+            const syntax = this.filteredList[i].syntax;
+            console.log(syntax);
+            this.searchText = "";
+            this.searchText += syntax;
+            this.showList = false;
+          }
+        }
+      }
     },
     handleCloseList() {
       // Method to close the list
       this.showList = false; // Hide the list
     },
     handleInputChange() {
-      // Method to handle input change event
-      this.filteredList = this.listItems.filter((item: mathFunctionModel) =>
-        item.name.toLowerCase().startsWith(this.searchText.toLowerCase())
-      ); // Filter the list based on the changed input value
+      // Method to handle input change even
+      this.letter = this.searchText.slice(-1);
+      this.searchTextCopy = this.searchText.slice(0, -1); // Update the searchText
+      if (this.letter == "(") {
+        for (let i = 0; i < this.filteredList.length; i++) {
+          if (this.searchTextCopy == this.filteredList[i].name) {
+            const syntax = this.filteredList[i].syntax;
+            console.log(syntax);
+            this.searchText = "";
+            this.searchText += syntax;
+            this.showList = false;
+          }
+        }
+      }
     },
   },
 });
@@ -164,8 +218,7 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
   border: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* Add a subtle box-shadow */
+  height: 30px;
 }
 
 .list-container-wrapper {
