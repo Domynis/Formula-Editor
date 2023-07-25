@@ -18,11 +18,11 @@
                   <img style="width: 30px" :src="require('@/assets/close.png')" alt="My Photo" />
                 </button>
               </div>
-              <template v-for="item in filteredList">
+              <template v-for="(item, index) in filteredList" @key = "item.name">
                 <v-hover v-slot:default="{ hover }">
-                  <v-list-item :key="item.id" class="custom-list-item list-item">
+                  <v-list-item :key="item.name" class="custom-list-item list-item">
                     <v-list-item-content>
-                      <div>{{ item.id + ". " + item.text + " " + item.category }}</div>
+                      <div>{{ (index + 1) + ". " + item.name + " " + item.category }}</div>
                       <div v-if="hover">
                         {{ item.description }}
                       </div>
@@ -43,14 +43,7 @@ import { defineComponent } from 'vue';
 import ListContainer from "./ListContainer.vue";
 import axios from "axios";
 import getMathJSONButton from "./getMathJSONButton.vue";
-
-interface ListItem { //mby import from App?
-  id: number;
-  text: string;
-  category: string;
-  description: string;
-  syntax: string;
-}
+import { mathFunctionModel } from "../models/mathFunction.model";
 
 export default defineComponent({
   name: "hello-world",
@@ -67,7 +60,7 @@ export default defineComponent({
   },
   props: {
     listItems: {
-      type: Array as () => ListItem[],
+      type: Array as () => mathFunctionModel[],
       default: () => [],
     },
   },
@@ -82,23 +75,19 @@ export default defineComponent({
       });
   },
   computed: {
-    filteredList(): ListItem[] { //fix warn!
+    filteredList(): mathFunctionModel[] { //fix warn!
       // Computed property to filter the listItems based on the searchText
-      let tempList = this.listItems.filter((item: ListItem) =>
-        item.text.toLowerCase().startsWith(this.searchText.toLowerCase())
+      return this.listItems.filter((item: mathFunctionModel) =>
+        item.name.toLowerCase().startsWith(this.searchText.toLowerCase())
       );
-
-      this.updateIndexesOfItemArr(tempList);
-
-      return tempList;
     },
   },
   methods: {
     handleButtonClick() {
       // Method to handle button click event
       this.showList = true; // Show the list when the button is clicked
-      this.filteredList = this.listItems.filter((item: ListItem) =>
-        item.text.toLowerCase().startsWith(this.searchText.toLowerCase())
+      this.filteredList = this.listItems.filter((item: mathFunctionModel) =>
+        item.name.toLowerCase().startsWith(this.searchText.toLowerCase())
       ); // Filter the list based on the searchText
     },
     handleMouseOver() {
@@ -111,16 +100,9 @@ export default defineComponent({
     },
     handleInputChange() {
       // Method to handle input change event
-      this.filteredList = this.listItems.filter((item: ListItem) =>
-        item.text.toLowerCase().startsWith(this.searchText.toLowerCase())
+      this.filteredList = this.listItems.filter((item: mathFunctionModel) =>
+        item.name.toLowerCase().startsWith(this.searchText.toLowerCase())
       ); // Filter the list based on the changed input value
-
-      this.updateIndexesOfItemArr(this.filteredList);
-    },
-    updateIndexesOfItemArr(listToUpdate: any[]) {
-      listToUpdate.forEach((element, index) => { //updates indexes
-        element.id = index + 1;
-      });
     },
   },
 });
