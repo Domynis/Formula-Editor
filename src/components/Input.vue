@@ -4,19 +4,13 @@
       <v-col>
         <div class="input-container">
           <div class="input-button-container">
-            <v-text-field
-              v-model="searchText"
-              @input="handleInputChange"
-              placeholder="Search items"
-              class="red-input"
-            ></v-text-field>
-            <button @click="handleButtonClick" class="arrow-button">
-              <img
-                style="width: 40px"
-                :src="require('@/assets/independent-variable.png')"
-                alt="My Photo"
-              />
-            </button>
+            <v-text-field class="mx-2 red-input" v-model="searchText" @input="handleInputChange"
+              placeholder="Search items"></v-text-field>
+            <v-btn class="mx-2" small fab dark color='#4b53b9' @click="handleButtonClick">
+              <v-icon>
+                mdi-function-variant
+              </v-icon>
+            </v-btn>
           </div>
           <div
             class="list-container-wrapper"
@@ -26,30 +20,21 @@
             <v-list class="list">
               <div class="list-item-header">
                 <div class="formula">Write Formula</div>
-                <button
-                  @click="handleCloseList"
-                  class="close-button"
-                  id="#button"
-                >
-                  <img
-                    style="width: 30px"
-                    :src="require('@/assets/close.png')"
-                    alt="My Photo"
-                  />
-                </button>
+                <v-btn class="mx-2" fab dark x-small color="#4b53b9" @click="handleCloseList">
+                  <v-icon dark>
+                    mdi-alpha-x
+                  </v-icon>
+                </v-btn>
               </div>
               <template v-for="(item, index) in filteredList" @key="item.name">
                 <v-hover v-slot:default="{ hover }">
-                  <v-list-item
-                    :key="item.name"
-                    class="custom-list-item list-item"
-                  >
+                  <v-list-item :key="item.name" class="custom-list-item list-item" style="height: auto">
                     <v-list-item-content>
                       <div>
                         {{ index + 1 + ". " + item.name + " " + item.category }}
                       </div>
                       <div v-if="hover">
-                        {{ item.description }}
+                        {{ item.description.at(0) }}
                       </div>
                     </v-list-item-content>
                   </v-list-item>
@@ -67,7 +52,7 @@
 import { defineComponent } from "vue";
 import ListContainer from "./ListContainer.vue";
 import axios from "axios";
-import getMathJSONButton from "./getMathJSONButton.vue";
+import getMathJSONButton from "./getMathJSON.vue";
 import { mathFunctionModel } from "../models/mathFunction.model";
 
 export default defineComponent({
@@ -180,6 +165,7 @@ export default defineComponent({
 }
 
 .input-button-container {
+  margin: 1 1;
   display: flex;
   align-items: center;
   flex: 1;

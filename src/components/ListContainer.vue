@@ -1,32 +1,10 @@
 <template>
-  <div class="list-container" v-if="showList">
-    <div class="list-item-header">
-      <div class="formula">Write Formula</div>
-      <button @click="handleCloseList" class="close-button" id="button">
-        <img
-          style="width: 35px"
-          :src="require('@/assets/close.png')"
-          alt="My Photo"
-        />
-      </button>
-    </div>
-    <v-list class="list">
-      <v-list-item
-        v-for="(item, index) in filteredList"
-        @key="item.name"
-        class="custom-list-item list-item"
-      >
-        <v-list-item-content>
-          <div>{{ index + ". " + item.name + " " + item.category }}</div>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
-  </div>
+  
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { mathFunctionModel } from "@/models/mathFunction.model";
+import { defineComponent } from 'vue';
+import { mathFunctionModel } from '@/models/mathFunction.model';
 export default defineComponent({
   props: {
     listItems: {
