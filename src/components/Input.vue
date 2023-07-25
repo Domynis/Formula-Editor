@@ -117,7 +117,7 @@ export default defineComponent({
     handleMouseOver(event: Event) {
       // Type guard to ensure event.target is not null
       if (event.target instanceof HTMLElement) {
-        // Method to handle mouse over event
+        // Take the html element that is clicked and obtain the name of the function
         this.showList = true; // Show the list when mouse is over the component
         const elementMouseOver = event.target;
         const textContent = elementMouseOver.textContent!.trim(); // Use ! to assert that textContent is not null
@@ -125,8 +125,8 @@ export default defineComponent({
         const result = textContent.substring(indexOfDot + 2);
         const firstSpaceIndex = result.indexOf(" ");
         const finalResult = result.substring(0, firstSpaceIndex);
-        console.log(finalResult);
 
+        //search for a match in the filteredList, if found display the syntax for the function in the input
         for (let i = 0; i < this.filteredList.length; i++) {
           if (finalResult == this.filteredList[i].name) {
             const syntax = this.filteredList[i].syntax;
@@ -143,9 +143,11 @@ export default defineComponent({
       this.showList = false; // Hide the list
     },
     handleInputChange() {
-      // Method to handle input change even
+      // Method to handle input change events
       this.letter = this.searchText.slice(-1);
       this.searchTextCopy = this.searchText.slice(0, -1); // Update the searchText
+      //If in the input is typed ( , we are searching for a possible function with the name of the searchText and
+      //append it's sytnax to the input
       if (this.letter == "(") {
         for (let i = 0; i < this.filteredList.length; i++) {
           if (this.searchTextCopy == this.filteredList[i].name) {
