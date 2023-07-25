@@ -2,14 +2,26 @@
   <v-container>
     <v-row align="center">
       <v-col>
+        <div class="divForBrackets" v-if="showDiv" @click="handleMouseOver">
+          Hello
+        </div>
         <div class="input-container">
           <div class="input-button-container">
-            <v-text-field class="mx-2 red-input" v-model="searchText" @input="handleInputChange"
-              placeholder="Search items"></v-text-field>
-            <v-btn class="mx-2" small fab dark color='#4b53b9' @click="handleButtonClick">
-              <v-icon>
-                mdi-function-variant
-              </v-icon>
+            <v-text-field
+              class="mx-2 red-input"
+              v-model="searchText"
+              @input="handleInputChange"
+              placeholder="Search items"
+            ></v-text-field>
+            <v-btn
+              class="mx-2"
+              small
+              fab
+              dark
+              color="#4b53b9"
+              @click="handleButtonClick"
+            >
+              <v-icon> mdi-function-variant </v-icon>
             </v-btn>
           </div>
           <div
@@ -20,15 +32,24 @@
             <v-list class="list">
               <div class="list-item-header">
                 <div class="formula">Write Formula</div>
-                <v-btn class="mx-2" fab dark x-small color="#4b53b9" @click="handleCloseList">
-                  <v-icon dark>
-                    mdi-alpha-x
-                  </v-icon>
+                <v-btn
+                  class="mx-2"
+                  fab
+                  dark
+                  x-small
+                  color="#4b53b9"
+                  @click="handleCloseList"
+                >
+                  <v-icon dark> mdi-alpha-x </v-icon>
                 </v-btn>
               </div>
               <template v-for="(item, index) in filteredList" @key="item.name">
                 <v-hover v-slot:default="{ hover }">
-                  <v-list-item :key="item.name" class="custom-list-item list-item" style="height: auto">
+                  <v-list-item
+                    :key="item.name"
+                    class="custom-list-item list-item"
+                    style="height: auto"
+                  >
                     <v-list-item-content>
                       <div>
                         {{ index + 1 + ". " + item.name + " " + item.category }}
@@ -42,6 +63,9 @@
               </template>
             </v-list>
           </div>
+        </div>
+        <div class="divForBrackets" v-if="showDiv" @click="handleMouseOver">
+          Hello
         </div>
       </v-col>
     </v-row>
@@ -68,6 +92,7 @@ export default defineComponent({
       showList: false,
       letter: "",
       searchTextCopy: "",
+      showDiv: false,
     };
   },
   props: {
@@ -114,11 +139,9 @@ export default defineComponent({
         //search for a match in the filteredList, if found display the syntax for the function in the input
         for (let i = 0; i < this.filteredList.length; i++) {
           if (finalResult == this.filteredList[i].name) {
-            const syntax = this.filteredList[i].syntax;
-            console.log(syntax);
-            this.searchText = "";
-            this.searchText += syntax;
+            this.searchText += finalResult + "(";
             this.showList = false;
+            this.showDiv = true;
           }
         }
       }
@@ -129,18 +152,20 @@ export default defineComponent({
     },
     handleInputChange() {
       // Method to handle input change events
-      this.letter = this.searchText.slice(-1);
-      this.searchTextCopy = this.searchText.slice(0, -1); // Update the searchText
+      this.letter = this.searchText.slice(-1); // Update the searchText
       //If in the input is typed ( , we are searching for a possible function with the name of the searchText and
       //append it's sytnax to the input
       if (this.letter == "(") {
+        this.searchTextCopy = this.searchText.slice(0, -1);
+        this.searchText = this.searchTextCopy;
         for (let i = 0; i < this.filteredList.length; i++) {
           if (this.searchTextCopy == this.filteredList[i].name) {
             const syntax = this.filteredList[i].syntax;
             console.log(syntax);
-            this.searchText = "";
-            this.searchText += syntax;
+            this.searchText += "(";
+
             this.showList = false;
+            this.showDiv = true;
           }
         }
       }
@@ -241,5 +266,10 @@ export default defineComponent({
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   /* Add a subtle box-shadow */
   height: 10px;
+}
+
+.divForBrackets {
+  background-color: gray;
+  top: 200px;
 }
 </style>

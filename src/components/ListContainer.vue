@@ -1,10 +1,8 @@
-<template>
-  
-</template>
+<template></template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { mathFunctionModel } from '@/models/mathFunction.model';
+import { defineComponent } from "vue";
+import { mathFunctionModel } from "@/models/mathFunction.model";
 export default defineComponent({
   props: {
     listItems: {
@@ -88,6 +86,6 @@ export default defineComponent({
 }
 
 body {
-  font-family: sans-serif;
+  font: Roboto;
 }
 </style>
