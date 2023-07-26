@@ -2,9 +2,6 @@
   <v-container>
     <v-row align="center">
       <v-col>
-        <div class="divForBrackets" v-if="showDiv" @click="handleMouseOver">
-          Hello
-        </div>
         <div class="input-container">
           <div class="input-button-container">
             <v-text-field
@@ -64,8 +61,28 @@
             </v-list>
           </div>
         </div>
-        <div class="divForBrackets" v-if="showDiv" @click="handleMouseOver">
-          Hello
+        <div
+          class="divForBrackets"
+          id="div"
+          ref="div"
+          v-if="showDiv"
+          @click="handleMouseOver"
+        >
+          {{ divText }}
+          <!-- Display divText content here -->
+          <button
+            id="btn"
+            class="btnExample"
+            @click.stop="displayExampleAndDescription"
+          >
+            >
+          </button>
+          <div v-if="showExampleDiv" id="showExampleDiv" class="example-div">
+            <div>Example</div>
+            <div>
+              {{ exampleDivText }}
+            </div>
+          </div>
         </div>
       </v-col>
     </v-row>
@@ -93,6 +110,11 @@ export default defineComponent({
       letter: "",
       searchTextCopy: "",
       showDiv: false,
+      divText: "text",
+      flagForBracket: false,
+      showExampleDiv: false,
+      exampleDivText: "",
+      flagDivExample: false,
     };
   },
   props: {
@@ -138,10 +160,22 @@ export default defineComponent({
 
         //search for a match in the filteredList, if found display the syntax for the function in the input
         for (let i = 0; i < this.filteredList.length; i++) {
+          console.log(this.filteredList[i].name);
+          console.log(finalResult);
           if (finalResult == this.filteredList[i].name) {
+            this.exampleDivText += this.filteredList[i].examples.toString();
+            this.divText = this.filteredList[i].syntax.toString();
             this.searchText += finalResult + "(";
             this.showList = false;
             this.showDiv = true;
+
+            // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
+            this.$nextTick(() => {
+              const divElement = document.getElementById("div");
+              if (divElement) {
+                divElement.style.color = "white";
+              }
+            });
           }
         }
       }
@@ -150,23 +184,56 @@ export default defineComponent({
       // Method to close the list
       this.showList = false; // Hide the list
     },
+    displayExampleAndDescription() {
+      if (this.flagDivExample) {
+        this.showList = true;
+        this.showDiv = false;
+        this.showExampleDiv = false;
+        this.flagDivExample = false;
+      } else {
+        this.showList = false;
+        this.showDiv = true;
+        this.showExampleDiv = true;
+        this.flagDivExample = true;
+      } // Show the black div when the button is clicked
+
+      // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
+    },
     handleInputChange() {
       // Method to handle input change events
       this.letter = this.searchText.slice(-1); // Update the searchText
-      //If in the input is typed ( , we are searching for a possible function with the name of the searchText and
-      //append it's sytnax to the input
-      if (this.letter == "(") {
-        this.searchTextCopy = this.searchText.slice(0, -1);
-        this.searchText = this.searchTextCopy;
-        for (let i = 0; i < this.filteredList.length; i++) {
-          if (this.searchTextCopy == this.filteredList[i].name) {
-            const syntax = this.filteredList[i].syntax;
-            console.log(syntax);
-            this.searchText += "(";
+      //If in the input is typed (, we are searching for a possible function with the name of the searchText and
+      // append its syntax to the input
+      if (this.letter == ")") {
+        this.$nextTick(() => {
+          this.showDiv = false;
+          this.showList = true;
+        });
+      }
+      if (this.letter === "(") {
+        // Remove the "(" character from the searchText
+        this.searchText = this.searchText.slice(0, -1);
 
-            this.showList = false;
-            this.showDiv = true;
-          }
+        // Check if the searchText matches the name of any item in the filteredList
+        const selectedItem = this.filteredList.find(
+          (item) => item.name === this.searchText
+        );
+
+        if (selectedItem) {
+          // If a match is found, update the divText with the syntax and show the div
+
+          this.exampleDivText += selectedItem.examples.toString();
+          this.divText = selectedItem.syntax.toString();
+          this.showList = false;
+          this.showDiv = true;
+
+          // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
+          this.$nextTick(() => {
+            const divElement = document.getElementById("div");
+            if (divElement) {
+              divElement.style.color = "black";
+            }
+          });
         }
       }
     },
@@ -269,7 +336,28 @@ export default defineComponent({
 }
 
 .divForBrackets {
-  background-color: gray;
+  background-color: #6764d082;
   top: 200px;
+  width: 398px;
+  margin-left: 227px;
+  padding: 20px;
+}
+.example-div {
+  background-color: rgba(243, 238, 238, 0.669);
+  color: black;
+  height: 100px; /* Set the height as per your requirement */
+  margin-top: 10px;
+  /* Remove display: flex; and add justify-content: flex-start; */
+  justify-content: flex-start;
+  font-size: 18px;
+  text-align: left;
+  padding: 2px;
+}
+
+.btnExample {
+  margin-left: 290px;
+  margin-top: 0px;
+  width: 2px;
+  background: transparent;
 }
 </style>
