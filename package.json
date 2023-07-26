@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@axten/m-tooltip": "^1.0.6",
     "@vue/compiler-sfc": "^3.3.4",
     "axios": "^1.4.0",
     "core-js": "^3.8.3",

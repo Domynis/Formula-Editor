@@ -10,16 +10,24 @@
               @input="handleInputChange"
               placeholder="Search items"
             ></v-text-field>
-            <v-btn
-              class="mx-2"
-              small
-              fab
-              dark
-              color="#4b53b9"
-              @click="handleButtonClick"
-            >
-              <v-icon> mdi-function-variant </v-icon>
-            </v-btn>
+
+            <m-tooltip top>
+              <template v-slot:element>
+                <v-btn
+                  class="mx-2"
+                  small
+                  fab
+                  dark
+                  color="#4b53b9"
+                  @click.stop="handleButtonClick"
+                >
+                  <v-icon> mdi-function-variant </v-icon>
+                </v-btn>
+              </template>
+              <template v-slot:message>
+                <div>{{ "tooltip message" }}</div>
+              </template>
+            </m-tooltip>
           </div>
           <div
             class="list-container-wrapper"
@@ -117,9 +125,12 @@ import getMathJSONButton from "./getMathJSON.vue";
 import { mathFunctionModel } from "../models/mathFunction.model";
 import { i } from "mathjs";
 
+import MTooltip from "@axten/m-tooltip";
+
 export default defineComponent({
   name: "hello-world",
   components: {
+    MTooltip,
     getMathJSONButton,
     ListContainer,
   },
@@ -184,6 +195,8 @@ export default defineComponent({
 
         //search for a match in the filteredList, if found display the syntax for the function in the input
         for (let i = 0; i < this.filteredList.length; i++) {
+          console.log(finalResult);
+          console.log(this.filteredList[i]);
           if (finalResult == this.filteredList[i].name) {
             this.descriptionDivText =
               this.filteredList[i].description.toString();

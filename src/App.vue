@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <v-app id="app">
     <v-container>
       <v-row>
         <v-col>
@@ -9,7 +9,7 @@
     </v-container>
     <getMathJSONButton v-show="showComponent" @incoming="handleButtonEmit" />
     <!-- keep the emit handler but remove the UI of the component, only script needed-->
-  </div>
+  </v-app>
 </template>
 
 <script lang="ts">
