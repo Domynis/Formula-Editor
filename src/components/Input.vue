@@ -75,13 +75,33 @@
             class="btnExample"
             @click.stop="displayExampleAndDescription"
           >
-            >
+            <img
+              v-if="!flagDivExample"
+              style="width: 21px"
+              src="@/assets/downArrow.png"
+              alt="Description of the image"
+            />
+
+            <!-- Display the second image if flagDivExample is true -->
+            <img
+              v-else
+              style="width: 15px"
+              src="@/assets/upArrow.png"
+              alt="Description of the image"
+            />
           </button>
           <div v-if="showExampleDiv" id="showExampleDiv" class="example-div">
             <div>Example</div>
             <div>
               {{ exampleDivText }}
             </div>
+            <v-divider></v-divider>
+            <div>Description</div>
+            <div>
+              {{ descriptionDivText }}
+            </div>
+            <v-divider></v-divider>
+            <div>Find more</div>
           </div>
         </div>
       </v-col>
@@ -95,6 +115,7 @@ import ListContainer from "./ListContainer.vue";
 import axios from "axios";
 import getMathJSONButton from "./getMathJSON.vue";
 import { mathFunctionModel } from "../models/mathFunction.model";
+import { i } from "mathjs";
 
 export default defineComponent({
   name: "hello-world",
@@ -115,6 +136,7 @@ export default defineComponent({
       showExampleDiv: false,
       exampleDivText: "",
       flagDivExample: false,
+      descriptionDivText: "",
     };
   },
   props: {
@@ -145,6 +167,8 @@ export default defineComponent({
     handleButtonClick() {
       // Method to handle button click event
       this.showList = true; // Show the list when the button is clicked
+      this.flagDivExample = false;
+      this.showDiv = false;
     },
     handleMouseOver(event: Event) {
       // Type guard to ensure event.target is not null
@@ -160,10 +184,13 @@ export default defineComponent({
 
         //search for a match in the filteredList, if found display the syntax for the function in the input
         for (let i = 0; i < this.filteredList.length; i++) {
-          console.log(this.filteredList[i].name);
-          console.log(finalResult);
           if (finalResult == this.filteredList[i].name) {
-            this.exampleDivText += this.filteredList[i].examples.toString();
+            this.descriptionDivText =
+              this.filteredList[i].description.toString();
+            this.exampleDivText +=
+              this.filteredList[i].examples[0] +
+              " , " +
+              this.filteredList[i].examples[1];
             this.divText = this.filteredList[i].syntax.toString();
             this.searchText += finalResult + "(";
             this.showList = false;
@@ -173,7 +200,7 @@ export default defineComponent({
             this.$nextTick(() => {
               const divElement = document.getElementById("div");
               if (divElement) {
-                divElement.style.color = "white";
+                divElement.style.color = "black";
               }
             });
           }
@@ -186,8 +213,8 @@ export default defineComponent({
     },
     displayExampleAndDescription() {
       if (this.flagDivExample) {
-        this.showList = true;
-        this.showDiv = false;
+        this.showList = false;
+        this.showDiv = true;
         this.showExampleDiv = false;
         this.flagDivExample = false;
       } else {
@@ -221,8 +248,9 @@ export default defineComponent({
 
         if (selectedItem) {
           // If a match is found, update the divText with the syntax and show the div
-
-          this.exampleDivText += selectedItem.examples.toString();
+          this.descriptionDivText = selectedItem.description.toString();
+          this.exampleDivText +=
+            selectedItem.examples[0] + " , " + selectedItem.examples[1];
           this.divText = selectedItem.syntax.toString();
           this.showList = false;
           this.showDiv = true;
@@ -336,7 +364,7 @@ export default defineComponent({
 }
 
 .divForBrackets {
-  background-color: #6764d082;
+  background-color: #c0ccff;
   top: 200px;
   width: 398px;
   margin-left: 227px;
@@ -345,19 +373,29 @@ export default defineComponent({
 .example-div {
   background-color: rgba(243, 238, 238, 0.669);
   color: black;
-  height: 100px; /* Set the height as per your requirement */
   margin-top: 10px;
-  /* Remove display: flex; and add justify-content: flex-start; */
-  justify-content: flex-start;
+  /* Add white-space property to preserve line breaks and wrap text */
+  white-space: pre-wrap;
   font-size: 18px;
   text-align: left;
-  padding: 2px;
+  padding: 10px;
+  /* Change flex-direction to row-reverse */
 }
 
 .btnExample {
-  margin-left: 290px;
-  margin-top: 0px;
-  width: 2px;
+  /* Change flex-direction to row-reverse */
+
+  position: fixed; /* Set the position to fixed */
+  left: 730px; /* Set the left position to 290px */
+  top: 180px; /* Set the top position to 50px */
+  width: 100px; /* Set an appropriate width for the button */
   background: transparent;
+}
+
+.v-divider {
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  border-color: black; /* Set the color of the divider line */
 }
 </style>
