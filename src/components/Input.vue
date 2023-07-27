@@ -75,14 +75,15 @@
               </div>
             </v-card>
           </div>
-          <div
-            class="divForBrackets"
-            id="div"
-            ref="div"
-            v-if="showDiv"
-            @click="handleMouseOver"
-          >
-            <span class="fixDiv">
+          <div class="divForBrackets" id="div" ref="div" v-if="showDiv">
+            <span
+              class="fixDiv"
+              ref="coloredSpan"
+              v-if="showDiv"
+              :style="{ backgroundColor: isDivHovered ? '#627DFF' : '#c0ccff' }"
+              @mouseover="handleMouseOverSpan"
+              @mouseleave="handleMouseLeaveSpan"
+            >
               {{ divText }}
               <!-- Display divText content here -->
             </span>
@@ -180,6 +181,12 @@ export default defineComponent({
       exampleDivText: "",
       flagDivExample: false,
       descriptionDivText: "",
+      wordPosition: 0,
+      inputString: "",
+      positionToColor: 2,
+      coloredText: "",
+      selectedColor: "red",
+      isDivHovered: false,
     };
   },
   props: {
@@ -206,7 +213,19 @@ export default defineComponent({
       );
     },
   },
+  watch: {
+    divText: {
+      handler: "colorizeWord",
+      immediate: true,
+    },
+  },
   methods: {
+    handleMouseOverSpan() {
+      this.isDivHovered = true;
+    },
+    handleMouseLeaveSpan() {
+      this.isDivHovered = false;
+    },
     getShortDescription(description: string | undefined): string {
       let descr: string = description as string;
       if (descr.length > 60) {
@@ -222,6 +241,7 @@ export default defineComponent({
       this.showList = false;
       this.showDiv = true;
       this.showExampleDiv = false;
+      this.colorizeWord();
     },
     handleButtonClick() {
       // Method to handle button click event
@@ -256,6 +276,7 @@ export default defineComponent({
             this.showList = false;
             this.showDiv = true;
             this.flagDivExample = this.showExampleDiv = false;
+            this.handleMouseOverSpan();
 
             // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
             this.$nextTick(() => {
@@ -295,6 +316,7 @@ export default defineComponent({
         this.$nextTick(() => {
           this.showDiv = false;
           this.showList = true;
+          this.handleMouseLeaveSpan();
         });
       }
       if (this.letter === "(") {
@@ -315,6 +337,7 @@ export default defineComponent({
           this.divText = selectedItem.syntax.toString();
           this.showList = false;
           this.showDiv = true;
+          this.handleMouseOverSpan();
           this.showExampleDiv = false;
 
           // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
@@ -325,6 +348,22 @@ export default defineComponent({
             }
           });
         }
+      }
+    },
+    colorizeWord(): void {
+      const spanElement = this.$refs.coloredSpan;
+      if (spanElement instanceof HTMLElement) {
+        const words = this.divText.split(" ");
+        for (let i = 0; i < words.length; i++) {
+          if (i === this.wordPosition) {
+            words[
+              i
+            ] = `<span style="color: ${this.selectedColor};">${words[i]}</span>`;
+          }
+        }
+        spanElement.innerHTML = words.join(" ");
+        this.exampleDivText = words.join(" "); // Update exampleDivText with modified divText
+        this.descriptionDivText = words.join(" "); // Update descriptionDivText with modified divText
       }
     },
   },
@@ -499,11 +538,8 @@ span.fixDiv {
 .divForBrackets {
   flex: 1;
   min-height: 100px;
-  /* Ajustează această valoare pentru înălțimea dorită */
   border: 1px solid #ccc;
-  /* Stilizare adițională pentru a vizualiza div-urile */
   box-sizing: border-box;
-  /* Asigură că padding-ul și bordurile nu măresc dimensiunea totală */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
