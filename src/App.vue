@@ -45,5 +45,6 @@ export default defineComponent({
 <style>
 .body {
   font-family: Roboto, sans-serif;
+  background-color: aqua;
 }
 </style>

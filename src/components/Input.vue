@@ -2,114 +2,134 @@
   <v-container>
     <v-row align="center">
       <v-col>
-        <div class="input-container">
-          <div class="input-button-container">
-            <v-text-field
-              class="mx-2 red-input"
-              v-model="searchText"
-              @input="handleInputChange"
-              placeholder="Search items"
-            ></v-text-field>
+        <div class="main-container">
+          <div class="input-container">
+            <div class="input-button-container">
+              <v-text-field
+                class="mx-2 red-input"
+                v-model="searchText"
+                @input="handleInputChange"
+                placeholder="Search items"
+              ></v-text-field>
 
-            <m-tooltip top>
-              <template v-slot:element>
-                <v-btn
-                  class="mx-2"
-                  small
-                  fab
-                  dark
-                  color="#4b53b9"
-                  @click.stop="handleButtonClick"
+              <m-tooltip top>
+                <template v-slot:element>
+                  <v-btn
+                    class="mx-2"
+                    small
+                    fab
+                    dark
+                    color="#4b53b9"
+                    @click.stop="handleButtonClick"
+                  >
+                    <v-icon> mdi-function-variant </v-icon>
+                  </v-btn>
+                </template>
+                <template v-slot:message>
+                  <div>{{ "find functions" }}</div>
+                </template>
+              </m-tooltip>
+            </div>
+            <div
+              class="list-container-wrapper"
+              v-if="showList"
+              @click="handleMouseOver"
+            >
+              <v-list class="list">
+                <div class="list-item-header">
+                  <div class="formula">Write Formula</div>
+                  <m-tooltip top>
+                    <template v-slot:element>
+                      <v-btn
+                        class="mx-2"
+                        fab
+                        dark
+                        x-small
+                        color="#4b53b9"
+                        @click="handleCloseList"
+                      >
+                        <v-icon dark> mdi-alpha-x </v-icon>
+                      </v-btn>
+                    </template>
+                    <template v-slot:message>
+                      <div>{{ "close extended sections" }}</div>
+                    </template>
+                  </m-tooltip>
+                </div>
+                <template
+                  v-for="(item, index) in filteredList"
+                  @key="item.name"
                 >
-                  <v-icon> mdi-function-variant </v-icon>
-                </v-btn>
-              </template>
-              <template v-slot:message>
-                <div>{{ "tooltip message" }}</div>
-              </template>
-            </m-tooltip>
+                  <v-hover v-slot:default="{ hover }">
+                    <v-list-item
+                      :key="item.name"
+                      class="custom-list-item list-item"
+                      style="height: auto"
+                    >
+                      <v-list-item-content>
+                        <div>
+                          {{
+                            index + 1 + ". " + item.name + " " + item.category
+                          }}
+                        </div>
+                        <div v-if="hover">
+                          {{ item.description.at(0) }}
+                        </div>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-hover>
+                </template>
+              </v-list>
+            </div>
           </div>
           <div
-            class="list-container-wrapper"
-            v-if="showList"
+            class="divForBrackets"
+            id="div"
+            ref="div"
+            v-if="showDiv"
             @click="handleMouseOver"
           >
-            <v-list class="list">
-              <div class="list-item-header">
-                <div class="formula">Write Formula</div>
-                <v-btn
-                  class="mx-2"
-                  fab
-                  dark
-                  x-small
-                  color="#4b53b9"
-                  @click="handleCloseList"
-                >
-                  <v-icon dark> mdi-alpha-x </v-icon>
-                </v-btn>
-              </div>
-              <template v-for="(item, index) in filteredList" @key="item.name">
-                <v-hover v-slot:default="{ hover }">
-                  <v-list-item
-                    :key="item.name"
-                    class="custom-list-item list-item"
-                    style="height: auto"
-                  >
-                    <v-list-item-content>
-                      <div>
-                        {{ index + 1 + ". " + item.name + " " + item.category }}
-                      </div>
-                      <div v-if="hover">
-                        {{ item.description.at(0) }}
-                      </div>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-hover>
-              </template>
-            </v-list>
-          </div>
-        </div>
-        <div
-          class="divForBrackets"
-          id="div"
-          ref="div"
-          v-if="showDiv"
-          @click="handleMouseOver"
-        >
-          {{ divText }}
-          <!-- Display divText content here -->
-          <button
-            id="btn"
-            class="btnExample"
-            @click.stop="displayExampleAndDescription"
-          >
-            <img
-              v-if="!flagDivExample"
-              style="width: 21px"
-              src="@/assets/downArrow.png"
-              alt="Description of the image"
-            />
+            <span class="fixDiv">
+              {{ divText }}
+              <!-- Display divText content here -->
+            </span>
+            <span class="div-button-extend-example">
+              <button
+                id="btn"
+                class="btnExample"
+                @click.stop="displayExampleAndDescription"
+              >
+                <img
+                  v-if="!flagDivExample"
+                  style="width: 21px"
+                  src="@/assets/downArrow.png"
+                  alt="Description of the image"
+                />
 
-            <!-- Display the second image if flagDivExample is true -->
-            <img
-              v-else
-              style="width: 15px"
-              src="@/assets/upArrow.png"
-              alt="Description of the image"
-            />
-          </button>
-          <div v-if="showExampleDiv" id="showExampleDiv" class="example-div">
-            <div>Example</div>
-            <div>
-              {{ exampleDivText }}
+                <!-- Display the second image if flagDivExample is true -->
+                <img
+                  v-else
+                  style="width: 15px"
+                  src="@/assets/upArrow.png"
+                  alt="Description of the image"
+                />
+              </button>
+            </span>
+            <div v-if="showExampleDiv" id="showExampleDiv" class="example-div">
+              <div>
+                <div>Example</div>
+                <div>
+                  {{ exampleDivText }}
+                </div>
+                <v-divider></v-divider>
+                <div>Description</div>
+                <div>
+                  {{ descriptionDivText }}
+                </div>
+                <v-divider></v-divider>
+                <div>Find more</div>
+              </div>
             </div>
-            <v-divider></v-divider>
-            <div>Description</div>
-            <div>
-              {{ descriptionDivText }}
-            </div>
-            <v-divider></v-divider>
-            <div>Find more</div>
           </div>
         </div>
       </v-col>
@@ -380,10 +400,12 @@ export default defineComponent({
   background-color: #c0ccff;
   top: 200px;
   width: 398px;
-  margin-left: 227px;
+  margin: 0 auto;
   padding: 20px;
+  height: 100px;
 }
 .example-div {
+  display: flex;
   background-color: rgba(243, 238, 238, 0.669);
   color: black;
   margin-top: 10px;
@@ -392,15 +414,15 @@ export default defineComponent({
   font-size: 18px;
   text-align: left;
   padding: 10px;
+  font-size: 13px;
   /* Change flex-direction to row-reverse */
 }
 
 .btnExample {
   /* Change flex-direction to row-reverse */
-
-  position: fixed; /* Set the position to fixed */
-  left: 730px; /* Set the left position to 290px */
-  top: 180px; /* Set the top position to 50px */
+  margin-left: 200px;
+  position: absolute;
+  /* Set the top position to 50px */
   width: 100px; /* Set an appropriate width for the button */
   background: transparent;
 }
@@ -408,7 +430,39 @@ export default defineComponent({
 .v-divider {
   margin-top: 10px;
   margin-bottom: 10px;
+  width: 347px;
 
   border-color: black; /* Set the color of the divider line */
+}
+
+.div-button-extend-example {
+  width: 10px;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+}
+
+span.fixDiv {
+  display: inline-block;
+  width: 110px;
+  font-size: 13px;
+  /*max-width: 100px;*/
+  white-space: normal;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-container,
+.divForBrackets {
+  flex: 1;
+  min-height: 100px; /* Ajustează această valoare pentru înălțimea dorită */
+  border: 1px solid #ccc; /* Stilizare adițională pentru a vizualiza div-urile */
+  box-sizing: border-box; /* Asigură că padding-ul și bordurile nu măresc dimensiunea totală */
 }
 </style>
