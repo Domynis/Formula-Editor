@@ -5,12 +5,23 @@
         <div class="main-container">
           <div class="input-container">
             <div class="input-button-container">
-              <v-text-field class="mx-2 red-input" v-model="searchText" @input="handleInputChange"
-                placeholder="Search items"></v-text-field>
+              <v-text-field
+                class="mx-2 red-input"
+                v-model="searchText"
+                @input="handleInputChange"
+                placeholder="Search items"
+              ></v-text-field>
 
               <m-tooltip top>
                 <template v-slot:element>
-                  <v-btn class="mx-2" small fab color="#627dff" dark @click.stop="handleButtonClick">
+                  <v-btn
+                    class="mx-2"
+                    small
+                    fab
+                    color="#627dff"
+                    dark
+                    @click.stop="handleButtonClick"
+                  >
                     <v-icon> mdi-function-variant </v-icon>
                   </v-btn>
                 </template>
@@ -21,61 +32,116 @@
             </div>
             <v-card class="mx-auto" :ripple="false" v-if="showList">
               <v-toolbar>
-
                 <v-toolbar-title>Write formula</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn class="mx-2" fab x-small color="#627dff" dark @click="handleCloseList">
+                <v-btn
+                  class="mx-2"
+                  fab
+                  x-small
+                  color="#627dff"
+                  dark
+                  @click="handleCloseList"
+                >
                   <v-icon dark> mdi-alpha-x </v-icon>
                 </v-btn>
               </v-toolbar>
-              <v-list style="margin-bottom: 2%;" width="350px" max-height="400px" class="overflow-y-auto">
-                <template v-for="(item, index) in filteredList" @key="item.name">
-                  <v-list-item style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); height: 90px;" @click="handleMouseOver"
-                    :key="item.name" @mouseover="hoveredIndex = index">
-                    <v-list-item-content>
-                      <div>
-                        {{ index + 1 + ". " + item.name + " " + item.category }}
-                      </div>
-                      <div v-if="hoveredIndex === index">
-                        {{ getShortDescription(item.description.at(0)) }}
-                      </div>
-                    </v-list-item-content>
-                  </v-list-item>
-                </template>
+              <v-list
+                style="margin-bottom: 2%"
+                width="350px"
+                max-height="400px"
+                class="overflow-y-auto"
+              >
+                <v-list-item
+                  v-for="(item, index) in filteredList"
+                  :key="item.name"
+                  style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); height: 90px"
+                  @click="handleListItemClick(item)"
+                  @mouseover="hoveredIndex = index"
+                >
+                  <v-list-item-content>
+                    <div>
+                      {{ index + 1 + ". " + item.name + " " + item.category }}
+                    </div>
+                    <div v-if="hoveredIndex === index">
+                      {{ getShortDescription(item.description.at(0)) }}
+                    </div>
+                  </v-list-item-content>
+                </v-list-item>
               </v-list>
               <div style="background-color: #c0ccff">
                 <v-btn color="#627dff" dark @click="handleCloseList">
-                  <v-icon> mdi-check </v-icon></v-btn>
+                  <v-icon> mdi-check </v-icon>
+                </v-btn>
               </div>
             </v-card>
           </div>
-          <div class="divForBrackets" id="div" ref="div" v-if="showDiv" @click="handleMouseOver">
+          <div
+            class="divForBrackets"
+            id="div"
+            ref="div"
+            v-if="showDiv"
+            @click="handleMouseOver"
+          >
             <span class="fixDiv">
               {{ divText }}
               <!-- Display divText content here -->
             </span>
             <span class="div-button-extend-example">
-              <button id="btn" class="btnExample" @click.stop="displayExampleAndDescription">
-                <img v-if="!flagDivExample" style="width: 21px" src="@/assets/downArrow.png"
-                  alt="Description of the image" />
-
-                <!-- Display the second image if flagDivExample is true -->
-                <img v-else style="width: 15px" src="@/assets/upArrow.png" alt="Description of the image" />
+              <button
+                id="btn"
+                class="btnExample"
+                @click.stop="displayExampleAndDescription"
+              >
+                <m-tooltip top>
+                  <template v-slot:element>
+                    <img
+                      v-if="!flagDivExample"
+                      style="width: 24px; margin-top: -5px"
+                      src="@/assets/downArrow.png"
+                      alt="Description of the image"
+                    />
+                    <img
+                      v-else
+                      style="width: 15px; margin-top: -5px"
+                      src="@/assets/upArrow.png"
+                      alt="Description of the image"
+                    />
+                  </template>
+                  <template v-slot:message>
+                    <div>
+                      {{ "Extend" }}
+                    </div>
+                  </template>
+                </m-tooltip>
               </button>
             </span>
             <div v-if="showExampleDiv" id="showExampleDiv" class="example-div">
               <div>
-                <div>Example</div>
+                <div class="titleDiv">Example</div>
                 <div>
                   {{ exampleDivText }}
                 </div>
                 <v-divider></v-divider>
-                <div>Description</div>
+                <div class="titleDiv">Description</div>
                 <div>
                   {{ descriptionDivText }}
                 </div>
                 <v-divider></v-divider>
-                <div>Find more</div>
+                <m-tooltip top>
+                  <template v-slot:element>
+                    <div class="titleDiv">
+                      <a
+                        style="color: grey"
+                        target="_blank"
+                        href="https://machinations.io/docs/math-js-functions"
+                        >Find more</a
+                      >
+                    </div>
+                  </template>
+                  <template v-slot:message>
+                    <div>{{ "Do you want to know more about this?" }}</div>
+                  </template>
+                </m-tooltip>
               </div>
             </div>
           </div>
@@ -148,10 +214,19 @@ export default defineComponent({
       }
       return description as string;
     },
+    handleListItemClick(item: mathFunctionModel) {
+      this.searchText = item.name.toString() + "(";
+      this.descriptionDivText = item.description.toString();
+      this.exampleDivText += item.examples[0] + " , " + item.examples[1];
+      this.divText = item.syntax.toString();
+      this.showList = false;
+      this.showDiv = true;
+      this.showExampleDiv = false;
+    },
     handleButtonClick() {
       // Method to handle button click event
       this.showList = true; // Show the list when the button is clicked
-      this.flagDivExample = false;
+      this.flagDivExample = true;
       this.showDiv = false;
     },
     handleMouseOver(event: Event) {
@@ -168,7 +243,6 @@ export default defineComponent({
 
         //search for a match in the filteredList, if found display the syntax for the function in the input
         for (let i = 0; i < this.filteredList.length; i++) {
-          console.log(finalResult);
           console.log(this.filteredList[i]);
           if (finalResult == this.filteredList[i].name) {
             this.descriptionDivText =
@@ -181,6 +255,7 @@ export default defineComponent({
             this.searchText += finalResult + "(";
             this.showList = false;
             this.showDiv = true;
+            this.showExampleDiv = false;
 
             // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
             this.$nextTick(() => {
@@ -239,6 +314,7 @@ export default defineComponent({
           this.divText = selectedItem.syntax.toString();
           this.showList = false;
           this.showDiv = true;
+          this.showExampleDiv = false;
 
           // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
           this.$nextTick(() => {
@@ -372,6 +448,7 @@ export default defineComponent({
   text-align: left;
   padding: 10px;
   font-size: 13px;
+  box-shadow: 4px 4px 4px 4px rgba(0, 0, 0, 0.1);
   /* Change flex-direction to row-reverse */
 }
 
@@ -426,5 +503,29 @@ span.fixDiv {
   /* Stilizare adițională pentru a vizualiza div-urile */
   box-sizing: border-box;
   /* Asigură că padding-ul și bordurile nu măresc dimensiunea totală */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btnExample {
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+}
+
+.btnExample img {
+  width: 21px;
+  transition: transform 0.3s ease;
+}
+
+.btnExample img:last-child {
+  transform: rotate(180deg);
+}
+
+.titleDiv {
+  color: grey;
+  font-size: 13px;
+}
+a {
+  color: grey;
 }
 </style>

@@ -14,7 +14,7 @@
 import { defineComponent } from "vue";
 import Input from "./components/Input.vue";
 import { getMathJSON } from "./components/getMathJSON";
-import { mathFunctionModel } from './models/mathFunction.model';
+import { mathFunctionModel } from "./models/mathFunction.model";
 
 export default defineComponent({
   name: "App",
@@ -36,6 +36,5 @@ export default defineComponent({
 <style>
 .body {
   font-family: Roboto, sans-serif;
-  background-color: aqua;
 }
 </style>
