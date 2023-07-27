@@ -5,114 +5,62 @@
         <div class="main-container">
           <div class="input-container">
             <div class="input-button-container">
-              <v-text-field
-                class="mx-2 red-input"
-                v-model="searchText"
-                @input="handleInputChange"
-                placeholder="Search items"
-              ></v-text-field>
+              <v-text-field class="mx-2 red-input" v-model="searchText" @input="handleInputChange"
+                placeholder="Search items"></v-text-field>
 
               <m-tooltip top>
                 <template v-slot:element>
-                  <v-btn
-                    class="mx-2"
-                    small
-                    fab
-                    dark
-                    color="#4b53b9"
-                    @click.stop="handleButtonClick"
-                  >
+                  <v-btn class="mx-2" small fab color="#627dff" dark @click.stop="handleButtonClick">
                     <v-icon> mdi-function-variant </v-icon>
                   </v-btn>
                 </template>
                 <template v-slot:message>
-                  <div>{{ "find functions" }}</div>
+                  <div>{{ "Activate extended view" }}</div>
                 </template>
               </m-tooltip>
             </div>
-            <div
-              class="list-container-wrapper"
-              v-if="showList"
-              @click="handleMouseOver"
-            >
-              <v-list class="list">
-                <div class="list-item-header">
-                  <div class="formula">Write Formula</div>
-                  <m-tooltip top>
-                    <template v-slot:element>
-                      <v-btn
-                        class="mx-2"
-                        fab
-                        dark
-                        x-small
-                        color="#4b53b9"
-                        @click="handleCloseList"
-                      >
-                        <v-icon dark> mdi-alpha-x </v-icon>
-                      </v-btn>
-                    </template>
-                    <template v-slot:message>
-                      <div>{{ "close extended sections" }}</div>
-                    </template>
-                  </m-tooltip>
-                </div>
-                <template
-                  v-for="(item, index) in filteredList"
-                  @key="item.name"
-                >
-                  <v-hover v-slot:default="{ hover }">
-                    <v-list-item
-                      :key="item.name"
-                      class="custom-list-item list-item"
-                      style="height: auto"
-                    >
-                      <v-list-item-content>
-                        <div>
-                          {{
-                            index + 1 + ". " + item.name + " " + item.category
-                          }}
-                        </div>
-                        <div v-if="hover">
-                          {{ item.description.at(0) }}
-                        </div>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </v-hover>
+            <v-card class="mx-auto" :ripple="false" v-if="showList">
+              <v-toolbar>
+
+                <v-toolbar-title>Write formula</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn class="mx-2" fab x-small color="#627dff" dark @click="handleCloseList">
+                  <v-icon dark> mdi-alpha-x </v-icon>
+                </v-btn>
+              </v-toolbar>
+              <v-list style="margin-bottom: 2%;" width="350px" max-height="400px" class="overflow-y-auto">
+                <template v-for="(item, index) in filteredList" @key="item.name">
+                  <v-list-item style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); height: 90px;" @click="handleMouseOver"
+                    :key="item.name" @mouseover="hoveredIndex = index">
+                    <v-list-item-content>
+                      <div>
+                        {{ index + 1 + ". " + item.name + " " + item.category }}
+                      </div>
+                      <div v-if="hoveredIndex === index">
+                        {{ getShortDescription(item.description.at(0)) }}
+                      </div>
+                    </v-list-item-content>
+                  </v-list-item>
                 </template>
               </v-list>
-            </div>
+              <div style="background-color: #c0ccff">
+                <v-btn color="#627dff" dark @click="handleCloseList">
+                  <v-icon> mdi-check </v-icon></v-btn>
+              </div>
+            </v-card>
           </div>
-          <div
-            class="divForBrackets"
-            id="div"
-            ref="div"
-            v-if="showDiv"
-            @click="handleMouseOver"
-          >
+          <div class="divForBrackets" id="div" ref="div" v-if="showDiv" @click="handleMouseOver">
             <span class="fixDiv">
               {{ divText }}
               <!-- Display divText content here -->
             </span>
             <span class="div-button-extend-example">
-              <button
-                id="btn"
-                class="btnExample"
-                @click.stop="displayExampleAndDescription"
-              >
-                <img
-                  v-if="!flagDivExample"
-                  style="width: 21px"
-                  src="@/assets/downArrow.png"
-                  alt="Description of the image"
-                />
+              <button id="btn" class="btnExample" @click.stop="displayExampleAndDescription">
+                <img v-if="!flagDivExample" style="width: 21px" src="@/assets/downArrow.png"
+                  alt="Description of the image" />
 
                 <!-- Display the second image if flagDivExample is true -->
-                <img
-                  v-else
-                  style="width: 15px"
-                  src="@/assets/upArrow.png"
-                  alt="Description of the image"
-                />
+                <img v-else style="width: 15px" src="@/assets/upArrow.png" alt="Description of the image" />
               </button>
             </span>
             <div v-if="showExampleDiv" id="showExampleDiv" class="example-div">
@@ -141,21 +89,19 @@
 import { defineComponent } from "vue";
 import ListContainer from "./ListContainer.vue";
 import axios from "axios";
-import getMathJSONButton from "./getMathJSON.vue";
 import { mathFunctionModel } from "../models/mathFunction.model";
-import { i } from "mathjs";
 
 import MTooltip from "@axten/m-tooltip";
 
 export default defineComponent({
-  name: "hello-world",
   components: {
     MTooltip,
-    getMathJSONButton,
     ListContainer,
   },
   data() {
     return {
+      hoveredIndex: 0,
+
       message: "",
       searchText: "",
       showList: false,
@@ -195,6 +141,13 @@ export default defineComponent({
     },
   },
   methods: {
+    getShortDescription(description: string | undefined): string {
+      let descr: string = description as string;
+      if (descr.length > 60) {
+        description = descr.slice(0, 60) + "...";
+      }
+      return description as string;
+    },
     handleButtonClick() {
       // Method to handle button click event
       this.showList = true; // Show the list when the button is clicked
@@ -260,7 +213,6 @@ export default defineComponent({
       // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
     },
     handleInputChange() {
-      // Method to handle input change events
       this.letter = this.searchText.slice(-1); // Update the searchText
       //If in the input is typed (, we are searching for a possible function with the name of the searchText and
       // append its syntax to the input
@@ -303,6 +255,10 @@ export default defineComponent({
 </script>
 
 <style>
+.v-card--link:before {
+  background: none;
+}
+
 .input-container {
   margin: 0 auto;
   display: flex;
@@ -331,7 +287,7 @@ export default defineComponent({
   background-color: #f1f1f1;
   padding: 10px;
   /* Adjust the padding for better alignment */
-  margin-top: 20px;
+  margin: 20px;
   flex: 1;
   height: 2;
   size: 20px;
@@ -368,7 +324,7 @@ export default defineComponent({
   align-items: flex-end;
   margin-top: 20px;
   background-color: #f1f1f1;
-  padding: 10px;
+  padding-top: 10px;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   /* Add a subtle box-shadow */
@@ -378,7 +334,7 @@ export default defineComponent({
   display: block;
   width: 400px;
   /* Adjust the width of the list container */
-  max-height: 200px;
+  max-height: 400px;
   /* Limit the maximum height to create a scrollable list */
   overflow-y: auto;
   /* Enable vertical scrolling when list exceeds the height */
@@ -393,7 +349,7 @@ export default defineComponent({
   margin-bottom: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   /* Add a subtle box-shadow */
-  height: 10px;
+  height: 90px;
 }
 
 .divForBrackets {
@@ -404,6 +360,7 @@ export default defineComponent({
   padding: 20px;
   height: 100px;
 }
+
 .example-div {
   display: flex;
   background-color: rgba(243, 238, 238, 0.669);
@@ -423,7 +380,8 @@ export default defineComponent({
   margin-left: 200px;
   position: absolute;
   /* Set the top position to 50px */
-  width: 100px; /* Set an appropriate width for the button */
+  width: 100px;
+  /* Set an appropriate width for the button */
   background: transparent;
 }
 
@@ -432,7 +390,8 @@ export default defineComponent({
   margin-bottom: 10px;
   width: 347px;
 
-  border-color: black; /* Set the color of the divider line */
+  border-color: black;
+  /* Set the color of the divider line */
 }
 
 .div-button-extend-example {
@@ -461,8 +420,11 @@ span.fixDiv {
 .input-container,
 .divForBrackets {
   flex: 1;
-  min-height: 100px; /* Ajustează această valoare pentru înălțimea dorită */
-  border: 1px solid #ccc; /* Stilizare adițională pentru a vizualiza div-urile */
-  box-sizing: border-box; /* Asigură că padding-ul și bordurile nu măresc dimensiunea totală */
+  min-height: 100px;
+  /* Ajustează această valoare pentru înălțimea dorită */
+  border: 1px solid #ccc;
+  /* Stilizare adițională pentru a vizualiza div-urile */
+  box-sizing: border-box;
+  /* Asigură că padding-ul și bordurile nu măresc dimensiunea totală */
 }
 </style>
