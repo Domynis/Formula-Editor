@@ -95,7 +95,7 @@
                 <m-tooltip top>
                   <template v-slot:element>
                     <img
-                      v-if="!flagDivExample"
+                      v-if="flagDivExample"
                       style="width: 24px; margin-top: -5px"
                       src="@/assets/downArrow.png"
                       alt="Description of the image"
@@ -226,7 +226,7 @@ export default defineComponent({
     handleButtonClick() {
       // Method to handle button click event
       this.showList = true; // Show the list when the button is clicked
-      this.flagDivExample = true;
+      this.flagDivExample = false;
       this.showDiv = false;
     },
     handleMouseOver(event: Event) {
@@ -255,7 +255,7 @@ export default defineComponent({
             this.searchText += finalResult + "(";
             this.showList = false;
             this.showDiv = true;
-            this.showExampleDiv = false;
+            this.flagDivExample = this.showExampleDiv = false;
 
             // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
             this.$nextTick(() => {
@@ -298,6 +298,7 @@ export default defineComponent({
         });
       }
       if (this.letter === "(") {
+        this.flagDivExample = false;
         // Remove the "(" character from the searchText
         this.searchText = this.searchText.slice(0, -1);
 
