@@ -32,90 +32,53 @@
             </div>
             <v-card class="mx-auto" :ripple="false" v-if="showList">
               <v-toolbar>
-                <v-toolbar-title>Write formula</v-toolbar-title>
+                <v-toolbar-title style="font-size: 14px; font-weight: bold;">Write formula</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn
-                  class="mx-2"
-                  fab
-                  x-small
-                  color="#627dff"
-                  dark
-                  @click="handleCloseList"
-                >
+                <v-btn class="mx-2" fab x-small color="#627dff" dark @click="handleCloseList">
                   <v-icon dark> mdi-alpha-x </v-icon>
                 </v-btn>
               </v-toolbar>
-              <v-list
-                style="margin-bottom: 2%"
-                width="350px"
-                max-height="400px"
-                class="overflow-y-auto"
-              >
-                <v-list-item
-                  v-for="(item, index) in filteredList"
-                  :key="item.name"
-                  style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); height: 90px"
-                  @click="handleListItemClick(item)"
-                  @mouseover="hoveredIndex = index"
-                >
-                  <v-list-item-content>
-                    <div>
-                      {{ index + 1 + ". " + item.name + " " + item.category }}
-                    </div>
-                    <div v-if="hoveredIndex === index">
-                      {{ getShortDescription(item.description.at(0)) }}
-                    </div>
-                  </v-list-item-content>
-                </v-list-item>
+              <v-list width="25rem" max-height="28rem" class="overflow-y-auto py-0">
+                <template v-for="(item, index) in filteredList" @key="item.name">
+                  <v-list-item class="pl-0" style="height: 5rem; font-size: 12px;" @click="handleMouseOver" :key="item.name"
+                    @mouseover="hoveredIndex = index">
+                    <v-list-item-content>
+                      <v-row style="height: 5rem;">
+                        <v-col cols="2" style="background-color: #dfe8ff; text-align: right;" >
+                          {{ index + 1 }}
+                        </v-col>
+                        <v-col>
+                          {{ item.name + " " + item.category }}
+                          <div v-if="hoveredIndex === index">
+                            {{ getShortDescription(item.description.at(0)) }}
+                          </div>
+                        </v-col>
+                      </v-row>
+                    </v-list-item-content>
+                  </v-list-item>
+                </template>
               </v-list>
-              <div style="background-color: #c0ccff">
+              <div style="background-color: #dfe8ff">
                 <v-btn color="#627dff" dark @click="handleCloseList">
                   <v-icon> mdi-check </v-icon>
                 </v-btn>
+                <a style="float: center; float: right; padding: 0.5rem; font-size: 12px;" href="https://machinations.io/docs/math-js-functions">Help
+                  Documentation</a>
               </div>
             </v-card>
           </div>
-          <div class="divForBrackets" id="div" ref="div" v-if="showDiv">
-            <span
-              class="fixDiv"
-              ref="coloredSpan"
-              v-if="showDiv"
-              :style="{ backgroundColor: isDivHovered ? '#627DFF' : '#c0ccff' }"
-              @mouseover="handleMouseOverSpan"
-              @mouseleave="handleMouseLeaveSpan"
-            >
-              {{ divText }}
-              <!-- Display divText content here -->
-            </span>
-            <span class="div-button-extend-example">
-              <button
-                id="btn"
-                class="btnExample"
-                @click.stop="displayExampleAndDescription"
-              >
-                <m-tooltip top>
-                  <template v-slot:element>
-                    <img
-                      v-if="flagDivExample"
-                      style="width: 24px; margin-top: -5px"
-                      src="@/assets/downArrow.png"
-                      alt="Description of the image"
-                    />
-                    <img
-                      v-else
-                      style="width: 15px; margin-top: -5px"
-                      src="@/assets/upArrow.png"
-                      alt="Description of the image"
-                    />
-                  </template>
-                  <template v-slot:message>
-                    <div>
-                      {{ "Extend" }}
-                    </div>
-                  </template>
-                </m-tooltip>
-              </button>
-            </span>
+          <div class="divForBrackets" id="div" ref="div" v-if="showDiv" @click="handleMouseOver">
+            <v-row>
+              <v-col align-start>
+                {{ divText }}
+              </v-col>
+              <v-col class="text-end">
+                <v-btn class="mx-2" fab x-small color="#627dff" dark @click.stop="displayExampleAndDescription">
+                  <v-icon v-if="!flagDivExample"> mdi-arrow-down-bold </v-icon>
+                  <v-icon v-if="flagDivExample"> mdi-arrow-up-bold </v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
             <div v-if="showExampleDiv" id="showExampleDiv" class="example-div">
               <div>
                 <div class="titleDiv">Example</div>
@@ -228,8 +191,9 @@ export default defineComponent({
     },
     getShortDescription(description: string | undefined): string {
       let descr: string = description as string;
-      if (descr.length > 60) {
-        description = descr.slice(0, 60) + "...";
+      const maxLength = 80;
+      if (descr.length > maxLength) {
+        description = descr.slice(0, maxLength) + "...";
       }
       return description as string;
     },
@@ -256,10 +220,8 @@ export default defineComponent({
         this.showList = true; // Show the list when mouse is over the component
         const elementMouseOver = event.target;
         const textContent = elementMouseOver.textContent!.trim(); // Use ! to assert that textContent is not null
-        const indexOfDot = textContent.indexOf(".");
-        const result = textContent.substring(indexOfDot + 2);
-        const firstSpaceIndex = result.indexOf(" ");
-        const finalResult = result.substring(0, firstSpaceIndex);
+        const firstSpaceIndex = textContent.indexOf(" ");
+        const finalResult = textContent.substring(0, firstSpaceIndex);
 
         //search for a match in the filteredList, if found display the syntax for the function in the input
         for (let i = 0; i < this.filteredList.length; i++) {
@@ -383,7 +345,7 @@ export default defineComponent({
   align-items: center;
   /* Center items horizontally in the container */
   background-color: #f1f1f1;
-  width: 400px;
+  width: 450px;
   border-radius: 10px;
   padding: 20px;
   box-sizing: border-box;
