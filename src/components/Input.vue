@@ -32,19 +32,43 @@
             </div>
             <v-card class="mx-auto" :ripple="false" v-if="showList">
               <v-toolbar>
-                <v-toolbar-title style="font-size: 14px; font-weight: bold;">Write formula</v-toolbar-title>
+                <v-toolbar-title style="font-size: 14px; font-weight: bold"
+                  >Write formula</v-toolbar-title
+                >
                 <v-spacer></v-spacer>
-                <v-btn class="mx-2" fab x-small color="#627dff" dark @click="handleCloseList">
+                <v-btn
+                  class="mx-2"
+                  fab
+                  x-small
+                  color="#627dff"
+                  dark
+                  @click="handleCloseList"
+                >
                   <v-icon dark> mdi-alpha-x </v-icon>
                 </v-btn>
               </v-toolbar>
-              <v-list width="25rem" max-height="28rem" class="overflow-y-auto py-0">
-                <template v-for="(item, index) in filteredList" @key="item.name">
-                  <v-list-item class="pl-0" style="height: 5rem; font-size: 12px;" @click="handleMouseOver" :key="item.name"
-                    @mouseover="hoveredIndex = index">
+              <v-list
+                width="25rem"
+                max-height="28rem"
+                class="overflow-y-auto py-0"
+              >
+                <template
+                  v-for="(item, index) in filteredList"
+                  @key="item.name"
+                >
+                  <v-list-item
+                    class="pl-0"
+                    style="height: 5rem; font-size: 12px"
+                    @click="handleMouseOver"
+                    :key="item.name"
+                    @mouseover="hoveredIndex = index"
+                  >
                     <v-list-item-content>
-                      <v-row style="height: 5rem;">
-                        <v-col cols="2" style="background-color: #dfe8ff; text-align: right;" >
+                      <v-row style="height: 5rem">
+                        <v-col
+                          cols="2"
+                          style="background-color: #dfe8ff; text-align: right"
+                        >
                           {{ index + 1 }}
                         </v-col>
                         <v-col>
@@ -62,18 +86,41 @@
                 <v-btn color="#627dff" dark @click="handleCloseList">
                   <v-icon> mdi-check </v-icon>
                 </v-btn>
-                <a style="float: center; float: right; padding: 0.5rem; font-size: 12px;" href="https://machinations.io/docs/math-js-functions">Help
-                  Documentation</a>
+                <a
+                  style="
+                    float: center;
+                    float: right;
+                    padding: 0.5rem;
+                    font-size: 12px;
+                  "
+                  href="https://machinations.io/docs/math-js-functions"
+                  >Help Documentation</a
+                >
               </div>
             </v-card>
           </div>
-          <div class="divForBrackets" id="div" ref="div" v-if="showDiv" @click="handleMouseOver">
+          <div
+            class="divForBrackets"
+            id="div"
+            ref="div"
+            v-if="showDiv"
+            @click="handleMouseOver"
+          >
             <v-row>
               <v-col align-start>
-                {{ divText }}
+                <div id="syntaxDiv">
+                  {{ divText }}
+                </div>
               </v-col>
               <v-col class="text-end">
-                <v-btn class="mx-2" fab x-small color="#627dff" dark @click.stop="displayExampleAndDescription">
+                <v-btn
+                  class="mx-2"
+                  fab
+                  x-small
+                  color="#627dff"
+                  dark
+                  @click.stop="displayExampleAndDescription"
+                >
                   <v-icon v-if="!flagDivExample"> mdi-arrow-down-bold </v-icon>
                   <v-icon v-if="flagDivExample"> mdi-arrow-up-bold </v-icon>
                 </v-btn>
@@ -112,6 +159,7 @@
         </div>
       </v-col>
     </v-row>
+    <v-btn @click.stop="getParameters">Click to color</v-btn>
   </v-container>
 </template>
 
@@ -150,6 +198,9 @@ export default defineComponent({
       coloredText: "",
       selectedColor: "red",
       isDivHovered: false,
+      params: [] as string[],
+      param: [] as string[],
+      listOfParam: [] as string[],
     };
   },
   props: {
@@ -201,7 +252,7 @@ export default defineComponent({
       this.searchText = item.name.toString() + "(";
       this.descriptionDivText = item.description.toString();
       this.exampleDivText += item.examples[0] + " , " + item.examples[1];
-      this.divText = item.syntax.toString();
+      this.divText = item.syntax[0].toString();
       this.showList = false;
       this.showDiv = true;
       this.showExampleDiv = false;
@@ -214,42 +265,42 @@ export default defineComponent({
       this.showDiv = false;
     },
     handleMouseOver(event: Event) {
-      // Type guard to ensure event.target is not null
-      if (event.target instanceof HTMLElement) {
-        // Take the html element that is clicked and obtain the name of the function
-        this.showList = true; // Show the list when mouse is over the component
-        const elementMouseOver = event.target;
-        const textContent = elementMouseOver.textContent!.trim(); // Use ! to assert that textContent is not null
-        const firstSpaceIndex = textContent.indexOf(" ");
-        const finalResult = textContent.substring(0, firstSpaceIndex);
+      if (!this.showDiv)
+        if (event.target instanceof HTMLElement) {
+          // Type guard to ensure event.target is not null
+          // Take the html element that is clicked and obtain the name of the function
+          this.showList = true; // Show the list when mouse is over the component
+          const elementMouseOver = event.target;
+          const textContent = elementMouseOver.textContent!.trim(); // Use ! to assert that textContent is not null
+          const firstSpaceIndex = textContent.indexOf(" ");
+          const finalResult = textContent.substring(0, firstSpaceIndex);
 
-        //search for a match in the filteredList, if found display the syntax for the function in the input
-        for (let i = 0; i < this.filteredList.length; i++) {
-          console.log(this.filteredList[i]);
-          if (finalResult == this.filteredList[i].name) {
-            this.descriptionDivText =
-              this.filteredList[i].description.toString();
-            this.exampleDivText +=
-              this.filteredList[i].examples[0] +
-              " , " +
-              this.filteredList[i].examples[1];
-            this.divText = this.filteredList[i].syntax.toString();
-            this.searchText += finalResult + "(";
-            this.showList = false;
-            this.showDiv = true;
-            this.flagDivExample = this.showExampleDiv = false;
-            this.handleMouseOverSpan();
+          //search for a match in the filteredList, if found display the syntax for the function in the input
+          for (let i = 0; i < this.filteredList.length; i++) {
+            if (finalResult == this.filteredList[i].name) {
+              this.descriptionDivText =
+                this.filteredList[i].description.toString();
+              this.exampleDivText +=
+                this.filteredList[i].examples[0] +
+                " , " +
+                this.filteredList[i].examples[1];
+              this.divText = this.filteredList[i].syntax[0].toString();
+              this.searchText += finalResult + "(";
+              this.showList = false;
+              this.showDiv = true;
+              this.flagDivExample = this.showExampleDiv = false;
+              this.handleMouseOverSpan();
 
-            // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
-            this.$nextTick(() => {
-              const divElement = document.getElementById("div");
-              if (divElement) {
-                divElement.style.color = "black";
-              }
-            });
+              // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
+              this.$nextTick(() => {
+                const divElement = document.getElementById("div");
+                if (divElement) {
+                  divElement.style.color = "black";
+                }
+              });
+            }
           }
         }
-      }
     },
     handleCloseList() {
       // Method to close the list
@@ -270,6 +321,61 @@ export default defineComponent({
 
       // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
     },
+    getParameters() {
+      this.params = this.divText.split("(");
+      this.$nextTick(() => {
+        const divElement = document.getElementById("syntaxDiv");
+        if (divElement) {
+          // Create a new span element for the first part
+          const newSpan = document.createElement("span");
+          // Set the text content of the span element (replace "Your Text Here" with your desired content)
+          newSpan.textContent = this.params[0] + "(";
+          // Add any additional styles or attributes to the new span if needed
+          newSpan.style.color = "red";
+          // Append the new span to the syntaxDiv
+          divElement.appendChild(newSpan);
+          this.param = this.params[1].split(")");
+          this.listOfParam = this.param[0].split(",");
+          console.log(this.listOfParam);
+          for (let i = 0; i < this.listOfParam.length; i = i + 1) {
+            // Create a new span element for each part
+            const span = document.createElement("span");
+            span.setAttribute("id", "span-" + i);
+            // Set the text content of the span element
+            span.textContent = this.listOfParam[i];
+            // Add any additional styles or attributes to the span if needed
+            span.style.color = "red";
+            // Append the span to the syntaxDiv
+            divElement.appendChild(span);
+
+            if (i < this.listOfParam.length - 1) {
+              const span1 = document.createElement("span");
+              // Set the text content of the span element
+              span1.textContent = ",";
+              // Add any additional styles or attributes to the span if needed
+              span1.style.color = "red";
+              // Append the span to the syntaxDiv
+              divElement.appendChild(span1);
+            }
+          }
+
+          const closingParenthesisSpan = document.createElement("span");
+          // Set the text content of the closing parenthesis span element
+          closingParenthesisSpan.textContent = ")";
+          // Add any additional styles or attributes to the closing parenthesis span if needed
+          closingParenthesisSpan.style.color = "red";
+          // Append the closing parenthesis span to the syntaxDiv
+          divElement.appendChild(closingParenthesisSpan);
+        }
+      });
+
+      this.$nextTick(() => {
+        const lastSpanIndex = this.listOfParam.length - 1;
+        const divElement = document.getElementById("span-" + 2);
+        if (divElement) console.log(divElement.textContent);
+      });
+    },
+
     handleInputChange() {
       this.letter = this.searchText.slice(-1); // Update the searchText
       //If in the input is typed (, we are searching for a possible function with the name of the searchText and
