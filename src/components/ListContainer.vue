@@ -36,19 +36,6 @@ export default defineComponent({
 </script>
 
 <style>
-.list-item-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 15px;
-  padding: 10px;
-  position: sticky;
-  top: -10px;
-  /* Adjust this value to move the sticky element higher */
-  background-color: #f1f1f1;
-  z-index: 1;
-  font-family: sans-serif;
-}
 
 .formula {
   position: relative;
@@ -65,24 +52,6 @@ export default defineComponent({
   width: 100%;
   background-color: #f1f1f1;
   font-family: sans-serif;
-}
-
-.close-button {
-  width: 40px;
-  height: 30px;
-}
-
-.list-container {
-  margin-top: 20px;
-}
-
-.list-item:hover {
-  background-color: lightgray;
-  cursor: pointer;
-}
-
-.list {
-  margin-bottom: 20px;
 }
 
 body {

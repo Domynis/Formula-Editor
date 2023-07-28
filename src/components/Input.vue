@@ -5,23 +5,12 @@
         <div class="main-container">
           <div class="input-container">
             <div class="input-button-container">
-              <v-text-field
-                class="mx-2 red-input"
-                v-model="searchText"
-                @input="handleInputChange"
-                placeholder="Search items"
-              ></v-text-field>
+              <v-text-field class="mx-2 red-input" v-model="searchText" @input="handleInputChange"
+                placeholder="Search items"></v-text-field>
 
               <m-tooltip top>
                 <template v-slot:element>
-                  <v-btn
-                    class="mx-2"
-                    small
-                    fab
-                    color="#627dff"
-                    dark
-                    @click.stop="handleButtonClick"
-                  >
+                  <v-btn class="mx-2" small fab color="#627dff" dark @click.stop="handleButtonClick">
                     <v-icon> mdi-function-variant </v-icon>
                   </v-btn>
                 </template>
@@ -32,43 +21,27 @@
             </div>
             <v-card class="mx-auto" :ripple="false" v-if="showList">
               <v-toolbar>
-                <v-toolbar-title style="font-size: 14px; font-weight: bold"
-                  >Write formula</v-toolbar-title
-                >
+                <v-toolbar-title style="font-size: 14px; font-weight: bold">Write formula</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn
-                  class="mx-2"
-                  fab
-                  x-small
-                  color="#627dff"
-                  dark
-                  @click="handleCloseList"
-                >
-                  <v-icon dark> mdi-alpha-x </v-icon>
-                </v-btn>
+                <m-tooltip top>
+                  <template v-slot:element>
+                    <v-btn class="mx-2" fab x-small color="#627dff" dark @click="handleCloseList">
+                      <v-icon dark> mdi-alpha-x </v-icon>
+                    </v-btn>
+                  </template>
+                  <template v-slot:message>
+                    <div>{{ "Close extended view" }}</div>
+                  </template>
+                </m-tooltip>
+
               </v-toolbar>
-              <v-list
-                width="25rem"
-                max-height="28rem"
-                class="overflow-y-auto py-0"
-              >
-                <template
-                  v-for="(item, index) in filteredList"
-                  @key="item.name"
-                >
-                  <v-list-item
-                    class="pl-0"
-                    style="height: 5rem; font-size: 12px"
-                    @click="handleMouseOver"
-                    :key="item.name"
-                    @mouseover="hoveredIndex = index"
-                  >
+              <v-list width="25rem" max-height="28rem" class="overflow-y-auto py-0">
+                <template v-for="(item, index) in filteredList" @key="item.name">
+                  <v-list-item class="pl-0" style="height: 5rem; font-size: 12px;" @click="handleMouseOver"
+                    :key="item.name" @mouseover="hoveredIndex = index">
                     <v-list-item-content>
-                      <v-row style="height: 5rem">
-                        <v-col
-                          cols="2"
-                          style="background-color: #dfe8ff; text-align: right"
-                        >
+                      <v-row style="height: 5rem;">
+                        <v-col cols=2 style="background-color: #dfe8ff; text-align: right;color: #627dff">
                           {{ index + 1 }}
                         </v-col>
                         <v-col>
@@ -82,43 +55,43 @@
                   </v-list-item>
                 </template>
               </v-list>
-              <div style="background-color: #dfe8ff">
-                <v-btn color="#627dff" dark @click="handleCloseList">
-                  <v-icon> mdi-check </v-icon>
-                </v-btn>
-                <a
-                  style="
-                    float: center;
-                    float: right;
-                    padding: 0.5rem;
-                    font-size: 12px;
-                  "
-                  href="https://machinations.io/docs/math-js-functions"
-                  >Help Documentation</a
-                >
-              </div>
+              <v-container style="background-color: #dfe8ff;">
+                <v-row style="height: 2.3rem;">
+                  <v-col cols=2 class="pa-0">
+                    <m-tooltip bottom>
+                      <template v-slot:element>
+                        <v-btn min-width="0rem" color="#627dff" dark @click="handleCloseList">
+                          <v-icon> mdi-check </v-icon>
+                        </v-btn>
+                      </template>
+                      <template v-slot:message>
+                        <div>{{ "Close extended view" }}</div>
+                      </template>
+                    </m-tooltip>
+                  </v-col>
+                  <v-col class="py-1 text-right ">
+                    <m-tooltip bottom>
+                      <template v-slot:element>
+                        <a style="font-size: 12px;"
+                          href="https://machinations.io/docs/math-js-functions">Help
+                          Documentation</a>
+                      </template>
+                      <template v-slot:message>
+                        <div>{{ "Do you want to know more about this?" }}</div>
+                      </template>
+                    </m-tooltip>
+                  </v-col>
+                </v-row>
+              </v-container>
             </v-card>
           </div>
-          <div
-            class="divForBrackets"
-            id="div"
-            ref="div"
-            v-if="showDiv"
-            @click="handleMouseOver"
-          >
+          <div class="divForBrackets" id="div" ref="div" v-if="showDiv" @click="handleMouseOver">
             <v-row>
               <v-col align-start>
                 <div id="syntaxDiv"></div>
               </v-col>
               <v-col class="text-end">
-                <v-btn
-                  class="mx-2"
-                  fab
-                  x-small
-                  color="#627dff"
-                  dark
-                  @click.stop="displayExampleAndDescription"
-                >
+                <v-btn class="mx-2" fab x-small color="#627dff" dark @click.stop="displayExampleAndDescription">
                   <v-icon v-if="!flagDivExample"> mdi-arrow-down-bold </v-icon>
                   <v-icon v-if="flagDivExample"> mdi-arrow-up-bold </v-icon>
                 </v-btn>
@@ -132,19 +105,15 @@
                 </div>
                 <v-divider></v-divider>
                 <div class="titleDiv">Description</div>
-                <div>
+                <div style="padding-right: 0.1rem;">
                   {{ descriptionDivText }}
                 </div>
                 <v-divider></v-divider>
-                <m-tooltip top>
+                <m-tooltip bottom>
                   <template v-slot:element>
                     <div class="titleDiv">
-                      <a
-                        style="color: grey"
-                        target="_blank"
-                        href="https://machinations.io/docs/math-js-functions"
-                        >Find more</a
-                      >
+                      <a style="color: grey" target="_blank" href="https://machinations.io/docs/math-js-functions">Find
+                        more</a>
                     </div>
                   </template>
                   <template v-slot:message>
@@ -241,7 +210,7 @@ export default defineComponent({
     },
     getShortDescription(description: string | undefined): string {
       let descr: string = description as string;
-      const maxLength = 80;
+      const maxLength = 150;
       if (descr.length > maxLength) {
         description = descr.slice(0, maxLength) + "...";
       }
@@ -263,7 +232,7 @@ export default defineComponent({
       this.flagDivExample = false;
       this.showDiv = false;
     },
-    handleMouseOver(event: Event) {
+    handleMouseOver(event: Event) { //!!should change function name as it does not serve the same purpose as in the beginning!!
       if (!this.showDiv)
         if (event.target instanceof HTMLElement) {
           // Type guard to ensure event.target is not null
@@ -309,6 +278,7 @@ export default defineComponent({
     },
     handleCloseList() {
       // Method to close the list
+      this.hoveredIndex = 0;
       this.showList = false; // Hide the list
     },
     displayExampleAndDescription() {
@@ -402,6 +372,10 @@ export default defineComponent({
       // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
     },
     handleInputChange() {
+      if (this.searchText === "") {
+        this.showDiv = false;
+        return;
+      }
       this.letter = this.searchText.slice(-1); // Update the searchText
       //If in the input is typed (, we are searching for a possible function with the name of the searchText and
       // append its syntax to the input
@@ -552,57 +526,6 @@ export default defineComponent({
   /* Enable vertical scrolling when content exceeds the maximum height */
 }
 
-.arrow-button {
-  background-color: #f1f1f1;
-  height: 30px;
-  width: 30px;
-  cursor: pointer;
-  color: #666;
-  font-weight: bold;
-  border-radius: 50%;
-  /* Make the button circular */
-  margin-left: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  height: 30px;
-}
-
-.list-container-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  margin-top: 20px;
-  background-color: #f1f1f1;
-  padding-top: 10px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* Add a subtle box-shadow */
-}
-
-.list {
-  display: block;
-  width: 400px;
-  /* Adjust the width of the list container */
-  max-height: 400px;
-  /* Limit the maximum height to create a scrollable list */
-  overflow-y: auto;
-  /* Enable vertical scrolling when list exceeds the height */
-  font-size: 10px;
-}
-
-.list-item {
-  background-color: #ffffff;
-  /* White background for each list item */
-  padding: 8px;
-  border-radius: 5px;
-  margin-bottom: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* Add a subtle box-shadow */
-  height: 90px;
-}
-
 .divForBrackets {
   background-color: #c0ccff;
   top: 200px;
@@ -678,25 +601,11 @@ span.fixDiv {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.btnExample {
-  background-color: transparent;
-  cursor: pointer;
-  border: none;
-}
-
-.btnExample img {
-  width: 21px;
-  transition: transform 0.3s ease;
-}
-
-.btnExample img:last-child {
-  transform: rotate(180deg);
-}
-
 .titleDiv {
   color: grey;
   font-size: 13px;
 }
+
 a {
   color: grey;
 }
