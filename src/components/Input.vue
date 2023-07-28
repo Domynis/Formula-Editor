@@ -255,7 +255,7 @@ export default defineComponent({
       this.showList = false;
       this.showDiv = true;
       this.showExampleDiv = false;
-      this.colorizeWord();
+      //this.colorizeWord();
     },
     handleButtonClick() {
       // Method to handle button click event
@@ -289,6 +289,12 @@ export default defineComponent({
               this.showDiv = true;
               this.flagDivExample = this.showExampleDiv = false;
               this.handleMouseOverSpan();
+              this.searchText += "(";
+              this.flagForBracket = true;
+              this.getParameters();
+              this.function();
+
+              break;
 
               // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
               this.$nextTick(() => {
@@ -368,7 +374,33 @@ export default defineComponent({
         }
       });
     },
+    function() {
+      this.showDiv = true;
+      this.searchText = this.searchText.slice(0, -1);
+      this.paramNumber = 0;
 
+      this.bracketFlag = true;
+
+      const selectedItem = this.filteredList.find(
+        (item) => item.name === this.searchText
+      );
+
+      if (selectedItem) {
+        // If a match is found, update the divText with the syntax and show the div
+        this.descriptionDivText = selectedItem.description.toString();
+        this.exampleDivText +=
+          selectedItem.examples[0] + " , " + selectedItem.examples[1];
+        this.divText = selectedItem.syntax.toString();
+        this.showList = false;
+        this.showDiv = true;
+        this.handleMouseOverSpan();
+        this.showExampleDiv = false;
+        this.getParameters();
+
+        // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
+      }
+      // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
+    },
     handleInputChange() {
       this.letter = this.searchText.slice(-1); // Update the searchText
       //If in the input is typed (, we are searching for a possible function with the name of the searchText and
@@ -382,11 +414,33 @@ export default defineComponent({
       }
 
       if (this.letter === "(") {
+        this.showDiv = true;
+        this.searchText = this.searchText.slice(0, -1);
         this.paramNumber = 0;
 
         this.bracketFlag = true;
+
+        const selectedItem = this.filteredList.find(
+          (item) => item.name === this.searchText
+        );
+
+        if (selectedItem) {
+          // If a match is found, update the divText with the syntax and show the div
+          this.descriptionDivText = selectedItem.description.toString();
+          this.exampleDivText +=
+            selectedItem.examples[0] + " , " + selectedItem.examples[1];
+          this.divText = selectedItem.syntax.toString();
+          this.showList = false;
+          this.showDiv = true;
+          this.handleMouseOverSpan();
+          this.showExampleDiv = false;
+          this.getParameters();
+
+          // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
+        }
       }
       if (this.bracketFlag) {
+        this.searchText += this.letter;
         this.$nextTick(() => {
           if (this.comaNr != 0) {
             const divElement = document.getElementById(
@@ -425,7 +479,7 @@ export default defineComponent({
           this.showDiv = true;
           this.handleMouseOverSpan();
           this.showExampleDiv = false;
-          this.getParameters();
+          //this.getParameters();
 
           // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
         }
