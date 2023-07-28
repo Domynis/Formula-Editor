@@ -108,9 +108,7 @@
           >
             <v-row>
               <v-col align-start>
-                <div id="syntaxDiv">
-                  {{ divText }}
-                </div>
+                <div id="syntaxDiv"></div>
               </v-col>
               <v-col class="text-end">
                 <v-btn
@@ -159,7 +157,6 @@
         </div>
       </v-col>
     </v-row>
-    <v-btn @click.stop="getParameters">Click to color</v-btn>
   </v-container>
 </template>
 
@@ -179,7 +176,6 @@ export default defineComponent({
   data() {
     return {
       hoveredIndex: 0,
-
       message: "",
       searchText: "",
       showList: false,
@@ -201,6 +197,9 @@ export default defineComponent({
       params: [] as string[],
       param: [] as string[],
       listOfParam: [] as string[],
+      paramNumber: 0,
+      comaNr: 0,
+      bracketFlag: false,
     };
   },
   props: {
@@ -331,7 +330,7 @@ export default defineComponent({
           // Set the text content of the span element (replace "Your Text Here" with your desired content)
           newSpan.textContent = this.params[0] + "(";
           // Add any additional styles or attributes to the new span if needed
-          newSpan.style.color = "red";
+          newSpan.style.color = "black";
           // Append the new span to the syntaxDiv
           divElement.appendChild(newSpan);
           this.param = this.params[1].split(")");
@@ -344,7 +343,7 @@ export default defineComponent({
             // Set the text content of the span element
             span.textContent = this.listOfParam[i];
             // Add any additional styles or attributes to the span if needed
-            span.style.color = "red";
+            span.style.color = "black";
             // Append the span to the syntaxDiv
             divElement.appendChild(span);
 
@@ -353,7 +352,7 @@ export default defineComponent({
               // Set the text content of the span element
               span1.textContent = ",";
               // Add any additional styles or attributes to the span if needed
-              span1.style.color = "red";
+              span1.style.color = "black";
               // Append the span to the syntaxDiv
               divElement.appendChild(span1);
             }
@@ -363,16 +362,10 @@ export default defineComponent({
           // Set the text content of the closing parenthesis span element
           closingParenthesisSpan.textContent = ")";
           // Add any additional styles or attributes to the closing parenthesis span if needed
-          closingParenthesisSpan.style.color = "red";
+          closingParenthesisSpan.style.color = "black";
           // Append the closing parenthesis span to the syntaxDiv
           divElement.appendChild(closingParenthesisSpan);
         }
-      });
-
-      this.$nextTick(() => {
-        const lastSpanIndex = this.listOfParam.length - 1;
-        const divElement = document.getElementById("span-" + 2);
-        if (divElement) console.log(divElement.textContent);
       });
     },
 
@@ -387,7 +380,32 @@ export default defineComponent({
           this.handleMouseLeaveSpan();
         });
       }
+
       if (this.letter === "(") {
+        this.paramNumber = 0;
+
+        this.bracketFlag = true;
+      }
+      if (this.bracketFlag) {
+        this.$nextTick(() => {
+          if (this.comaNr != 0) {
+            const divElement = document.getElementById(
+              "span-" + (this.comaNr - 1).toString()
+            );
+            if (divElement) {
+              divElement.style.backgroundColor = "#c0ccff";
+            }
+          }
+
+          const divElement = document.getElementById("span-" + this.comaNr);
+          if (divElement) {
+            divElement.style.backgroundColor = "#627ddf";
+          }
+        });
+
+        if (this.letter === ",") {
+          this.comaNr++;
+        }
         this.flagDivExample = false;
         // Remove the "(" character from the searchText
         this.searchText = this.searchText.slice(0, -1);
@@ -407,14 +425,9 @@ export default defineComponent({
           this.showDiv = true;
           this.handleMouseOverSpan();
           this.showExampleDiv = false;
+          this.getParameters();
 
           // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
-          this.$nextTick(() => {
-            const divElement = document.getElementById("div");
-            if (divElement) {
-              divElement.style.color = "black";
-            }
-          });
         }
       }
     },
