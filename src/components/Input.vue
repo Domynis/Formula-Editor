@@ -232,6 +232,7 @@ export default defineComponent({
       comaNr: 0,
       bracketFlag: false,
       flagSearchIsFromHovered: false,
+      isBracket: false,
     };
   },
   props: {
@@ -258,12 +259,7 @@ export default defineComponent({
       );
     },
   },
-  watch: {
-    divText: {
-      handler: "colorizeWord",
-      immediate: true,
-    },
-  },
+
   methods: {
     handleMouseOverSpan() {
       this.isDivHovered = true;
@@ -310,6 +306,7 @@ export default defineComponent({
           //search for a match in the filteredList, if found display the syntax for the function in the input
           for (let i = 0; i < this.filteredList.length; i++) {
             if (finalResult == this.filteredList[i].name) {
+              this.isBracket = true;
               this.flagSearchIsFromHovered = true;
               this.descriptionDivText = "";
               this.descriptionDivText =
@@ -327,6 +324,7 @@ export default defineComponent({
               this.flagDivExample = this.showExampleDiv = false;
               //this.handleMouseOverSpan();
               this.flagForBracket = true;
+
               // this.getParameters();
               this.function();
               this.flagForBracket = true;
@@ -381,7 +379,7 @@ export default defineComponent({
           divElement.appendChild(newSpan);
           this.param = this.params[1].split(")");
           this.listOfParam = this.param[0].split(",");
-          console.log(this.listOfParam);
+
           for (let i = 0; i < this.listOfParam.length; i = i + 1) {
             // Create a new span element for each part
             const span = document.createElement("span");
@@ -435,6 +433,17 @@ export default defineComponent({
         this.showDiv = true;
         this.handleMouseOverSpan();
         this.showExampleDiv = false;
+        this.flagSearchIsFromHovered = true;
+        this.$nextTick(() => {
+          const divElement = document.getElementById("syntaxDiv");
+          const spans = divElement?.querySelectorAll("span");
+          if (spans) {
+            spans.forEach((span) => {
+              span.remove();
+            });
+          }
+        });
+        //this.paramNumber = 0;
         this.getParameters();
 
         // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
@@ -442,10 +451,15 @@ export default defineComponent({
       // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
     },
     handleInputChange() {
-      if (this.searchText === "") {
+      if (this.searchText == "") {
         this.showDiv = false;
         return;
       }
+
+      if (!this.searchText.includes("(")) {
+        this.showDiv = false;
+      }
+
       this.letter = this.searchText.slice(-1); // Update the searchText
       //If in the input is typed (, we are searching for a possible function with the name of the searchText and
       // append its syntax to the input
@@ -454,12 +468,26 @@ export default defineComponent({
           this.showDiv = false;
           this.showList = true;
           this.handleMouseLeaveSpan();
+          this.isBracket = false;
         });
       }
-      console.log(this.flagSearchIsFromHovered);
 
-      if (this.letter === "(") {
-        this.showDiv = true;
+      if (this.searchText.length == 0) this.isBracket = false;
+      if (this.letter === "(" /*&& !this.isBracket*/) {
+        if (!this.flagSearchIsFromHovered) {
+          this.$nextTick(() => {
+            const divElement = document.getElementById("syntaxDiv");
+            const spans = divElement?.querySelectorAll("span");
+            if (spans) {
+              spans.forEach((span) => {
+                span.remove();
+              });
+            }
+          });
+          //this.paramNumber = 0;
+        }
+        this.isBracket = true;
+        //this.showDiv = true;
         this.searchText = this.searchText.slice(0, -1);
         this.paramNumber = 0;
 
@@ -488,6 +516,7 @@ export default defineComponent({
 
           // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
         }
+        this.searchText += "(";
       }
       if (this.bracketFlag) {
         this.searchText += this.letter;
@@ -526,29 +555,13 @@ export default defineComponent({
             selectedItem.examples[0] + " , " + selectedItem.examples[1];
           this.divText = selectedItem.syntax.toString();
           this.showList = false;
-          this.showDiv = true;
+          //this.showDiv = true;
           this.handleMouseOverSpan();
           this.showExampleDiv = false;
           //this.getParameters();
 
           // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
         }
-      }
-    },
-    colorizeWord(): void {
-      const spanElement = this.$refs.coloredSpan;
-      if (spanElement instanceof HTMLElement) {
-        const words = this.divText.split(" ");
-        for (let i = 0; i < words.length; i++) {
-          if (i === this.wordPosition) {
-            words[
-              i
-            ] = `<span style="color: ${this.selectedColor};">${words[i]}</span>`;
-          }
-        }
-        spanElement.innerHTML = words.join(" ");
-        this.exampleDivText = words.join(" "); // Update exampleDivText with modified divText
-        this.descriptionDivText = words.join(" "); // Update descriptionDivText with modified divText
       }
     },
   },
