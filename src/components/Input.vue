@@ -5,23 +5,12 @@
         <div class="main-container">
           <div class="input-container">
             <div class="input-button-container">
-              <v-text-field
-                class="mx-2 red-input"
-                v-model="searchText"
-                @input="handleInputChange"
-                placeholder="Search items"
-              ></v-text-field>
+              <v-text-field class="mx-2 red-input" v-model="searchText" @input="handleInputChange"
+                placeholder="Search items"></v-text-field>
 
               <m-tooltip top>
                 <template v-slot:element>
-                  <v-btn
-                    class="mx-2"
-                    small
-                    fab
-                    color="#627dff"
-                    dark
-                    @click.stop="handleButtonClick"
-                  >
+                  <v-btn class="mx-2" small fab color="#627dff" dark @click.stop="handleButtonClick">
                     <v-icon> mdi-function-variant </v-icon>
                   </v-btn>
                 </template>
@@ -32,20 +21,11 @@
             </div>
             <v-card class="mx-auto" :ripple="false" v-if="showList">
               <v-toolbar>
-                <v-toolbar-title style="font-size: 14px; font-weight: bold"
-                  >Write formula</v-toolbar-title
-                >
+                <v-toolbar-title style="font-size: 14px; font-weight: bold">Write formula</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <m-tooltip top>
                   <template v-slot:element>
-                    <v-btn
-                      class="mx-2"
-                      fab
-                      x-small
-                      color="#627dff"
-                      dark
-                      @click="handleCloseList"
-                    >
+                    <v-btn class="mx-2" fab x-small color="#627dff" dark @click="handleCloseList">
                       <v-icon dark> mdi-alpha-x </v-icon>
                     </v-btn>
                   </template>
@@ -54,32 +34,17 @@
                   </template>
                 </m-tooltip>
               </v-toolbar>
-              <v-list
-                width="25rem"
-                max-height="28rem"
-                class="overflow-y-auto py-0"
-              >
-                <template
-                  v-for="(item, index) in filteredList"
-                  @key="item.name"
-                >
-                  <v-list-item
-                    class="pl-0"
-                    style="height: 5rem; font-size: 12px"
-                    @click="handleMouseOver"
-                    :key="item.name"
-                    @mouseover="hoveredIndex = index"
-                  >
+              <v-list width="25rem" max-height="28rem" class="overflow-y-auto py-0">
+                <template v-for="(item, index) in filteredList" @key="item.name">
+                  <v-list-item class="pl-0" style="height: 5rem; font-size: 12px" @click="handleMouseOver"
+                    :key="item.name" @mouseover="hoveredIndex = index">
                     <v-list-item-content>
                       <v-row style="height: 5rem">
-                        <v-col
-                          cols="2"
-                          style="
+                        <v-col cols="2" style="
                             background-color: #dfe8ff;
                             text-align: right;
                             color: #627dff;
-                          "
-                        >
+                          ">
                           {{ index + 1 }}
                         </v-col>
                         <v-col>
@@ -93,17 +58,13 @@
                   </v-list-item>
                 </template>
               </v-list>
-              <v-container style="background-color: #dfe8ff">
+              <v-container width="25rem" style="background-color: #dfe8ff">
                 <v-row style="height: 2.3rem">
                   <v-col cols="2" class="pa-0">
                     <m-tooltip bottom>
                       <template v-slot:element>
-                        <v-btn
-                          min-width="0rem"
-                          color="#627dff"
-                          dark
-                          @click="handleCloseList"
-                        >
+                        <v-btn small style="min-width: 3.35rem; min-height: 2.3rem; border-radius: 0px; box-shadow: none;"
+                          color="#627dff" dark @click="handleCloseList">
                           <v-icon> mdi-check </v-icon>
                         </v-btn>
                       </template>
@@ -115,11 +76,8 @@
                   <v-col class="py-1 text-right">
                     <m-tooltip bottom>
                       <template v-slot:element>
-                        <a
-                          style="font-size: 12px"
-                          href="https://machinations.io/docs/math-js-functions"
-                          >Help Documentation</a
-                        >
+                        <a style="font-size: 12px" href="https://machinations.io/docs/math-js-functions">Help
+                          Documentation</a>
                       </template>
                       <template v-slot:message>
                         <div>{{ "Do you want to know more about this?" }}</div>
@@ -130,29 +88,24 @@
               </v-container>
             </v-card>
           </div>
-          <div
-            class="divForBrackets"
-            id="div"
-            ref="div"
-            v-if="showDiv"
-            @click="handleMouseOver"
-          >
+          <div class="divForBrackets" id="div" ref="div" v-if="showDiv" @click="handleMouseOver">
             <v-row>
               <v-col align-start>
                 <div id="syntaxDiv"></div>
               </v-col>
               <v-col class="text-end">
-                <v-btn
-                  class="mx-2"
-                  fab
-                  x-small
-                  color="#627dff"
-                  dark
-                  @click.stop="displayExampleAndDescription"
-                >
-                  <v-icon v-if="!flagDivExample"> mdi-arrow-down-bold </v-icon>
-                  <v-icon v-if="flagDivExample"> mdi-arrow-up-bold </v-icon>
-                </v-btn>
+                <m-tooltip bottom>
+                  <template v-slot:element>
+                    <v-btn class="mx-2" fab x-small color="#627dff" dark @click.stop="displayExampleAndDescription">
+                      <v-icon v-if="!flagDivExample"> mdi-arrow-down-bold </v-icon>
+                      <v-icon v-if="flagDivExample"> mdi-arrow-up-bold </v-icon>
+                    </v-btn>
+                  </template>
+                  <template v-slot:message>
+                    <div>{{ flagDivExample ? "Minimize details" : "Extend details" }}</div>
+                  </template>
+                </m-tooltip>
+
               </v-col>
             </v-row>
             <div v-if="showExampleDiv" id="showExampleDiv" class="example-div">
@@ -170,12 +123,8 @@
                 <m-tooltip bottom>
                   <template v-slot:element>
                     <div class="titleDiv">
-                      <a
-                        style="color: grey"
-                        target="_blank"
-                        href="https://machinations.io/docs/math-js-functions"
-                        >Find more</a
-                      >
+                      <a style="color: grey" target="_blank" href="https://machinations.io/docs/math-js-functions">Find
+                        more</a>
                     </div>
                   </template>
                   <template v-slot:message>
@@ -451,7 +400,8 @@ export default defineComponent({
       // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
     },
     handleInputChange() {
-      if (this.searchText == "") {
+      this.bracketFlag = this.searchText.includes("(");
+      if (this.searchText === "") {
         this.showDiv = false;
         return;
       }
@@ -466,7 +416,6 @@ export default defineComponent({
       if (this.letter == ")") {
         this.$nextTick(() => {
           this.showDiv = false;
-          this.showList = true;
           this.handleMouseLeaveSpan();
           this.isBracket = false;
         });
