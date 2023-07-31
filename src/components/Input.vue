@@ -5,12 +5,23 @@
         <div class="main-container">
           <div class="input-container">
             <div class="input-button-container">
-              <v-text-field class="mx-2 red-input" v-model="searchText" @input="handleInputChange"
-                placeholder="Search items"></v-text-field>
+              <v-text-field
+                class="mx-2 red-input"
+                v-model="searchText"
+                @input="handleInputChange"
+                placeholder="Search items"
+              ></v-text-field>
 
               <m-tooltip top>
                 <template v-slot:element>
-                  <v-btn class="mx-2" small fab color="#627dff" dark @click.stop="handleButtonClick">
+                  <v-btn
+                    class="mx-2"
+                    small
+                    fab
+                    color="#627dff"
+                    dark
+                    @click.stop="handleButtonClick"
+                  >
                     <v-icon> mdi-function-variant </v-icon>
                   </v-btn>
                 </template>
@@ -21,11 +32,20 @@
             </div>
             <v-card class="mx-auto" :ripple="false" v-if="showList">
               <v-toolbar>
-                <v-toolbar-title style="font-size: 14px; font-weight: bold">Write formula</v-toolbar-title>
+                <v-toolbar-title style="font-size: 14px; font-weight: bold"
+                  >Write formula</v-toolbar-title
+                >
                 <v-spacer></v-spacer>
                 <m-tooltip top>
                   <template v-slot:element>
-                    <v-btn class="mx-2" fab x-small color="#627dff" dark @click="handleCloseList">
+                    <v-btn
+                      class="mx-2"
+                      fab
+                      x-small
+                      color="#627dff"
+                      dark
+                      @click="handleCloseList"
+                    >
                       <v-icon dark> mdi-alpha-x </v-icon>
                     </v-btn>
                   </template>
@@ -33,15 +53,33 @@
                     <div>{{ "Close extended view" }}</div>
                   </template>
                 </m-tooltip>
-
               </v-toolbar>
-              <v-list width="25rem" max-height="28rem" class="overflow-y-auto py-0">
-                <template v-for="(item, index) in filteredList" @key="item.name">
-                  <v-list-item class="pl-0" style="height: 5rem; font-size: 12px;" @click="handleMouseOver"
-                    :key="item.name" @mouseover="hoveredIndex = index">
+              <v-list
+                width="25rem"
+                max-height="28rem"
+                class="overflow-y-auto py-0"
+              >
+                <template
+                  v-for="(item, index) in filteredList"
+                  @key="item.name"
+                >
+                  <v-list-item
+                    class="pl-0"
+                    style="height: 5rem; font-size: 12px"
+                    @click="handleMouseOver"
+                    :key="item.name"
+                    @mouseover="hoveredIndex = index"
+                  >
                     <v-list-item-content>
-                      <v-row style="height: 5rem;">
-                        <v-col cols=2 style="background-color: #dfe8ff; text-align: right;color: #627dff">
+                      <v-row style="height: 5rem">
+                        <v-col
+                          cols="2"
+                          style="
+                            background-color: #dfe8ff;
+                            text-align: right;
+                            color: #627dff;
+                          "
+                        >
                           {{ index + 1 }}
                         </v-col>
                         <v-col>
@@ -55,12 +93,17 @@
                   </v-list-item>
                 </template>
               </v-list>
-              <v-container style="background-color: #dfe8ff;">
-                <v-row style="height: 2.3rem;">
-                  <v-col cols=2 class="pa-0">
+              <v-container style="background-color: #dfe8ff">
+                <v-row style="height: 2.3rem">
+                  <v-col cols="2" class="pa-0">
                     <m-tooltip bottom>
                       <template v-slot:element>
-                        <v-btn min-width="0rem" color="#627dff" dark @click="handleCloseList">
+                        <v-btn
+                          min-width="0rem"
+                          color="#627dff"
+                          dark
+                          @click="handleCloseList"
+                        >
                           <v-icon> mdi-check </v-icon>
                         </v-btn>
                       </template>
@@ -69,12 +112,14 @@
                       </template>
                     </m-tooltip>
                   </v-col>
-                  <v-col class="py-1 text-right ">
+                  <v-col class="py-1 text-right">
                     <m-tooltip bottom>
                       <template v-slot:element>
-                        <a style="font-size: 12px;"
-                          href="https://machinations.io/docs/math-js-functions">Help
-                          Documentation</a>
+                        <a
+                          style="font-size: 12px"
+                          href="https://machinations.io/docs/math-js-functions"
+                          >Help Documentation</a
+                        >
                       </template>
                       <template v-slot:message>
                         <div>{{ "Do you want to know more about this?" }}</div>
@@ -85,13 +130,26 @@
               </v-container>
             </v-card>
           </div>
-          <div class="divForBrackets" id="div" ref="div" v-if="showDiv" @click="handleMouseOver">
+          <div
+            class="divForBrackets"
+            id="div"
+            ref="div"
+            v-if="showDiv"
+            @click="handleMouseOver"
+          >
             <v-row>
               <v-col align-start>
                 <div id="syntaxDiv"></div>
               </v-col>
               <v-col class="text-end">
-                <v-btn class="mx-2" fab x-small color="#627dff" dark @click.stop="displayExampleAndDescription">
+                <v-btn
+                  class="mx-2"
+                  fab
+                  x-small
+                  color="#627dff"
+                  dark
+                  @click.stop="displayExampleAndDescription"
+                >
                   <v-icon v-if="!flagDivExample"> mdi-arrow-down-bold </v-icon>
                   <v-icon v-if="flagDivExample"> mdi-arrow-up-bold </v-icon>
                 </v-btn>
@@ -105,15 +163,19 @@
                 </div>
                 <v-divider></v-divider>
                 <div class="titleDiv">Description</div>
-                <div style="padding-right: 0.1rem;">
+                <div style="padding-right: 0.1rem">
                   {{ descriptionDivText }}
                 </div>
                 <v-divider></v-divider>
                 <m-tooltip bottom>
                   <template v-slot:element>
                     <div class="titleDiv">
-                      <a style="color: grey" target="_blank" href="https://machinations.io/docs/math-js-functions">Find
-                        more</a>
+                      <a
+                        style="color: grey"
+                        target="_blank"
+                        href="https://machinations.io/docs/math-js-functions"
+                        >Find more</a
+                      >
                     </div>
                   </template>
                   <template v-slot:message>
@@ -169,6 +231,7 @@ export default defineComponent({
       paramNumber: 0,
       comaNr: 0,
       bracketFlag: false,
+      flagSearchIsFromHovered: false,
     };
   },
   props: {
@@ -232,7 +295,8 @@ export default defineComponent({
       this.flagDivExample = false;
       this.showDiv = false;
     },
-    handleMouseOver(event: Event) { //!!should change function name as it does not serve the same purpose as in the beginning!!
+    handleMouseOver(event: Event) {
+      //!!should change function name as it does not serve the same purpose as in the beginning!!
       if (!this.showDiv)
         if (event.target instanceof HTMLElement) {
           // Type guard to ensure event.target is not null
@@ -246,22 +310,28 @@ export default defineComponent({
           //search for a match in the filteredList, if found display the syntax for the function in the input
           for (let i = 0; i < this.filteredList.length; i++) {
             if (finalResult == this.filteredList[i].name) {
+              this.flagSearchIsFromHovered = true;
+              this.descriptionDivText = "";
               this.descriptionDivText =
                 this.filteredList[i].description.toString();
+              this.exampleDivText = "";
               this.exampleDivText +=
                 this.filteredList[i].examples[0] +
                 " , " +
                 this.filteredList[i].examples[1];
               this.divText = this.filteredList[i].syntax[0].toString();
+              this.searchText = "";
               this.searchText += finalResult + "(";
               this.showList = false;
               this.showDiv = true;
               this.flagDivExample = this.showExampleDiv = false;
-              this.handleMouseOverSpan();
-              this.searchText += "(";
+              //this.handleMouseOverSpan();
               this.flagForBracket = true;
-              this.getParameters();
+              // this.getParameters();
               this.function();
+              this.flagForBracket = true;
+              this.flagSearchIsFromHovered = true;
+              //this.handleInputChange();
 
               break;
 
@@ -386,6 +456,7 @@ export default defineComponent({
           this.handleMouseLeaveSpan();
         });
       }
+      console.log(this.flagSearchIsFromHovered);
 
       if (this.letter === "(") {
         this.showDiv = true;
@@ -400,7 +471,9 @@ export default defineComponent({
 
         if (selectedItem) {
           // If a match is found, update the divText with the syntax and show the div
+          this.descriptionDivText = "";
           this.descriptionDivText = selectedItem.description.toString();
+          this.exampleDivText = "";
           this.exampleDivText +=
             selectedItem.examples[0] + " , " + selectedItem.examples[1];
           this.divText = selectedItem.syntax.toString();
@@ -408,7 +481,10 @@ export default defineComponent({
           this.showDiv = true;
           this.handleMouseOverSpan();
           this.showExampleDiv = false;
-          this.getParameters();
+          if (!this.flagSearchIsFromHovered) this.getParameters();
+          else {
+            this.flagSearchIsFromHovered = false;
+          }
 
           // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
         }
