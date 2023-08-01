@@ -252,6 +252,7 @@ export default defineComponent({
       bracketFlag: false,
       flagSearchIsFromHovered: false,
       isBracket: false,
+      currentFunction: "",
     };
   },
   props: {
@@ -302,7 +303,6 @@ export default defineComponent({
       this.showList = false;
       this.showDiv = true;
       this.showExampleDiv = false;
-      //this.colorizeWord();
     },
     handleButtonClick() {
       // Method to handle button click event
@@ -369,6 +369,7 @@ export default defineComponent({
       this.showList = false; // Hide the list
     },
     displayExampleAndDescription() {
+      //handle the flags for each value the flagDivExample may take
       if (this.flagDivExample) {
         this.showList = false;
         this.showDiv = true;
@@ -379,9 +380,7 @@ export default defineComponent({
         this.showDiv = true;
         this.showExampleDiv = true;
         this.flagDivExample = true;
-      } // Show the black div when the button is clicked
-
-      // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
+      }
     },
     getParameters() {
       this.params = this.divText.split("(");
@@ -409,16 +408,25 @@ export default defineComponent({
             span.style.color = "black";
             // Append the span to the syntaxDiv
             divElement.appendChild(span);
-            console.log(span);
 
             if (i < this.listOfParam.length - 1) {
-              const span1 = document.createElement("span");
-              // Set the text content of the span element
-              span1.textContent = ",";
-              // Add any additional styles or attributes to the span if needed
-              span1.style.color = "black";
-              // Append the span to the syntaxDiv
-              divElement.appendChild(span1);
+              // Add a space after the parameter unless it's the last one
+              const spaceSpan = document.createElement("span");
+              spaceSpan.textContent = " ";
+              divElement.appendChild(spaceSpan);
+
+              const commaSpan = document.createElement("span");
+              // Set the text content of the comma span element
+              commaSpan.textContent = ",";
+              // Add any additional styles or attributes to the comma span if needed
+              commaSpan.style.color = "black";
+              // Append the comma span to the syntaxDiv
+              divElement.appendChild(commaSpan);
+
+              // Add another space after the comma
+              const spaceSpan2 = document.createElement("span");
+              spaceSpan2.textContent = " ";
+              divElement.appendChild(spaceSpan2);
             }
           }
 
@@ -454,6 +462,7 @@ export default defineComponent({
         this.handleMouseOverSpan();
         this.showExampleDiv = false;
         this.flagSearchIsFromHovered = true;
+        //remove all the spans that are already in the divElement
         this.$nextTick(() => {
           this.comaNr = 0;
           const divElement = document.getElementById("syntaxDiv");
@@ -464,20 +473,24 @@ export default defineComponent({
             });
           }
         });
-        //this.paramNumber = 0;
         this.getParameters();
 
         // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
       }
-      // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
     },
     handleInputChange() {
+      // in case we have nested functions
+      this.currentFunction = this.searchText;
+
+      //when a function is closed
       this.bracketFlag = this.searchText.includes("(");
       if (this.searchText === "") {
         this.showDiv = false;
         return;
       }
 
+      //if the input does not contain ( we are not displayinf the div that contains details
+      //about the functions
       if (!this.searchText.includes("(")) {
         this.showDiv = false;
       }
@@ -494,9 +507,10 @@ export default defineComponent({
       }
 
       if (this.searchText.length == 0) this.isBracket = false;
-      if (this.letter === "(" /*&& !this.isBracket*/) {
+      if (this.letter === "(") {
+        //if the function is not given by clicking the list we will remove all spans from the div
         if (!this.flagSearchIsFromHovered) {
-          this.comaNr = 0;
+          this.comaNr = this.currentFunction.split(",").length - 1;
           this.$nextTick(() => {
             const divElement = document.getElementById("syntaxDiv");
             const spans = divElement?.querySelectorAll("span");
@@ -515,6 +529,7 @@ export default defineComponent({
 
         this.bracketFlag = true;
 
+        //try to find a function that has the same name as the input
         const selectedItem = this.filteredList.find(
           (item) => item.name === this.searchText
         );
@@ -540,26 +555,39 @@ export default defineComponent({
         }
         this.searchText += "(";
       }
+
       if (this.bracketFlag) {
         this.searchText += this.letter;
         this.$nextTick(() => {
-          if (this.comaNr != 0) {
-            const divElement = document.getElementById(
-              "span-" + (this.comaNr - 1).toString()
-            );
+          this.comaNr = this.currentFunction.split(",").length - 1;
+
+          // Reset the background color of all span elements to the default color "#c0ccff"
+          for (let i = 0; i <= this.listOfParam.length; i++) {
+            const divElement = document.getElementById("span-" + i);
             if (divElement) {
               divElement.style.backgroundColor = "#c0ccff";
             }
           }
 
-          const divElement = document.getElementById("span-" + this.comaNr);
-          if (divElement) {
-            divElement.style.backgroundColor = "#627ddf";
+          if (this.comaNr != 0) {
+            const prevDivElement = document.getElementById(
+              "span-" + (this.comaNr - 1).toString()
+            );
+            if (prevDivElement) {
+              prevDivElement.style.backgroundColor = "#c0ccff";
+            }
+          }
+          // highlight the parameter that will be written in the function
+          const currentDivElement = document.getElementById(
+            "span-" + this.comaNr
+          );
+          if (currentDivElement) {
+            currentDivElement.style.backgroundColor = "#627ddf";
           }
         });
 
         if (this.letter === ",") {
-          this.comaNr++;
+          this.comaNr = this.currentFunction.split(",").length - 1;
         }
         this.flagDivExample = false;
         // Remove the "(" character from the searchText
