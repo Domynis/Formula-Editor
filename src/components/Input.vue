@@ -66,7 +66,7 @@
                   <v-list-item
                     class="pl-0"
                     style="height: 5rem; font-size: 12px"
-                    @click="handleMouseOver"
+                    @click="handleClickItemList"
                     :key="item.name"
                     @mouseover="hoveredIndex = index"
                   >
@@ -136,13 +136,7 @@
               </v-container>
             </v-card>
           </div>
-          <div
-            class="divForBrackets"
-            id="div"
-            ref="div"
-            v-if="showDiv"
-            @click="handleMouseOver"
-          >
+          <div class="divForBrackets" id="div" ref="div" v-if="showDiv">
             <v-row>
               <v-col align-start>
                 <div id="syntaxDiv"></div>
@@ -233,7 +227,7 @@ export default defineComponent({
       searchTextCopy: "",
       showDiv: false,
       divText: "text",
-      flagForBracket: false,
+      //flagForBracket: false,
       showExampleDiv: false,
       exampleDivText: "",
       flagDivExample: false,
@@ -243,14 +237,14 @@ export default defineComponent({
       positionToColor: 2,
       coloredText: "",
       selectedColor: "red",
-      isDivHovered: false,
+      //isDivHovered: false,
       params: [] as string[],
       param: [] as string[],
       listOfParam: [] as string[],
       paramNumber: 0,
       comaNr: 0,
       bracketFlag: false,
-      flagSearchIsFromHovered: false,
+      flagSearchIsFromClick: false,
       isBracket: false,
       currentFunction: "",
     };
@@ -281,12 +275,6 @@ export default defineComponent({
   },
 
   methods: {
-    handleMouseOverSpan() {
-      this.isDivHovered = true;
-    },
-    handleMouseLeaveSpan() {
-      this.isDivHovered = false;
-    },
     getShortDescription(description: string | undefined): string {
       let descr: string = description as string;
       const maxLength = 150;
@@ -310,10 +298,11 @@ export default defineComponent({
       this.flagDivExample = false;
       this.showDiv = false;
     },
-    handleMouseOver(event: Event) {
+    handleClickItemList(event: Event) {
       //!!should change function name as it does not serve the same purpose as in the beginning!!
       if (!this.showDiv)
         if (event.target instanceof HTMLElement) {
+          //?
           // Type guard to ensure event.target is not null
           // Take the html element that is clicked and obtain the name of the function
           this.showList = true; // Show the list when mouse is over the component
@@ -325,8 +314,9 @@ export default defineComponent({
           //search for a match in the filteredList, if found display the syntax for the function in the input
           for (let i = 0; i < this.filteredList.length; i++) {
             if (finalResult == this.filteredList[i].name) {
-              this.isBracket = true;
-              this.flagSearchIsFromHovered = true;
+              this.bracketFlag = true;
+              //this.isBracket = true;
+              this.flagSearchIsFromClick = true;
               this.descriptionDivText = "";
               this.descriptionDivText =
                 this.filteredList[i].description.toString();
@@ -342,23 +332,15 @@ export default defineComponent({
               this.showDiv = true;
               this.flagDivExample = this.showExampleDiv = false;
               //this.handleMouseOverSpan();
-              this.flagForBracket = true;
+              //this.flagForBracket = true;
 
               // this.getParameters();
-              this.function();
-              this.flagForBracket = true;
-              this.flagSearchIsFromHovered = true;
+              this.findingDetailsForListItem();
+              //this.flagForBracket = true;
+              this.flagSearchIsFromClick = true;
               //this.handleInputChange();
 
               break;
-
-              // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
-              this.$nextTick(() => {
-                const divElement = document.getElementById("div");
-                if (divElement) {
-                  divElement.style.color = "black";
-                }
-              });
             }
           }
         }
@@ -382,7 +364,7 @@ export default defineComponent({
         this.flagDivExample = true;
       }
     },
-    getParameters() {
+    getParametersForBolding() {
       this.params = this.divText.split("(");
       this.$nextTick(() => {
         const divElement = document.getElementById("syntaxDiv");
@@ -440,7 +422,7 @@ export default defineComponent({
         }
       });
     },
-    function() {
+    findingDetailsForListItem() {
       this.showDiv = true;
       this.searchText = this.searchText.slice(0, -1);
       this.paramNumber = 0;
@@ -453,15 +435,8 @@ export default defineComponent({
 
       if (selectedItem) {
         // If a match is found, update the divText with the syntax and show the div
-        this.descriptionDivText = selectedItem.description.toString();
-        this.exampleDivText +=
-          selectedItem.examples[0] + " , " + selectedItem.examples[1];
-        this.divText = selectedItem.syntax.toString();
-        this.showList = false;
-        this.showDiv = true;
-        this.handleMouseOverSpan();
-        this.showExampleDiv = false;
-        this.flagSearchIsFromHovered = true;
+        this.findDetailsAboutFunction();
+        this.flagSearchIsFromClick = true;
         //remove all the spans that are already in the divElement
         this.$nextTick(() => {
           this.comaNr = 0;
@@ -473,11 +448,85 @@ export default defineComponent({
             });
           }
         });
-        this.getParameters();
+        this.getParametersForBolding();
 
         // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
       }
     },
+
+    boldingSyntaxForInputChange() {
+      //this.searchText += this.letter;
+      this.$nextTick(() => {
+        this.comaNr = this.currentFunction.split(",").length - 1;
+
+        // Reset the background color of all span elements to the default color "#c0ccff"
+        for (let i = 0; i <= this.listOfParam.length; i++) {
+          const divElement = document.getElementById("span-" + i);
+          if (divElement) {
+            divElement.style.backgroundColor = "#c0ccff";
+          }
+        }
+
+        if (this.comaNr != 0) {
+          const prevDivElement = document.getElementById(
+            "span-" + (this.comaNr - 1).toString()
+          );
+          if (prevDivElement) {
+            prevDivElement.style.backgroundColor = "#c0ccff";
+          }
+        }
+        // highlight the parameter that will be written in the function
+        const currentDivElement = document.getElementById(
+          "span-" + this.comaNr
+        );
+        if (currentDivElement) {
+          currentDivElement.style.backgroundColor = "#627ddf";
+        }
+      });
+      //handleComa
+      if (this.letter === ",") {
+        this.comaNr = this.currentFunction.split(",").length - 1;
+      }
+      this.flagDivExample = false;
+    },
+
+    removeSpansFromDiv() {
+      if (!this.flagSearchIsFromClick) {
+        this.comaNr = this.currentFunction.split(",").length - 1;
+        this.$nextTick(() => {
+          const divElement = document.getElementById("syntaxDiv");
+          const spans = divElement?.querySelectorAll("span");
+          if (spans) {
+            spans.forEach((span) => {
+              span.remove();
+            });
+          }
+        });
+        //this.paramNumber = 0;
+      }
+    },
+
+    findDetailsAboutFunction() {
+      const selectedItem = this.filteredList.find(
+        (item) => item.name === this.searchText
+      );
+      if (selectedItem) {
+        this.descriptionDivText = "";
+        this.descriptionDivText = selectedItem.description.toString();
+        this.exampleDivText = "";
+        this.exampleDivText +=
+          selectedItem.examples[0] + " , " + selectedItem.examples[1];
+        this.divText = selectedItem.syntax.toString();
+        this.showList = false;
+        this.showDiv = true;
+        this.showExampleDiv = false;
+        if (!this.flagSearchIsFromClick) this.getParametersForBolding();
+        else {
+          this.flagSearchIsFromClick = false;
+        }
+      }
+    },
+
     handleInputChange() {
       // in case we have nested functions
       this.currentFunction = this.searchText;
@@ -501,28 +550,16 @@ export default defineComponent({
       if (this.letter == ")") {
         this.$nextTick(() => {
           this.showDiv = false;
-          this.handleMouseLeaveSpan();
-          this.isBracket = false;
+          //this.handleMouseLeaveSpan();
+          this.bracketFlag = false;
+          //this.isBracket = false;
         });
       }
 
-      if (this.searchText.length == 0) this.isBracket = false;
       if (this.letter === "(") {
         //if the function is not given by clicking the list we will remove all spans from the div
-        if (!this.flagSearchIsFromHovered) {
-          this.comaNr = this.currentFunction.split(",").length - 1;
-          this.$nextTick(() => {
-            const divElement = document.getElementById("syntaxDiv");
-            const spans = divElement?.querySelectorAll("span");
-            if (spans) {
-              spans.forEach((span) => {
-                span.remove();
-              });
-            }
-          });
-          //this.paramNumber = 0;
-        }
-        this.isBracket = true;
+        this.removeSpansFromDiv();
+
         //this.showDiv = true;
         this.searchText = this.searchText.slice(0, -1);
         this.paramNumber = 0;
@@ -536,82 +573,14 @@ export default defineComponent({
 
         if (selectedItem) {
           // If a match is found, update the divText with the syntax and show the div
-          this.descriptionDivText = "";
-          this.descriptionDivText = selectedItem.description.toString();
-          this.exampleDivText = "";
-          this.exampleDivText +=
-            selectedItem.examples[0] + " , " + selectedItem.examples[1];
-          this.divText = selectedItem.syntax.toString();
-          this.showList = false;
-          this.showDiv = true;
-          this.handleMouseOverSpan();
-          this.showExampleDiv = false;
-          if (!this.flagSearchIsFromHovered) this.getParameters();
-          else {
-            this.flagSearchIsFromHovered = false;
-          }
+          this.findDetailsAboutFunction();
 
           // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
         }
-        this.searchText += "(";
       }
 
       if (this.bracketFlag) {
-        this.searchText += this.letter;
-        this.$nextTick(() => {
-          this.comaNr = this.currentFunction.split(",").length - 1;
-
-          // Reset the background color of all span elements to the default color "#c0ccff"
-          for (let i = 0; i <= this.listOfParam.length; i++) {
-            const divElement = document.getElementById("span-" + i);
-            if (divElement) {
-              divElement.style.backgroundColor = "#c0ccff";
-            }
-          }
-
-          if (this.comaNr != 0) {
-            const prevDivElement = document.getElementById(
-              "span-" + (this.comaNr - 1).toString()
-            );
-            if (prevDivElement) {
-              prevDivElement.style.backgroundColor = "#c0ccff";
-            }
-          }
-          // highlight the parameter that will be written in the function
-          const currentDivElement = document.getElementById(
-            "span-" + this.comaNr
-          );
-          if (currentDivElement) {
-            currentDivElement.style.backgroundColor = "#627ddf";
-          }
-        });
-
-        if (this.letter === ",") {
-          this.comaNr = this.currentFunction.split(",").length - 1;
-        }
-        this.flagDivExample = false;
-        // Remove the "(" character from the searchText
-        this.searchText = this.searchText.slice(0, -1);
-
-        // Check if the searchText matches the name of any item in the filteredList
-        const selectedItem = this.filteredList.find(
-          (item) => item.name === this.searchText
-        );
-
-        if (selectedItem) {
-          // If a match is found, update the divText with the syntax and show the div
-          this.descriptionDivText = selectedItem.description.toString();
-          this.exampleDivText +=
-            selectedItem.examples[0] + " , " + selectedItem.examples[1];
-          this.divText = selectedItem.syntax.toString();
-          this.showList = false;
-          //this.showDiv = true;
-          this.handleMouseOverSpan();
-          this.showExampleDiv = false;
-          //this.getParameters();
-
-          // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
-        }
+        this.boldingSyntaxForInputChange();
       }
     },
   },
