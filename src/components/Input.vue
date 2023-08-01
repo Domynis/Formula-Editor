@@ -5,23 +5,12 @@
         <div class="main-container">
           <div class="input-container">
             <div class="input-button-container">
-              <v-text-field
-                class="mx-2 red-input"
-                v-model="searchText"
-                @input="handleInputChange"
-                placeholder="Search items"
-              ></v-text-field>
+              <v-text-field id="mainInput" class="mx-2 red-input" v-model="searchText" @input="handleInputChange"
+                placeholder="Search items" spellcheck="false"></v-text-field>
 
               <m-tooltip top>
                 <template v-slot:element>
-                  <v-btn
-                    class="mx-2"
-                    small
-                    fab
-                    color="#627dff"
-                    dark
-                    @click.stop="handleButtonClick"
-                  >
+                  <v-btn class="mx-2" small fab color="#627dff" dark @click.stop="handleButtonClick">
                     <v-icon> mdi-function-variant </v-icon>
                   </v-btn>
                 </template>
@@ -32,20 +21,11 @@
             </div>
             <v-card class="mx-auto" :ripple="false" v-if="showList">
               <v-toolbar>
-                <v-toolbar-title style="font-size: 14px; font-weight: bold"
-                  >Write formula</v-toolbar-title
-                >
+                <v-toolbar-title style="font-size: 14px; font-weight: bold">Write formula</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <m-tooltip top>
                   <template v-slot:element>
-                    <v-btn
-                      class="mx-2"
-                      fab
-                      x-small
-                      color="#627dff"
-                      dark
-                      @click="handleCloseList"
-                    >
+                    <v-btn class="mx-2" fab x-small color="#627dff" dark @click="handleCloseList">
                       <v-icon dark> mdi-alpha-x </v-icon>
                     </v-btn>
                   </template>
@@ -54,32 +34,17 @@
                   </template>
                 </m-tooltip>
               </v-toolbar>
-              <v-list
-                width="25rem"
-                max-height="28rem"
-                class="overflow-y-auto py-0"
-              >
-                <template
-                  v-for="(item, index) in filteredList"
-                  @key="item.name"
-                >
-                  <v-list-item
-                    class="pl-0"
-                    style="height: 5rem; font-size: 12px"
-                    @click="handleClickItemList"
-                    :key="item.name"
-                    @mouseover="hoveredIndex = index"
-                  >
+              <v-list width="25rem" max-height="28rem" class="py-0" style="overflow-y: scroll;">
+                <template v-for="(item, index) in filteredList" @key="item.name">
+                  <v-list-item class="pl-0" style="height: 5rem; font-size: 12px" @click="handleClickItemList"
+                    :key="item.name" @mouseover="hoveredIndex = index">
                     <v-list-item-content>
                       <v-row style="height: 5rem">
-                        <v-col
-                          cols="2"
-                          style="
+                        <v-col cols="2" style="
                             background-color: #dfe8ff;
                             text-align: right;
                             color: #627dff;
-                          "
-                        >
+                          ">
                           {{ index + 1 }}
                         </v-col>
                         <v-col>
@@ -98,18 +63,12 @@
                   <v-col cols="2" class="pa-0">
                     <m-tooltip bottom>
                       <template v-slot:element>
-                        <v-btn
-                          small
-                          style="
+                        <v-btn small style="
                             min-width: 3.35rem;
                             min-height: 2.3rem;
                             border-radius: 0px;
                             box-shadow: none;
-                          "
-                          color="#627dff"
-                          dark
-                          @click="handleCloseList"
-                        >
+                          " color="#627dff" dark @click="handleCloseList">
                           <v-icon> mdi-check </v-icon>
                         </v-btn>
                       </template>
@@ -121,11 +80,9 @@
                   <v-col class="py-1 text-right">
                     <m-tooltip bottom>
                       <template v-slot:element>
-                        <a
-                          style="font-size: 12px"
-                          href="https://machinations.io/docs/math-js-functions"
-                          >Help Documentation</a
-                        >
+                        <a style="font-size: 12px" href="https://machinations.io/docs/math-js-functions"
+                          target="_blank">Help
+                          Documentation</a>
                       </template>
                       <template v-slot:message>
                         <div>{{ "Do you want to know more about this?" }}</div>
@@ -144,14 +101,7 @@
               <v-col class="text-end">
                 <m-tooltip bottom>
                   <template v-slot:element>
-                    <v-btn
-                      class="mx-2"
-                      fab
-                      x-small
-                      color="#627dff"
-                      dark
-                      @click.stop="displayExampleAndDescription"
-                    >
+                    <v-btn class="mx-2" fab x-small color="#627dff" dark @click.stop="displayExampleAndDescription">
                       <v-icon v-if="!flagDivExample">
                         mdi-arrow-down-bold
                       </v-icon>
@@ -183,12 +133,8 @@
                 <m-tooltip bottom>
                   <template v-slot:element>
                     <div class="titleDiv">
-                      <a
-                        style="color: grey"
-                        target="_blank"
-                        href="https://machinations.io/docs/math-js-functions"
-                        >Find more</a
-                      >
+                      <a style="color: grey" target="_blank" href="https://machinations.io/docs/math-js-functions">Find
+                        more</a>
                     </div>
                   </template>
                   <template v-slot:message>
@@ -220,6 +166,7 @@ export default defineComponent({
   data() {
     return {
       hoveredIndex: 0,
+
       message: "",
       searchText: "",
       showList: false,
@@ -227,7 +174,6 @@ export default defineComponent({
       searchTextCopy: "",
       showDiv: false,
       divText: "text",
-      //flagForBracket: false,
       showExampleDiv: false,
       exampleDivText: "",
       flagDivExample: false,
@@ -237,16 +183,15 @@ export default defineComponent({
       positionToColor: 2,
       coloredText: "",
       selectedColor: "red",
-      //isDivHovered: false,
-      params: [] as string[],
+      params: [] as string[], //should rename!
       param: [] as string[],
       listOfParam: [] as string[],
       paramNumber: 0,
       comaNr: 0,
-      bracketFlag: false,
       flagSearchIsFromClick: false,
-      isBracket: false,
       currentFunction: "",
+
+      bracketFlag: false,
     };
   },
   props: {
@@ -315,30 +260,24 @@ export default defineComponent({
           for (let i = 0; i < this.filteredList.length; i++) {
             if (finalResult == this.filteredList[i].name) {
               this.bracketFlag = true;
-              //this.isBracket = true;
               this.flagSearchIsFromClick = true;
-              this.descriptionDivText = "";
+
               this.descriptionDivText =
                 this.filteredList[i].description.toString();
-              this.exampleDivText = "";
-              this.exampleDivText +=
-                this.filteredList[i].examples[0] +
-                " , " +
-                this.filteredList[i].examples[1];
+
+              this.exampleDivText = this.filteredList[i].examples[0];
+              this.exampleDivText += this.filteredList[i].examples.length > 1 ? " , " + this.filteredList[i].examples[1] : "";
+
               this.divText = this.filteredList[i].syntax[0].toString();
-              this.searchText = "";
-              this.searchText += finalResult + "(";
+
+              this.searchText = finalResult + "(";
               this.showList = false;
+
               this.showDiv = true;
               this.flagDivExample = this.showExampleDiv = false;
-              //this.handleMouseOverSpan();
-              //this.flagForBracket = true;
 
-              // this.getParameters();
               this.findingDetailsForListItem();
-              //this.flagForBracket = true;
               this.flagSearchIsFromClick = true;
-              //this.handleInputChange();
 
               break;
             }
@@ -455,7 +394,6 @@ export default defineComponent({
     },
 
     boldingSyntaxForInputChange() {
-      //this.searchText += this.letter;
       this.$nextTick(() => {
         this.comaNr = this.currentFunction.split(",").length - 1;
 
@@ -483,7 +421,8 @@ export default defineComponent({
           currentDivElement.style.backgroundColor = "#627ddf";
         }
       });
-      //handleComa
+
+      //handles Comma
       if (this.letter === ",") {
         this.comaNr = this.currentFunction.split(",").length - 1;
       }
@@ -502,7 +441,6 @@ export default defineComponent({
             });
           }
         });
-        //this.paramNumber = 0;
       }
     },
 
@@ -511,11 +449,11 @@ export default defineComponent({
         (item) => item.name === this.searchText
       );
       if (selectedItem) {
-        this.descriptionDivText = "";
         this.descriptionDivText = selectedItem.description.toString();
-        this.exampleDivText = "";
-        this.exampleDivText +=
-          selectedItem.examples[0] + " , " + selectedItem.examples[1];
+
+        this.exampleDivText = selectedItem.examples[0];
+        this.exampleDivText += selectedItem.examples.length > 1 ? " , " + selectedItem.examples[1] : "";
+
         this.divText = selectedItem.syntax.toString();
         this.showList = false;
         this.showDiv = true;
@@ -528,21 +466,32 @@ export default defineComponent({
     },
 
     handleInputChange() {
-      // in case we have nested functions
+      // in case we have nested functions?
       this.currentFunction = this.searchText;
 
-      //when a function is closed
-      this.bracketFlag = this.searchText.includes("(");
+
+      if (this.areBracketsOpen(this.searchText) == -1) { //if syntax is wrong, highlight it
+        const element = document.getElementById('mainInput');
+        element?.style.setProperty('color', 'red');
+        element?.style.setProperty('font-weight', 'bold');
+        return;
+      } else {
+        const element = document.getElementById('mainInput');
+        element?.style.setProperty('color', 'black');
+        element?.style.setProperty('font-weight', 'normal');
+      }
+
+      this.bracketFlag = this.areBracketsOpen(this.searchText) == 0 ? false : true;
+
       if (this.searchText === "") {
         this.showDiv = false;
         return;
       }
 
-      //if the input does not contain ( we are not displayinf the div that contains details
+      //if the input does not contain ( we are not displaying the div that contains details
       //about the functions
-      if (!this.searchText.includes("(")) {
-        this.showDiv = false;
-      }
+
+      this.showDiv = !this.bracketFlag ? false : this.showDiv;
 
       this.letter = this.searchText.slice(-1); // Update the searchText
       //If in the input is typed (, we are searching for a possible function with the name of the searchText and
@@ -550,9 +499,7 @@ export default defineComponent({
       if (this.letter == ")") {
         this.$nextTick(() => {
           this.showDiv = false;
-          //this.handleMouseLeaveSpan();
           this.bracketFlag = false;
-          //this.isBracket = false;
         });
       }
 
@@ -560,7 +507,6 @@ export default defineComponent({
         //if the function is not given by clicking the list we will remove all spans from the div
         this.removeSpansFromDiv();
 
-        //this.showDiv = true;
         this.searchText = this.searchText.slice(0, -1);
         this.paramNumber = 0;
 
@@ -582,6 +528,19 @@ export default defineComponent({
       if (this.bracketFlag) {
         this.boldingSyntaxForInputChange();
       }
+    },
+    areBracketsOpen(stringArray: string): number {
+      let counter = 0;
+      for (let i = 0; i < stringArray.length; i++) {
+        counter +=
+          stringArray[i] == "(" ? 1 :
+            stringArray[i] == ")" ? -1 : 0;
+        if (counter < 0)
+          return -1;
+      }
+      return (counter == 0) ? 0 : 1;
+
+      //returns -1 for wrong syntax, 0 for equal bracket open/closing and 1 for brackets are open
     },
   },
 });
@@ -614,6 +573,8 @@ export default defineComponent({
 }
 
 .red-input {
+  color: black;
+  font-weight: normal;
   border: none;
   border-radius: 10px;
   /* Make the input field rounded */
