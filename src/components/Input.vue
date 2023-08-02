@@ -5,25 +5,12 @@
         <div class="main-container">
           <div class="input-container">
             <div class="input-button-container">
-              <v-text-field
-                id="mainInput"
-                class="mx-2 red-input"
-                v-model="searchText"
-                @input="handleInputChange"
-                placeholder="Search items"
-                spellcheck="false"
-              ></v-text-field>
+              <v-text-field id="mainInput" class="mx-2 red-input" v-model="searchText" @input="handleInputChange"
+                placeholder="Search items" spellcheck="false"></v-text-field>
 
               <m-tooltip top>
                 <template v-slot:element>
-                  <v-btn
-                    class="mx-2"
-                    small
-                    fab
-                    color="#627dff"
-                    dark
-                    @click.stop="handleButtonClick"
-                  >
+                  <v-btn class="mx-2" small fab color="#627dff" dark @click.stop="handleButtonClick">
                     <v-icon> mdi-function-variant </v-icon>
                   </v-btn>
                 </template>
@@ -34,20 +21,11 @@
             </div>
             <v-card class="mx-auto" :ripple="false" v-if="showList">
               <v-toolbar outlined rounded style="box-shadow: none">
-                <v-toolbar-title style="font-size: 0.9rem; font-weight: bold"
-                  >Write formula</v-toolbar-title
-                >
+                <v-toolbar-title style="font-size: 0.9rem; font-weight: bold">Write formula</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <m-tooltip top>
                   <template v-slot:element>
-                    <v-btn
-                      class="mx-2"
-                      fab
-                      x-small
-                      color="#627dff"
-                      dark
-                      @click="handleCloseList"
-                    >
+                    <v-btn class="mx-2" fab x-small color="#627dff" dark @click="handleCloseList">
                       <v-icon dark> mdi-alpha-x </v-icon>
                     </v-btn>
                   </template>
@@ -56,33 +34,18 @@
                   </template>
                 </m-tooltip>
               </v-toolbar>
-              <v-list
-                width="25rem"
-                max-height="28rem"
-                class="py-0"
-                style="overflow-y: scroll"
-              >
-                <template
-                  v-for="(item, index) in filteredList"
-                  @key="item.name"
-                >
-                  <v-list-item
-                    class="pl-0"
-                    style="height: 5rem; font-size: 0.8rem"
-                    @click="handleClickItemList($event)"
-                    :key="item.name"
-                    @mouseover="hoveredIndex = index"
-                  >
+              <v-list width="25rem" max-height="28rem" class="py-0" style="overflow-y: scroll">
+                <template v-for="(item, index) in filteredList" @key="item.name">
+                  <v-list-item class="pl-0" style="height: 5rem; font-size: 0.8rem" :key="item.name"
+                    @click="handleClickItemList(item)"
+                    @mouseover="hoveredIndex = index">
                     <v-list-item-content>
                       <v-row style="height: 5rem">
-                        <v-col
-                          cols="2"
-                          style="
+                        <v-col cols="2" style="
                             background-color: #dfe8ff;
                             text-align: right;
                             color: #627dff;
-                          "
-                        >
+                          ">
                           {{ index + 1 }}
                         </v-col>
                         <v-col>
@@ -101,18 +64,12 @@
                   <v-col cols="2" class="pa-0">
                     <m-tooltip bottom>
                       <template v-slot:element>
-                        <v-btn
-                          small
-                          style="
+                        <v-btn small style="
                             min-width: 3.35rem;
                             min-height: 2.3rem;
                             border-radius: 0px;
                             box-shadow: none;
-                          "
-                          color="#627dff"
-                          dark
-                          @click="handleCloseList"
-                        >
+                          " color="#627dff" dark @click="handleCloseList">
                           <v-icon> mdi-check </v-icon>
                         </v-btn>
                       </template>
@@ -124,12 +81,8 @@
                   <v-col class="py-1 text-right">
                     <m-tooltip bottom>
                       <template v-slot:element>
-                        <a
-                          style="font-size: 0.8rem"
-                          href="https://machinations.io/docs/math-js-functions"
-                          target="_blank"
-                          >Help Documentation</a
-                        >
+                        <a style="font-size: 0.8rem" href="https://machinations.io/docs/math-js-functions"
+                          target="_blank">Help Documentation</a>
                       </template>
                       <template v-slot:message>
                         <div>{{ "Do you want to know more about this?" }}</div>
@@ -148,14 +101,7 @@
               <v-col class="text-end">
                 <m-tooltip bottom>
                   <template v-slot:element>
-                    <v-btn
-                      class="mx-2"
-                      fab
-                      x-small
-                      color="#627dff"
-                      dark
-                      @click.stop="displayExampleAndDescription"
-                    >
+                    <v-btn class="mx-2" fab x-small color="#627dff" dark @click.stop="displayExampleAndDescription">
                       <v-icon v-if="!flagDivExample">
                         mdi-arrow-down-bold
                       </v-icon>
@@ -187,12 +133,8 @@
                 <m-tooltip bottom>
                   <template v-slot:element>
                     <div class="titleDiv">
-                      <a
-                        style="color: grey"
-                        target="_blank"
-                        href="https://machinations.io/docs/math-js-functions"
-                        >Find more</a
-                      >
+                      <a style="color: grey" target="_blank" href="https://machinations.io/docs/math-js-functions">Find
+                        more</a>
                     </div>
                   </template>
                   <template v-slot:message>
@@ -241,8 +183,8 @@ export default defineComponent({
       positionToColor: 2,
       coloredText: "",
       selectedColor: "red",
-      params: [] as string[], //should rename!
-      param: [] as string[],
+      paramListSplitByOpenBracket: [] as string[],
+      paramListSplitByClosedBracket: [] as string[],
       listOfParam: [] as string[],
       paramNumber: 0,
       commaNr: 0,
@@ -297,48 +239,41 @@ export default defineComponent({
       this.flagDivExample = false;
       this.showDiv = false;
     },
-    handleClickItemList(event: Event) {
-      if (!this.showDiv)
-        if (event.target instanceof HTMLElement) {
-          //?
-          // Type guard to ensure event.target is not null
-          // Take the html element that is clicked and obtain the name of the function
-          this.showList = true; // Show the list when mouse is over the component
-          const elementMouseOver = event.target;
-          const textContent = elementMouseOver.textContent!.trim(); // Use ! to assert that textContent is not null
-          const firstSpaceIndex = textContent.indexOf(" ");
-          const finalResult = textContent.substring(0, firstSpaceIndex);
+    handleClickItemList(mathFunctionItem: mathFunctionModel) {
+      if (!this.showDiv) {
+        this.showList = true;
+        const finalResult = mathFunctionItem.name.trim();
 
-          //search for a match in the filteredList, if found display the syntax for the function in the input
-          for (let i = 0; i < this.filteredList.length; i++) {
-            if (finalResult == this.filteredList[i].name) {
-              this.bracketFlag = true;
-              this.flagSearchIsFromClick = true;
+        //search for a match in the filteredList, if found display the syntax for the function in the input
+        for (let i = 0; i < this.filteredList.length; i++) {
+          if (finalResult == this.filteredList[i].name) {
+            this.bracketFlag = true;
+            this.flagSearchIsFromClick = true;
 
-              this.descriptionDivText =
-                this.filteredList[i].description.toString();
+            this.descriptionDivText =
+              this.filteredList[i].description.toString();
 
-              this.exampleDivText =
-                this.filteredList[i].examples[0] +
-                (this.filteredList[i].examples.length > 1
-                  ? " , " + this.filteredList[i].examples[1]
-                  : "");
+            this.exampleDivText =
+              this.filteredList[i].examples[0] +
+              (this.filteredList[i].examples.length > 1
+                ? " , " + this.filteredList[i].examples[1]
+                : "");
 
-              this.divText = this.filteredList[i].syntax[0].toString();
+            this.divText = this.filteredList[i].syntax[0].toString();
 
-              this.searchText = finalResult + "(";
-              this.showList = false;
+            this.searchText = finalResult + "(";
+            this.showList = false;
 
-              this.showDiv = true;
-              this.flagDivExample = this.showExampleDiv = false;
+            this.showDiv = true;
+            this.flagDivExample = this.showExampleDiv = false;
 
-              this.findingDetailsForListItem();
-              this.flagSearchIsFromClick = true;
+            this.findingDetailsForListItem();
+            this.flagSearchIsFromClick = true;
 
-              break;
-            }
+            break;
           }
         }
+      }
     },
     handleCloseList() {
       // Method to close the list
@@ -360,20 +295,20 @@ export default defineComponent({
       }
     },
     getParametersForBolding() {
-      this.params = this.divText.split("(");
+      this.paramListSplitByOpenBracket = this.divText.split("(");
       this.$nextTick(() => {
         const divElement = document.getElementById("syntaxDiv");
         if (divElement) {
           // Create a new span element for the first part
           const newSpan = document.createElement("span");
           // Set the text content of the span element (replace "Your Text Here" with your desired content)
-          newSpan.textContent = this.params[0] + "(";
+          newSpan.textContent = this.paramListSplitByOpenBracket[0] + "(";
           // Add any additional styles or attributes to the new span if needed
           newSpan.style.color = "black";
           // Append the new span to the syntaxDiv
           divElement.appendChild(newSpan);
-          this.param = this.params[1].split(")");
-          this.listOfParam = this.param[0].split(",");
+          this.paramListSplitByClosedBracket = this.paramListSplitByOpenBracket[1].split(")");
+          this.listOfParam = this.paramListSplitByClosedBracket[0].split(",");
 
           for (let i = 0; i < this.listOfParam.length; i = i + 1) {
             // Create a new span element for each part
@@ -473,6 +408,9 @@ export default defineComponent({
           this.dotsParamIndex = this.commaNr;
         }
 
+        if(this.commaNr < this.dotsParamIndex) //if it hasn't reached it yet for this function, restart it
+          this.dotsParamIndex = Number.MAX_SAFE_INTEGER;
+
         if (currentDivElement) {
           if (this.commaNr <= this.dotsParamIndex) {
             currentDivElement.style.backgroundColor = "#627ddf";
@@ -560,9 +498,11 @@ export default defineComponent({
       ) {
         this.nrFunctionsPossible--;
         this.searchText = this.lastFunction.slice(0, -1);
-        this.param = this.searchText.split("(");
+        this.paramListSplitByClosedBracket = this.searchText.split("(");
         this.searchTextCopy = this.searchText;
-        this.searchText = this.param[0];
+        this.searchText = this.paramListSplitByClosedBracket[0];
+        console.log(this.searchText);
+        //this.divText = this.searchText;
         this.showDiv = true;
         this.removeSpansFromDiv();
         this.searchText = this.searchTextCopy;
