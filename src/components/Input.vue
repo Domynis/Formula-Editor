@@ -33,8 +33,10 @@
               </m-tooltip>
             </div>
             <v-card class="mx-auto" :ripple="false" v-if="showList">
-              <v-toolbar outlined rounded style="box-shadow: none;">
-                <v-toolbar-title style="font-size: 0.9rem; font-weight: bold;">Write formula</v-toolbar-title>
+              <v-toolbar outlined rounded style="box-shadow: none">
+                <v-toolbar-title style="font-size: 0.9rem; font-weight: bold"
+                  >Write formula</v-toolbar-title
+                >
                 <v-spacer></v-spacer>
                 <m-tooltip top>
                   <template v-slot:element>
@@ -54,10 +56,23 @@
                   </template>
                 </m-tooltip>
               </v-toolbar>
-              <v-list width="25rem" max-height="28rem" class="py-0" style="overflow-y: scroll;">
-                <template v-for="(item, index) in filteredList" @key="item.name">
-                  <v-list-item class="pl-0" style="height: 5rem; font-size: 0.8rem" @click="handleClickItemList"
-                    :key="item.name" @mouseover="hoveredIndex = index">
+              <v-list
+                width="25rem"
+                max-height="28rem"
+                class="py-0"
+                style="overflow-y: scroll"
+              >
+                <template
+                  v-for="(item, index) in filteredList"
+                  @key="item.name"
+                >
+                  <v-list-item
+                    class="pl-0"
+                    style="height: 5rem; font-size: 0.8rem"
+                    @click="handleClickItemList($event)"
+                    :key="item.name"
+                    @mouseover="hoveredIndex = index"
+                  >
                     <v-list-item-content>
                       <v-row style="height: 5rem">
                         <v-col
@@ -109,9 +124,12 @@
                   <v-col class="py-1 text-right">
                     <m-tooltip bottom>
                       <template v-slot:element>
-                        <a style="font-size: 0.8rem" href="https://machinations.io/docs/math-js-functions"
-                          target="_blank">Help
-                          Documentation</a>
+                        <a
+                          style="font-size: 0.8rem"
+                          href="https://machinations.io/docs/math-js-functions"
+                          target="_blank"
+                          >Help Documentation</a
+                        >
                       </template>
                       <template v-slot:message>
                         <div>{{ "Do you want to know more about this?" }}</div>
@@ -231,9 +249,10 @@ export default defineComponent({
       flagSearchIsFromClick: false,
       currentFunction: "",
       lastFunction: "",
-      isFunctionClosed: false,
+      isFunctionClosed: 0,
       bracketFlag: false,
-
+      nrFunctions: 0,
+      nrFunctionsPossible: 0,
 
       dotsParamIndex: Number.MAX_SAFE_INTEGER,
     };
@@ -299,7 +318,11 @@ export default defineComponent({
               this.descriptionDivText =
                 this.filteredList[i].description.toString();
 
-              this.exampleDivText = this.filteredList[i].examples[0] + (this.filteredList[i].examples.length > 1 ? " , " + this.filteredList[i].examples[1] : "");
+              this.exampleDivText =
+                this.filteredList[i].examples[0] +
+                (this.filteredList[i].examples.length > 1
+                  ? " , " + this.filteredList[i].examples[1]
+                  : "");
 
               this.divText = this.filteredList[i].syntax[0].toString();
 
@@ -429,7 +452,6 @@ export default defineComponent({
 
     boldingSyntaxForInputChange() {
       this.$nextTick(() => {
-
         this.commaNr = this.currentFunction.split(",").length - 1;
 
         // Reset the background color of all span elements to the default color "#c0ccff"
@@ -437,7 +459,7 @@ export default defineComponent({
           const divElement = document.getElementById("span-" + i);
           if (divElement) {
             divElement.style.backgroundColor = "#c0ccff";
-            divElement.style.color = 'black';
+            divElement.style.color = "black";
           }
         }
 
@@ -446,22 +468,24 @@ export default defineComponent({
           "span-" + this.commaNr
         );
 
-        if (currentDivElement && currentDivElement.textContent === " ...") { //if the function has a '...' parameter, let that be the last highlighted one
+        if (currentDivElement && currentDivElement.textContent === " ...") {
+          //if the function has a '...' parameter, let that be the last highlighted one
           this.dotsParamIndex = this.commaNr;
         }
 
         if (currentDivElement) {
           if (this.commaNr <= this.dotsParamIndex) {
             currentDivElement.style.backgroundColor = "#627ddf";
-            currentDivElement.style.color = 'white';
+            currentDivElement.style.color = "white";
           }
-        } else if (this.dotsParamIndex != Number.MAX_SAFE_INTEGER) { //checks if the potential '...' parameter was visited
+        } else if (this.dotsParamIndex != Number.MAX_SAFE_INTEGER) {
+          //checks if the potential '...' parameter was visited
           const dotsParamElement = document.getElementById(
             "span-" + this.dotsParamIndex
           );
           if (dotsParamElement) {
-            dotsParamElement.style.backgroundColor ="#627ddf";
-            dotsParamElement.style.color = 'white';
+            dotsParamElement.style.backgroundColor = "#627ddf";
+            dotsParamElement.style.color = "white";
           }
         }
 
@@ -495,7 +519,11 @@ export default defineComponent({
       if (selectedItem) {
         this.descriptionDivText = selectedItem.description.toString();
 
-        this.exampleDivText = selectedItem.examples[0] + (selectedItem.examples.length > 1 ? " , " + selectedItem.examples[1] : "");
+        this.exampleDivText =
+          selectedItem.examples[0] +
+          (selectedItem.examples.length > 1
+            ? " , " + selectedItem.examples[1]
+            : "");
 
         this.divText = selectedItem.syntax.toString();
         this.showList = false;
@@ -509,20 +537,32 @@ export default defineComponent({
     },
 
     handleInputChange() {
-      // in case we have nested functions?
-      //lastFunction: "",
-      //isFunctionClosed: false,
       this.currentFunction = this.searchText;
+      console.log(this.nrFunctions);
 
-      if (!this.lastFunction.includes(")") && this.isFunctionClosed == true) {
-        this.isFunctionClosed = false;
-        this.searchText = this.lastFunction;
-        console.log(this.searchText);
+      const isLastCharClosingBracket = this.searchText.slice(-1) === ")";
+
+      // Check if the input is a deletion and the last character was ")"
+      if (this.letter === "" && isLastCharClosingBracket) {
+        this.bracketFlag = true;
+        return;
+      }
+      let count = 0;
+      for (let i = 0; i < this.lastFunction.length; i++) {
+        if (this.lastFunction.charAt(i) === "") {
+          count++;
+        }
+      }
+
+      if (
+        //!this.lastFunction.includes(")") &&
+        this.nrFunctions !== this.nrFunctionsPossible
+      ) {
+        this.nrFunctionsPossible--;
+        this.searchText = this.lastFunction.slice(0, -1);
         this.param = this.searchText.split("(");
         this.searchTextCopy = this.searchText;
         this.searchText = this.param[0];
-        console.log(this.searchText);
-        //this.divText = this.searchText;
         this.showDiv = true;
         this.removeSpansFromDiv();
         this.searchText = this.searchTextCopy;
@@ -542,7 +582,7 @@ export default defineComponent({
       }
 
       this.bracketFlag =
-        this.areBracketsOpen(this.searchText) == 0 ? false : true;
+        this.areBracketsOpen(this.searchText) === 0 ? false : true;
 
       if (this.searchText === "") {
         this.showDiv = false;
@@ -551,20 +591,18 @@ export default defineComponent({
 
       //if the input does not contain ( we are not displaying the div that contains details
       //about the functions
-
       this.showDiv = !this.bracketFlag ? false : this.showDiv;
 
       this.letter = this.searchText.slice(-1); // Update the searchText
+
       //If in the input is typed (, we are searching for a possible function with the name of the searchText and
       // append its syntax to the input
-
       if (this.letter === "(") {
-        //if the function is not given by clicking the list we will remove all spans from the div
+        this.nrFunctions++;
+        this.nrFunctionsPossible++;
         this.removeSpansFromDiv();
-
-        this.searchText = this.searchText.slice(0, -1);
+        this.searchText = this.searchText.slice(0, -1); // Remove the "("
         this.paramNumber = 0;
-
         this.bracketFlag = true;
 
         //try to find a function that has the same name as the input
@@ -575,8 +613,7 @@ export default defineComponent({
         if (selectedItem) {
           // If a match is found, update the divText with the syntax and show the div
           this.findDetailsAboutFunction();
-
-          // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
+          this.flagSearchIsFromClick = true;
         }
       }
 
@@ -587,14 +624,16 @@ export default defineComponent({
         this.flagSearchIsFromClick = false;
       }
 
-      if (this.letter == ")") {
+      // Check if the input contains ")"
+      if (this.letter === ")") {
         this.lastFunction = this.currentFunction;
-        this.lastFunction = this.lastFunction.slice(0, -1);
-        this.isFunctionClosed = true;
+        //this.lastFunction = this.lastFunction.slice(0, -1); // Remove the ")"
+        this.isFunctionClosed++;
+        this.nrFunctions--;
 
         this.$nextTick(() => {
           this.showDiv = false;
-          this.bracketFlag = false;
+          this.bracketFlag = true; // Set the flag to true when ")" is added back
         });
       }
     },
