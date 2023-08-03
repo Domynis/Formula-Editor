@@ -78,16 +78,21 @@
                         <v-col
                           cols="2"
                           style="
-                            background-color: #dfe8ff;
+                            background-color: #dfe8ffec;
                             text-align: right;
                             color: #627dff;
                           "
                         >
-                          {{ index + 1 }}
+                          <v-icon>mdi-variable</v-icon>
                         </v-col>
                         <v-col>
-                          {{ item.name + " " + item.category }}
-                          <div v-if="hoveredIndex === index">
+                          <b
+                            ><span style="font-size: 14px">
+                              {{ item.name }}
+                            </span></b
+                          >
+                          {{ item.category }}
+                          <div style="color: #9db8fc">
                             {{ getShortDescription(item.description.at(0)) }}
                           </div>
                         </v-col>
@@ -217,8 +222,16 @@ import { defineComponent } from "vue";
 import ListContainer from "./ListContainer.vue";
 import axios from "axios";
 import { mathFunctionModel } from "../models/mathFunction.model";
-
 import MTooltip from "@axten/m-tooltip";
+import { TreeNode } from "./tree";
+
+// Example usage:
+
+// Example usage:
+const input = "sum(cos(20),(sylvester(15,16,7)),variance(2,1,3,4)";
+const tree = TreeNode.parseTreeFromString(input);
+console.log(tree);
+//displayLevels(tree!);
 
 export default defineComponent({
   components: {
@@ -257,7 +270,8 @@ export default defineComponent({
       bracketFlag: false,
       nrFunctions: 0,
       nrFunctionsPossible: 0,
-
+      possibleFunction: "",
+      newFlag: false,
       dotsParamIndex: Number.MAX_SAFE_INTEGER,
     };
   },
@@ -415,9 +429,11 @@ export default defineComponent({
         }
       });
     },
+
     findingDetailsForListItem() {
       this.showDiv = true;
       this.searchText = this.searchText.slice(0, -1);
+      //this.possibleFunction = this.searchText;
       this.paramNumber = 0;
 
       this.bracketFlag = true;
@@ -450,7 +466,9 @@ export default defineComponent({
 
     boldingSyntaxForInputChange() {
       this.$nextTick(() => {
-        this.commaNr = this.currentFunction.split(",").length - 1;
+        if (this.letter === ",") {
+          this.commaNr++;
+        }
 
         // Reset the background color of all span elements to the default color "#c0ccff"
         for (let i = 0; i <= this.listOfParam.length; i++) {
@@ -492,9 +510,7 @@ export default defineComponent({
         }
 
         //handles Comma
-        if (this.letter === ",") {
-          this.commaNr = this.currentFunction.split(",").length - 1;
-        }
+
         this.isDivExampleExtended = false;
       });
     },
@@ -538,23 +554,44 @@ export default defineComponent({
       }
     },
 
+    verifyIfFunction() {
+      const selectedItem = this.listItems.find(
+        (item) => item.name === this.possibleFunction
+      );
+      if (selectedItem) {
+        this.descriptionDivText = selectedItem.description.toString();
+
+        this.exampleDivText =
+          selectedItem.examples[0] +
+          (selectedItem.examples.length > 1
+            ? " , " + selectedItem.examples[1]
+            : "");
+        this.divText = selectedItem.syntax[0].toString();
+        this.showList = false;
+        this.showDiv = true;
+        this.showExampleDiv = false;
+        this.removeSpansFromDiv();
+        //this.searchText = this.searchTextCopy;
+        //this.possibleFunction = this.searchText;
+        this.getParametersForBolding();
+        this.commaNr = 0;
+        this.currentFunction = selectedItem.name;
+        this.currentFunction += "(";
+        this.boldingSyntaxForInputChange();
+        //this.commaNr++;
+        this.newFlag = true;
+      }
+    },
+
     handleInputChange() {
-      this.currentFunction = this.searchText;
-      console.log(this.nrFunctions);
-
       const isLastCharClosingBracket = this.searchText.slice(-1) === ")";
-
+      //console.log(this.recentParameters);
       // Check if the input is a deletion and the last character was ")"
       if (this.letter === "" && isLastCharClosingBracket) {
         this.bracketFlag = true;
         return;
       }
-      let count = 0;
-      for (let i = 0; i < this.lastFunction.length; i++) {
-        if (this.lastFunction.charAt(i) === "") {
-          count++;
-        }
-      }
+
       const cr = this.areBracketsOpen(this.lastFunction);
       if (this.nrFunctions !== this.nrFunctionsPossible) {
         this.nrFunctionsPossible--;
@@ -562,11 +599,12 @@ export default defineComponent({
         this.paramListSplitByClosedBracket = this.searchText.split("(");
         this.searchTextCopy = this.searchText;
         this.searchText = this.paramListSplitByClosedBracket[0];
-        console.log(this.searchText);
+
         //this.divText = this.searchText;
         this.showDiv = true;
         this.removeSpansFromDiv();
         this.searchText = this.searchTextCopy;
+        //this.possibleFunction = this.searchText;
         this.getParametersForBolding();
       }
 
@@ -594,39 +632,55 @@ export default defineComponent({
       //about the functions
       //this.showDiv = !this.bracketFlag ? false : this.showDiv;
 
-      this.letter = this.searchText.slice(-1); // Update the searchText
-
+      this.letter = this.searchText.slice(-1);
+      // Update the searchText
+      if (this.letter == "(" || this.letter == ")" || this.letter == ",") {
+        if (this.letter == "(") {
+        }
+        this.possibleFunction = this.possibleFunction.split(/[ ,()]/).join("");
+        this.verifyIfFunction();
+        this.showDiv = true;
+        this.possibleFunction = "";
+      }
+      this.possibleFunction += this.letter;
       //If in the input is typed (, we are searching for a possible function with the name of the searchText and
       // append its syntax to the input
-      if (this.letter === "(") {
-        this.showDiv = false;
-        this.nrFunctions++;
-        this.nrFunctionsPossible++;
-        this.removeSpansFromDiv();
-        this.searchText = this.searchText.slice(0, -1); // Remove the "("
-        this.paramNumber = 0;
-        this.bracketFlag = true;
 
-        //try to find a function that has the same name as the input
-        const selectedItem = this.filteredList.find(
-          (item) => item.name === this.searchText
-        );
-
-        if (selectedItem) {
-          // If a match is found, update the divText with the syntax and show the div
-          this.findDetailsAboutFunction();
-          this.flagSearchIsFromClick = true;
-        }
-        this.searchText += "(";
-      }
-
-      if (this.bracketFlag) {
+      if (this.searchText.includes("(")) {
         this.boldingSyntaxForInputChange();
       }
-      if (this.flagSearchIsFromClick) {
-        this.flagSearchIsFromClick = false;
-      }
+      if (this.letter === "(") {
+        //this.showDiv = false;
+        this.nrFunctions++;
+        this.nrFunctionsPossible++;
+        if (this.newFlag == false) {
+          this.currentFunction = this.searchText;
+          this.removeSpansFromDiv();
+          this.searchText = this.searchText.slice(0, -1); // Remove the "("
+          //this.possibleFunction = this.searchText;
+          this.paramNumber = 0;
+          this.bracketFlag = true;
 
+          //try to find a function that has the same name as the input
+          const selectedItem = this.filteredList.find(
+            (item) => item.name === this.searchText
+          );
+
+          if (selectedItem) {
+            // If a match is found, update the divText with the syntax and show the div
+            this.findDetailsAboutFunction();
+            this.flagSearchIsFromClick = true;
+          }
+          this.searchText += "(";
+        }
+
+        if (this.bracketFlag) {
+          this.boldingSyntaxForInputChange();
+        }
+        if (this.flagSearchIsFromClick) {
+          this.flagSearchIsFromClick = false;
+        }
+      }
       // Check if the input contains ")"
       if (this.letter === ")") {
         this.lastFunction = this.currentFunction;
