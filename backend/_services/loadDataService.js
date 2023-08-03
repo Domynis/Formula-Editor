@@ -29,7 +29,7 @@ class LoadMathService {
           functionObject.description = [descriptionString];
         }
         //categories with varying syntax
-        if (functionObject.category === "Logical" || functionObject.category === "Bitwise" || functionObject.category === "Operators" && functionObject.syntax.length > 1) {
+        if (functionObject.category === "Logical" || functionObject.category === "Bitwise" || functionObject.category === "Operators" || functionObject.name === "boolean" && functionObject.syntax.length > 1) {
           let correctSyntax = functionObject.syntax[functionObject.syntax.length - 1];
           functionObject.syntax = [correctSyntax];
         }
