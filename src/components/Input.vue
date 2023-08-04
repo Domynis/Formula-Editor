@@ -279,7 +279,7 @@ export default defineComponent({
           alert(error);
         }
       }
-      console.log(this.tempTree);
+      // console.log(this.tempTree);
       this.handleCursorChange(cursorPosition);
     },
 
@@ -311,37 +311,42 @@ export default defineComponent({
       }
 
       console.log(i);
-      const searchedNode = this.searchForNode(this.tempTree, i);
-      console.log(searchedNode);
+      const searchedNode = this.searchForNode(this.tempTree, i, (tree: TreeNode, index: number) => {
+        return tree.indexInInput === index;
+      });
 
       return searchedNode;
     },
 
-    searchForNode(root: TreeNode | null, index: number): TreeNode | null {
+    /*example purpose*/
+    // const searchedNode = this.searchForNode(this.tempTree, childNode, (parentTree: TreeNode, childTree: TreeNode) => {
+    //   return parentTree.children.includes(childTree);
+    // });
+    // console.log("copil!");
+    // console.log(searchedNode);
+
+    searchForNode(root: TreeNode | null, auxiliaryVar: any, searchCriteria: Function): TreeNode | null {
       if (root) {
-        if (root.indexInInput == index) {
+        if (searchCriteria(root, auxiliaryVar)) {
           return root;
         }
         for (const child of root.children) {
-          let childNode = this.searchForNode(child, index);
+          let childNode = this.searchForNode(child, auxiliaryVar, searchCriteria);
           if (childNode) {
             return childNode;
           }
         }
-        return null;
       }
       return null;
     },
 
     checkForFunctionNames(root: TreeNode | null, level = 0): void {
       if (root && !TreeNode.isNumeric(root.data.name)) {
-        //
-        // console.log(this.listItems);
+        // !!should also treat case where there are more children than arguments possible!!
         const selectedItem = this.listItems.find(
           (item) => item.name === root.data.name
         );
         if (!selectedItem) {
-          //throw
           throw new Error("Wrong function name: " + root.data.name);
         }
         for (const child of root.children) {
