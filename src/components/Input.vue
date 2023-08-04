@@ -5,13 +5,28 @@
         <div class="main-container">
           <div class="input-container">
             <div class="input-button-container">
-              <v-text-field id="mainInput" class="mx-2 red-input" ref="myInput" v-model="searchText"
-                @input="handleInputEvent" @keyup="handleArrowKeyPressEvent" @mouseup="handleMouseUpEvent"
-                placeholder="Search items" spellcheck="false" />
+              <v-text-field
+                id="mainInput"
+                class="mx-2 red-input"
+                ref="myInput"
+                v-model="searchText"
+                @input="handleInputEvent"
+                @keyup="handleArrowKeyPressEvent"
+                @mouseup="handleMouseUpEvent"
+                placeholder="Search items"
+                spellcheck="false"
+              />
 
               <m-tooltip top>
                 <template v-slot:element>
-                  <v-btn class="mx-2" small fab color="#627dff" dark @click.stop="handleButtonClick">
+                  <v-btn
+                    class="mx-2"
+                    small
+                    fab
+                    color="#627dff"
+                    dark
+                    @click.stop="handleButtonClick"
+                  >
                     <v-icon> mdi-function-variant </v-icon>
                   </v-btn>
                 </template>
@@ -22,11 +37,20 @@
             </div>
             <v-card class="mx-auto" :ripple="false" v-if="showList">
               <v-toolbar outlined rounded style="box-shadow: none">
-                <v-toolbar-title style="font-size: 0.9rem; font-weight: bold">Write formula</v-toolbar-title>
+                <v-toolbar-title style="font-size: 0.9rem; font-weight: bold"
+                  >Write formula</v-toolbar-title
+                >
                 <v-spacer></v-spacer>
                 <m-tooltip top>
                   <template v-slot:element>
-                    <v-btn class="mx-2" fab x-small color="#627dff" dark @click="handleCloseList">
+                    <v-btn
+                      class="mx-2"
+                      fab
+                      x-small
+                      color="#627dff"
+                      dark
+                      @click="handleCloseList"
+                    >
                       <v-icon dark> mdi-alpha-x </v-icon>
                     </v-btn>
                   </template>
@@ -35,22 +59,41 @@
                   </template>
                 </m-tooltip>
               </v-toolbar>
-              <v-list width="25rem" max-height="28rem" class="py-0" style="overflow-y: scroll">
-                <template v-for="(item, index) in filteredList" @key="item.name">
-                  <v-list-item class="pl-0" style="height: 5rem; font-size: 0.8rem" :key="item.name"
-                    @click="handleClickItemList(item)" @mouseover="hoveredIndex = index">
+              <v-list
+                width="25rem"
+                max-height="28rem"
+                class="py-0"
+                style="overflow-y: scroll"
+              >
+                <template
+                  v-for="(item, index) in filteredList"
+                  @key="item.name"
+                >
+                  <v-list-item
+                    class="pl-0"
+                    style="height: 5rem; font-size: 0.8rem"
+                    :key="item.name"
+                    @click="handleClickItemList(item)"
+                    @mouseover="hoveredIndex = index"
+                  >
                     <v-list-item-content>
                       <v-row style="height: 5rem">
-                        <v-col cols="2" style="
+                        <v-col
+                          cols="2"
+                          style="
                             background-color: #dfe8ff;
                             text-align: right;
-                            color: #627dff;">
+                            color: #627dff;
+                          "
+                        >
                           {{ index + 1 }}
                         </v-col>
                         <v-col>
-                          <b><span style="font-size: 14px">
+                          <b
+                            ><span style="font-size: 14px">
                               {{ item.name }}
-                            </span></b>
+                            </span></b
+                          >
                           {{ item.category }}
                           <div style="color: #9db8fc">
                             {{ getShortDescription(item.description.at(0)) }}
@@ -66,12 +109,18 @@
                   <v-col cols="2" class="pa-0">
                     <m-tooltip bottom>
                       <template v-slot:element>
-                        <v-btn small style="
+                        <v-btn
+                          small
+                          style="
                             min-width: 3.35rem;
                             min-height: 2.3rem;
                             border-radius: 0px;
                             box-shadow: none;
-                          " color="#627dff" dark @click="handleCloseList">
+                          "
+                          color="#627dff"
+                          dark
+                          @click="handleCloseList"
+                        >
                           <v-icon> mdi-check </v-icon>
                         </v-btn>
                       </template>
@@ -83,8 +132,12 @@
                   <v-col class="py-1 text-right">
                     <m-tooltip bottom>
                       <template v-slot:element>
-                        <a style="font-size: 0.8rem" href="https://machinations.io/docs/math-js-functions"
-                          target="_blank">Help Documentation</a>
+                        <a
+                          style="font-size: 0.8rem"
+                          href="https://machinations.io/docs/math-js-functions"
+                          target="_blank"
+                          >Help Documentation</a
+                        >
                       </template>
                       <template v-slot:message>
                         <div>{{ "Do you want to know more about this?" }}</div>
@@ -103,7 +156,14 @@
               <v-col class="text-end">
                 <m-tooltip bottom>
                   <template v-slot:element>
-                    <v-btn class="mx-2" fab x-small color="#627dff" dark @click.stop="displayExampleAndDescription">
+                    <v-btn
+                      class="mx-2"
+                      fab
+                      x-small
+                      color="#627dff"
+                      dark
+                      @click.stop="displayExampleAndDescription"
+                    >
                       <v-icon v-if="!isDivExampleExtended">
                         mdi-arrow-down-bold
                       </v-icon>
@@ -116,8 +176,8 @@
                     <div>
                       {{
                         isDivExampleExtended
-                        ? "Minimize details"
-                        : "Extend details"
+                          ? "Minimize details"
+                          : "Extend details"
                       }}
                     </div>
                   </template>
@@ -139,8 +199,12 @@
                 <m-tooltip bottom>
                   <template v-slot:element>
                     <div class="titleDiv">
-                      <a style="color: grey" target="_blank" href="https://machinations.io/docs/math-js-functions">Find
-                        more</a>
+                      <a
+                        style="color: grey"
+                        target="_blank"
+                        href="https://machinations.io/docs/math-js-functions"
+                        >Find more</a
+                      >
                     </div>
                   </template>
                   <template v-slot:message>
@@ -211,6 +275,7 @@ export default defineComponent({
       newFlag: false,
       dotsParamIndex: Number.MAX_SAFE_INTEGER,
       tempTree: new TreeNode({ name: "" }, 0),
+      function: null,
     };
   },
   props: {
@@ -230,7 +295,8 @@ export default defineComponent({
       });
   },
   computed: {
-    filteredList(): mathFunctionModel[] { //refactor
+    filteredList(): mathFunctionModel[] {
+      //refactor
       // Computed property to filter the listItems based on the searchText
       return this.listItems.filter((item: mathFunctionModel) =>
         item.name.toLowerCase().startsWith(this.searchText.toLowerCase())
@@ -238,7 +304,7 @@ export default defineComponent({
     },
     dataTree(): TreeNode {
       return TreeNode.parseTreeFromString(this.searchText)!;
-    }
+    },
   },
 
   methods: {
@@ -247,7 +313,7 @@ export default defineComponent({
         left: 37,
         up: 38,
         right: 39,
-        down: 40
+        down: 40,
       };
       const key = event.keyCode as number;
       if (Object.values(key_code).includes(key)) {
@@ -262,7 +328,7 @@ export default defineComponent({
     },
 
     getCursorPosition() {
-      const input = this.$refs['myInput'] as any;
+      const input = this.$refs["myInput"] as any;
       const cursorPosition = input.$refs.input.selectionStart;
       // console.log(cursorPosition);
       return cursorPosition;
@@ -283,11 +349,110 @@ export default defineComponent({
       this.handleCursorChange(cursorPosition);
     },
 
+    boldingSyntaxForInputChange() {
+      this.$nextTick(() => {
+        console.log(this.commaNr);
+        // Reset the background color of all span elements to the default color "#c0ccff"
+        for (let i = 0; i <= this.listOfParam.length; i++) {
+          const divElement = document.getElementById("span-" + i);
+          if (divElement) {
+            divElement.style.backgroundColor = "#c0ccff";
+            divElement.style.color = "black";
+          }
+        }
+
+        // highlight the parameter that will be written in the function
+        const currentDivElement = document.getElementById(
+          "span-" + this.commaNr
+        );
+        if (currentDivElement) {
+          currentDivElement.style.backgroundColor = "#627ddf";
+          currentDivElement.style.color = "white";
+        }
+
+        /*if (currentDivElement && currentDivElement.textContent === " ...") {
+          //if the function has a '...' parameter, let that be the last highlighted one
+          this.dotsParamIndex = this.commaNr;
+        }
+
+        if (this.commaNr < this.dotsParamIndex)
+          //if it hasn't reached it yet for this function, restart it
+          this.dotsParamIndex = Number.MAX_SAFE_INTEGER;
+
+        if (currentDivElement) {
+          if (this.commaNr <= this.dotsParamIndex) {
+            currentDivElement.style.backgroundColor = "#627ddf";
+            currentDivElement.style.color = "white";
+          }
+        } else if (this.dotsParamIndex != Number.MAX_SAFE_INTEGER) {
+          //checks if the potential '...' parameter was visited
+          const dotsParamElement = document.getElementById(
+            "span-" + this.dotsParamIndex
+          );
+          if (dotsParamElement) {
+            dotsParamElement.style.backgroundColor = "#627ddf";
+            dotsParamElement.style.color = "white";
+          }
+        }*/
+
+        //handles Comma
+
+        this.isDivExampleExtended = false;
+      });
+    },
+
+    findDetails(name: string) {
+      console.log(name);
+      const selectedItem = this.listItems.find((item) => item.name === name);
+      if (selectedItem) {
+        this.descriptionDivText = selectedItem.description.toString();
+        this.commaNr = 0;
+        this.exampleDivText =
+          selectedItem.examples[0] +
+          (selectedItem.examples.length > 1
+            ? " , " + selectedItem.examples[1]
+            : "");
+        this.divText = selectedItem.syntax[0].toString();
+        this.showList = false;
+        this.showDiv = true;
+        this.showExampleDiv = false;
+        this.removeSpansFromDiv();
+        //this.searchText = this.searchTextCopy;
+        //this.possibleFunction = this.searchText;
+        this.getParametersForBolding();
+
+        this.currentFunction = selectedItem.name;
+        this.currentFunction += "(";
+        this.boldingSyntaxForInputChange();
+        this.newFlag = true;
+      } else {
+        console.log(this.searchText);
+
+        this.boldingSyntaxForInputChange();
+      }
+    },
     handleCursorChange(cursorPos: number) {
       //time to search for function where cursorPosition is
+
       const treeNodeFromCursor = this.getTreeNodeFromIndex(cursorPos);
-      console.log(treeNodeFromCursor);
+      if (this.searchText == "(") {
+        console.log("super");
+        console.log(treeNodeFromCursor);
+      }
+
       if (treeNodeFromCursor) {
+        const searchedNode = this.searchForNode(
+          this.tempTree,
+          treeNodeFromCursor,
+          (parentTree: TreeNode, childTree: TreeNode) => {
+            return parentTree.children.includes(childTree);
+          }
+        );
+        if (searchedNode) this.commaNr = searchedNode.children.length;
+
+        if (treeNodeFromCursor.data.name != "") {
+          this.findDetails(treeNodeFromCursor.data.name);
+        }
         //here we can implement the window popping up
         //be careful with situation where we have "sum(" and cursor is on position 3 (we should prolly display sum, but it stays on ( separator and doesn't do anything)
       }
@@ -311,9 +476,13 @@ export default defineComponent({
       }
 
       console.log(i);
-      const searchedNode = this.searchForNode(this.tempTree, i, (tree: TreeNode, index: number) => {
-        return tree.indexInInput === index;
-      });
+      const searchedNode = this.searchForNode(
+        this.tempTree,
+        i,
+        (tree: TreeNode, index: number) => {
+          return tree.indexInInput === index;
+        }
+      );
 
       return searchedNode;
     },
@@ -325,13 +494,21 @@ export default defineComponent({
     // console.log("copil!");
     // console.log(searchedNode);
 
-    searchForNode(root: TreeNode | null, auxiliaryVar: any, searchCriteria: Function): TreeNode | null {
+    searchForNode(
+      root: TreeNode | null,
+      auxiliaryVar: any,
+      searchCriteria: Function
+    ): TreeNode | null {
       if (root) {
         if (searchCriteria(root, auxiliaryVar)) {
           return root;
         }
         for (const child of root.children) {
-          let childNode = this.searchForNode(child, auxiliaryVar, searchCriteria);
+          let childNode = this.searchForNode(
+            child,
+            auxiliaryVar,
+            searchCriteria
+          );
           if (childNode) {
             return childNode;
           }
@@ -518,60 +695,9 @@ export default defineComponent({
       this.searchText += "(";
     },
 
-    boldingSyntaxForInputChange() {
-      this.$nextTick(() => {
-        if (this.letter === ",") {
-          this.commaNr++;
-        }
-
-        // Reset the background color of all span elements to the default color "#c0ccff"
-        for (let i = 0; i <= this.listOfParam.length; i++) {
-          const divElement = document.getElementById("span-" + i);
-          if (divElement) {
-            divElement.style.backgroundColor = "#c0ccff";
-            divElement.style.color = "black";
-          }
-        }
-
-        // highlight the parameter that will be written in the function
-        const currentDivElement = document.getElementById(
-          "span-" + this.commaNr
-        );
-
-        if (currentDivElement && currentDivElement.textContent === " ...") {
-          //if the function has a '...' parameter, let that be the last highlighted one
-          this.dotsParamIndex = this.commaNr;
-        }
-
-        if (this.commaNr < this.dotsParamIndex)
-          //if it hasn't reached it yet for this function, restart it
-          this.dotsParamIndex = Number.MAX_SAFE_INTEGER;
-
-        if (currentDivElement) {
-          if (this.commaNr <= this.dotsParamIndex) {
-            currentDivElement.style.backgroundColor = "#627ddf";
-            currentDivElement.style.color = "white";
-          }
-        } else if (this.dotsParamIndex != Number.MAX_SAFE_INTEGER) {
-          //checks if the potential '...' parameter was visited
-          const dotsParamElement = document.getElementById(
-            "span-" + this.dotsParamIndex
-          );
-          if (dotsParamElement) {
-            dotsParamElement.style.backgroundColor = "#627ddf";
-            dotsParamElement.style.color = "white";
-          }
-        }
-
-        //handles Comma
-
-        this.isDivExampleExtended = false;
-      });
-    },
-
     removeSpansFromDiv() {
       if (!this.flagSearchIsFromClick) {
-        this.commaNr = this.currentFunction.split(",").length - 1;
+        //this.commaNr = this.currentFunction.split(",").length - 1;
         this.$nextTick(() => {
           const divElement = document.getElementById("syntaxDiv");
           const spans = divElement?.querySelectorAll("span");
@@ -661,8 +787,6 @@ export default defineComponent({
         //this.possibleFunction = this.searchText;
         this.getParametersForBolding();
       }
-
-
 
       this.bracketFlag =
         this.areBracketsOpen(this.searchText) === 0 ? false : true;
