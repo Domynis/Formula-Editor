@@ -273,50 +273,58 @@ export default defineComponent({
       /// create tree
       if (this.dataTree) {
         this.tempTree = this.dataTree; //we get the temporary tree that corresponds to the current searchText
-        /// see what to display in details window
         try {
           this.checkForFunctionNames(this.tempTree);
         } catch (error) {
           alert(error);
         }
       }
+      console.log(this.tempTree);
       this.handleCursorChange(cursorPosition);
     },
 
     handleCursorChange(cursorPos: number) {
       //time to search for function where cursorPosition is
       const treeNodeFromCursor = this.getTreeNodeFromIndex(cursorPos);
-      if(treeNodeFromCursor) {
+      console.log(treeNodeFromCursor);
+      if (treeNodeFromCursor) {
         //here we can implement the window popping up
         //be careful with situation where we have "sum(" and cursor is on position 3 (we should prolly display sum, but it stays on ( separator and doesn't do anything)
       }
     },
 
     getTreeNodeFromIndex(index: number): TreeNode | null {
-      const separators = " (),";
+      const separators = "(),";
       let i = index;
+      if (separators.includes(this.searchText[i])) {
+        i--;
+      }
+
       for (; i > 0; i--) {
         if (separators.includes(this.searchText[i])) {
           break;
         }
       }
+
       if (i !== 0) {
         i++;
       }
+
       console.log(i);
       const searchedNode = this.searchForNode(this.tempTree, i);
       console.log(searchedNode);
+
       return searchedNode;
     },
 
     searchForNode(root: TreeNode | null, index: number): TreeNode | null {
-      if (root && !TreeNode.isNumeric(root.data.name)) {
-        if(root.indexInInput == index) {
+      if (root) {
+        if (root.indexInInput == index) {
           return root;
         }
         for (const child of root.children) {
           let childNode = this.searchForNode(child, index);
-          if(childNode) {
+          if (childNode) {
             return childNode;
           }
         }

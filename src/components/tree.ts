@@ -28,9 +28,11 @@ export class TreeNode {
     let currentFunction = "";
     let index = 0;
     let level = 0;
+    input = input.trim();
 
     for (const char of input) {
       if (char === "(") {
+
         if (currentFunction !== "") {
           const newNode = new TreeNode(
             { name: currentFunction },
@@ -64,6 +66,12 @@ export class TreeNode {
       } else {
         if (this.isNumeric(char)) {
           currentNumber += char;
+
+          if (index == input.length - 1 && stack[0]) {
+            stack[stack.length - 1].addChild(
+              new TreeNode({ name: currentNumber }, index - currentNumber.length + 1)
+            );
+          }
         } else {
           currentFunction += char;
         }
