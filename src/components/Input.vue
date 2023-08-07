@@ -86,7 +86,7 @@
                             color: #627dff;
                           "
                         >
-                          {{ index + 1 }}
+                          <v-icon> mdi-variable </v-icon>
                         </v-col>
                         <v-col>
                           <b
@@ -392,6 +392,8 @@ export default defineComponent({
             this.verifyIfDigit(textAfterSeparator.slice(-1)) == false
           ) {
             this.showDiv = false;
+          } else {
+            this.showDiv = true;
           }
         }
       }
@@ -497,21 +499,12 @@ export default defineComponent({
         );
         if (searchedNode) {
           if (searchedNode.children.length != 0) {
-            const childNode = this.getTreeNodeFromIndex(
-              this.getCursorPosition()
-            );
-            const seaNode = this.searchForNode(
-              this.tempTree,
-              childNode,
-              (parentTree: TreeNode, childTree: TreeNode) => {
-                return parentTree.children.includes(childTree);
-              }
-            );
-            if (seaNode) {
-              for (let i = 0; i < seaNode!.children.length; i++) {
-                if (seaNode.children[i].indexInInput == childNode!.indexInInput)
-                  this.commaNr = i;
-              }
+            for (let i = 0; i < searchedNode!.children.length; i++) {
+              if (
+                searchedNode.children[i].indexInInput ==
+                treeNodeFromCursor!.indexInInput
+              )
+                this.commaNr = i;
             }
           } else {
             this.commaNr = 0;
@@ -519,7 +512,9 @@ export default defineComponent({
         }
 
         if (treeNodeFromCursor.data.name != "") {
-          this.findDetails(treeNodeFromCursor.data.name);
+          if (TreeNode.isNumeric(treeNodeFromCursor.data.name))
+            this.findDetails(searchedNode!.data.name);
+          else this.findDetails(treeNodeFromCursor.data.name);
         }
 
         // Update commaNr only after entering a comma
