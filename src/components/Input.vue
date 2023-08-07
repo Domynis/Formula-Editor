@@ -227,6 +227,7 @@ import axios from "axios";
 import { mathFunctionModel } from "../models/mathFunction.model";
 import MTooltip from "@axten/m-tooltip";
 import { TreeNode } from "./tree";
+import { FilterTiltShiftSharp } from "@mui/icons-material";
 
 // Example usage:
 //const input = "sum(cos(20),(sylvester(15,16,7)),variance(2,1,3,4)";
@@ -337,6 +338,11 @@ export default defineComponent({
       return cursorPosition;
     },
 
+    verifyIfDigit(textAfterSeparator: string) {
+      const regex = /^\d+$/;
+      return regex.test(textAfterSeparator);
+    },
+
     handleInputEvent() {
       if (
         this.searchText.slice(-1) === "(" ||
@@ -364,6 +370,35 @@ export default defineComponent({
       }
       // console.log(this.tempTree);
       this.handleCursorChange(cursorPosition);
+
+      const lastOpenParenthesisIndex = this.searchText.lastIndexOf("(");
+      const lastCommaIndex = this.searchText.lastIndexOf(",");
+
+      const lastSeparatorIndex = Math.max(
+        lastOpenParenthesisIndex,
+        lastCommaIndex
+      );
+
+      if (lastSeparatorIndex !== -1) {
+        const textAfterSeparator = this.searchText.slice(
+          lastSeparatorIndex + 1
+        );
+        const selectedItem = this.listItems.find(
+          (item) => item.name === textAfterSeparator
+        );
+        if (textAfterSeparator.slice(-1) != "") {
+          if (
+            !selectedItem &&
+            this.verifyIfDigit(textAfterSeparator.slice(-1)) == false
+          ) {
+            this.showDiv = false;
+          }
+        }
+      }
+
+      if (this.searchText.length < 3) {
+        this.showDiv = false;
+      }
     },
 
     boldingSyntaxForInputChange() {
@@ -460,16 +495,39 @@ export default defineComponent({
             return parentTree.children.includes(childTree);
           }
         );
-        if (searchedNode) this.commaNr = searchedNode.children.length;
+        if (searchedNode) {
+          if (searchedNode.children.length != 0) {
+            const childNode = this.getTreeNodeFromIndex(
+              this.getCursorPosition()
+            );
+            const seaNode = this.searchForNode(
+              this.tempTree,
+              childNode,
+              (parentTree: TreeNode, childTree: TreeNode) => {
+                return parentTree.children.includes(childTree);
+              }
+            );
+            if (seaNode) {
+              for (let i = 0; i < seaNode!.children.length; i++) {
+                if (seaNode.children[i].indexInInput == childNode!.indexInInput)
+                  this.commaNr = i;
+              }
+            }
+          } else {
+            this.commaNr = 0;
+          }
+        }
 
         if (treeNodeFromCursor.data.name != "") {
           this.findDetails(treeNodeFromCursor.data.name);
         }
-        //here we can implement the window popping up
-        //be careful with situation where we have "sum(" and cursor is on position 3 (we should prolly display sum, but it stays on ( separator and doesn't do anything)
+
+        // Update commaNr only after entering a comma
+
+        // here we can implement the window popping up
+        // be careful with the situation where we have "sum(" and cursor is on position 3 (we should probably display sum, but it stays on ( separator and doesn't do anything)
       }
     },
-
     getTreeNodeFromIndex(index: number): TreeNode | null {
       const separators = "(),";
       let i = index;
