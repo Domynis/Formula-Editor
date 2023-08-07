@@ -229,9 +229,9 @@ import MTooltip from "@axten/m-tooltip";
 import { TreeNode } from "./tree";
 
 // Example usage:
-const input = "sum(cos(20),(sylvester(15,16,7)),variance(2,1,3,4)";
-const tree = TreeNode.parseTreeFromString(input);
-console.log(tree);
+//const input = "sum(cos(20),(sylvester(15,16,7)),variance(2,1,3,4)";
+//const tree = TreeNode.parseTreeFromString(input);
+
 //displayLevels(tree!);
 
 export default defineComponent({
@@ -276,6 +276,7 @@ export default defineComponent({
       dotsParamIndex: Number.MAX_SAFE_INTEGER,
       tempTree: new TreeNode({ name: "" }, 0),
       function: null,
+      functionToSearchFor: "",
     };
   },
   props: {
@@ -299,7 +300,9 @@ export default defineComponent({
       //refactor
       // Computed property to filter the listItems based on the searchText
       return this.listItems.filter((item: mathFunctionModel) =>
-        item.name.toLowerCase().startsWith(this.searchText.toLowerCase())
+        item.name
+          .toLowerCase()
+          .startsWith(this.functionToSearchFor.toLowerCase())
       );
     },
     dataTree(): TreeNode {
@@ -335,6 +338,20 @@ export default defineComponent({
     },
 
     handleInputEvent() {
+      if (
+        this.searchText.slice(-1) === "(" ||
+        this.searchText.slice(-1) === ","
+      ) {
+        this.functionToSearchFor = "";
+      } else if (this.searchText.length < this.functionToSearchFor.length) {
+        this.functionToSearchFor = this.functionToSearchFor.slice(
+          0,
+          this.searchText.length
+        );
+      } else {
+        this.functionToSearchFor += this.searchText.slice(-1);
+      }
+
       const cursorPosition = this.getCursorPosition();
       /// create tree
       if (this.dataTree) {
@@ -351,7 +368,6 @@ export default defineComponent({
 
     boldingSyntaxForInputChange() {
       this.$nextTick(() => {
-        console.log(this.commaNr);
         // Reset the background color of all span elements to the default color "#c0ccff"
         for (let i = 0; i <= this.listOfParam.length; i++) {
           const divElement = document.getElementById("span-" + i);
@@ -402,7 +418,6 @@ export default defineComponent({
     },
 
     findDetails(name: string) {
-      console.log(name);
       const selectedItem = this.listItems.find((item) => item.name === name);
       if (selectedItem) {
         this.descriptionDivText = selectedItem.description.toString();
@@ -426,8 +441,6 @@ export default defineComponent({
         this.boldingSyntaxForInputChange();
         this.newFlag = true;
       } else {
-        console.log(this.searchText);
-
         this.boldingSyntaxForInputChange();
       }
     },
@@ -436,7 +449,6 @@ export default defineComponent({
 
       const treeNodeFromCursor = this.getTreeNodeFromIndex(cursorPos);
       if (this.searchText == "(") {
-        console.log("super");
         console.log(treeNodeFromCursor);
       }
 
@@ -475,7 +487,6 @@ export default defineComponent({
         i++;
       }
 
-      console.log(i);
       const searchedNode = this.searchForNode(
         this.tempTree,
         i,
@@ -551,37 +562,36 @@ export default defineComponent({
         this.showList = true;
         const finalResult = mathFunctionItem.name.trim();
 
-        //search for a match in the filteredList, if found display the syntax for the function in the input
-        for (let i = 0; i < this.filteredList.length; i++) {
-          if (finalResult == this.filteredList[i].name) {
-            this.bracketFlag = true;
-            this.flagSearchIsFromClick = true;
+        const lastCommaIndex = this.searchText.lastIndexOf(",");
+        const lastOpenParenthesisIndex = this.searchText.lastIndexOf("(");
 
-            this.descriptionDivText =
-              this.filteredList[i].description.toString();
-
-            this.exampleDivText =
-              this.filteredList[i].examples[0] +
-              (this.filteredList[i].examples.length > 1
-                ? " , " + this.filteredList[i].examples[1]
-                : "");
-
-            this.divText = this.filteredList[i].syntax[0].toString();
-
-            this.searchText = finalResult + "(";
-            this.showList = false;
-
-            this.showDiv = true;
-            this.isDivExampleExtended = this.showExampleDiv = false;
-
-            this.findingDetailsForListItem();
-            this.flagSearchIsFromClick = true;
-
-            break;
-          }
+        if (lastCommaIndex !== -1 || lastOpenParenthesisIndex !== -1) {
+          const lastSeparatorIndex = Math.max(
+            lastCommaIndex,
+            lastOpenParenthesisIndex
+          );
+          this.searchText =
+            this.searchText.slice(0, lastSeparatorIndex + 1) + finalResult;
+        } else {
+          this.searchText = finalResult;
         }
+
+        this.bracketFlag = true;
+        this.flagSearchIsFromClick = true;
+        this.descriptionDivText = mathFunctionItem.description.toString();
+        this.exampleDivText =
+          mathFunctionItem.examples[0] +
+          (mathFunctionItem.examples.length > 1
+            ? " , " + mathFunctionItem.examples[1]
+            : "");
+        this.divText = mathFunctionItem.syntax[0].toString();
+        this.showList = false;
+        this.showDiv = true;
+        this.isDivExampleExtended = this.showExampleDiv = false;
+        this.flagSearchIsFromClick = true;
       }
     },
+
     handleCloseList() {
       // Method to close the list
       this.hoveredIndex = 0;
@@ -696,18 +706,16 @@ export default defineComponent({
     },
 
     removeSpansFromDiv() {
-      if (!this.flagSearchIsFromClick) {
-        //this.commaNr = this.currentFunction.split(",").length - 1;
-        this.$nextTick(() => {
-          const divElement = document.getElementById("syntaxDiv");
-          const spans = divElement?.querySelectorAll("span");
-          if (spans) {
-            spans.forEach((span) => {
-              span.remove();
-            });
-          }
-        });
-      }
+      //this.commaNr = this.currentFunction.split(",").length - 1;
+      this.$nextTick(() => {
+        const divElement = document.getElementById("syntaxDiv");
+        const spans = divElement?.querySelectorAll("span");
+        if (spans) {
+          spans.forEach((span) => {
+            span.remove();
+          });
+        }
+      });
     },
 
     findDetailsAboutFunction() {
