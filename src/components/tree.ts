@@ -1,6 +1,5 @@
 interface NodeData {
   name: string;
-  params?: Array<number | NodeData>;
 }
 
 export class TreeNode {
@@ -26,9 +25,12 @@ export class TreeNode {
     const stack: TreeNode[] = [];
     let currentNumber = "";
     let currentFunction = "";
+    // let spaces = "";
+
+
     let index = 0;
     let level = 0;
-    input = input.trim();
+    // input = input.trim();
 
     for (const char of input) {
       if (char === "(") {
