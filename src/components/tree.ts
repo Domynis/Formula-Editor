@@ -25,15 +25,20 @@ export class TreeNode {
     const stack: TreeNode[] = [];
     let currentNumber = "";
     let currentFunction = "";
-    // let spaces = "";
+
+    let isLastSeparatorAClosingBracket = false;
+    const specialCharsForNumbers = "[];";
 
     let index = 0;
     let level = 0;
-    // input = input.trim();
+    input = input.trim();
 
     for (const char of input) {
       if (char === "(") {
         if (currentFunction !== "") {
+
+
+
           const newNode = new TreeNode(
             { name: currentFunction },
             index - currentFunction.length
@@ -43,34 +48,52 @@ export class TreeNode {
           }
           stack.push(newNode);
           currentFunction = "";
+          currentNumber = "";
           level++;
         }
+        isLastSeparatorAClosingBracket = false;
       } else if (char === ",") {
+
+
         if (currentNumber !== "") {
-          stack[stack.length - 1].addChild(
-            new TreeNode({ name: currentNumber }, index - currentNumber.length)
-          );
+
+          if (!(isLastSeparatorAClosingBracket && currentNumber.trim() === "")) {
+            stack[stack.length - 1].addChild(
+              new TreeNode({ name: currentNumber }, index - currentNumber.length)
+            );
+          }
           currentNumber = "";
+          currentFunction = "";
         }
+        isLastSeparatorAClosingBracket = false;
       } else if (char === ")") {
+
         if (currentNumber !== "") {
           stack[stack.length - 1].addChild(
             new TreeNode({ name: currentNumber }, index - currentNumber.length)
           );
           currentNumber = "";
+          currentFunction = "";
+
+
         }
         if (index != input.length - 1) {
           stack.pop();
           level--;
         }
+        isLastSeparatorAClosingBracket = true;
       } else {
-        if (this.isNumeric(char)) {
+        if (char == " ") {
+          currentNumber += " ";
+          currentFunction += " ";
+        }
+        else if (this.isNumeric(char) || specialCharsForNumbers.includes(char)) {
           currentNumber += char;
         } else {
           currentFunction += char;
         }
-        let currentData = currentNumber != "" ? currentNumber : currentFunction;
         if (index == input.length - 1 && stack[0]) {
+          const currentData = currentNumber.length >= currentFunction.length ? currentNumber : currentFunction;
           stack[stack.length - 1].addChild(
             new TreeNode({ name: currentData }, index - currentData.length + 1)
           );
