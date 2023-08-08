@@ -5,13 +5,28 @@
         <div class="main-container">
           <div class="input-container">
             <div class="input-button-container">
-              <v-text-field id="mainInput" class="mx-2 red-input" ref="myInput" v-model="searchText"
-                @input="handleInputEvent" @keyup="handleArrowKeyPressEvent" @mouseup="handleMouseUpEvent"
-                placeholder="Search items" spellcheck="false" />
+              <v-text-field
+                id="mainInput"
+                class="mx-2 red-input"
+                ref="myInput"
+                v-model="searchText"
+                @input="handleInputEvent"
+                @keyup="handleArrowKeyPressEvent"
+                @mouseup="handleMouseUpEvent"
+                placeholder="Search items"
+                spellcheck="false"
+              />
 
               <m-tooltip top>
                 <template v-slot:element>
-                  <v-btn class="mx-2" small fab color="#627dff" dark @click.stop="handleButtonClick">
+                  <v-btn
+                    class="ms-7"
+                    small
+                    fab
+                    color="#627dff"
+                    dark
+                    @click.stop="handleButtonClick"
+                  >
                     <v-icon> mdi-function-variant </v-icon>
                   </v-btn>
                 </template>
@@ -22,11 +37,20 @@
             </div>
             <v-card class="mx-auto" :ripple="false" v-if="showList">
               <v-toolbar outlined rounded style="box-shadow: none">
-                <v-toolbar-title style="font-size: 0.9rem; font-weight: bold">Write formula</v-toolbar-title>
+                <v-toolbar-title style="font-size: 0.9rem; font-weight: bold"
+                  >Write formula</v-toolbar-title
+                >
                 <v-spacer></v-spacer>
                 <m-tooltip top>
                   <template v-slot:element>
-                    <v-btn class="mx-2" fab x-small color="#627dff" dark @click="handleCloseList">
+                    <v-btn
+                      class="mx-2"
+                      fab
+                      x-small
+                      color="#627dff"
+                      dark
+                      @click="handleCloseList"
+                    >
                       <v-icon dark> mdi-alpha-x </v-icon>
                     </v-btn>
                   </template>
@@ -35,23 +59,41 @@
                   </template>
                 </m-tooltip>
               </v-toolbar>
-              <v-list width="25rem" max-height="28rem" class="py-0" style="overflow-y: scroll">
-                <template v-for="(item, index) in filteredList" @key="item.name">
-                  <v-list-item class="pl-0" style="height: 5rem; font-size: 0.8rem" :key="item.name"
-                    @click="handleClickItemList(item)" @mouseover="hoveredIndex = index">
+              <v-list
+                width="25rem"
+                max-height="28rem"
+                class="py-0"
+                style="overflow-y: scroll"
+              >
+                <template
+                  v-for="(item, index) in filteredList"
+                  @key="item.name"
+                >
+                  <v-list-item
+                    class="pl-0"
+                    style="height: 5rem; font-size: 0.8rem"
+                    :key="item.name"
+                    @click="handleClickItemList(item)"
+                    @mouseover="hoveredIndex = index"
+                  >
                     <v-list-item-content>
                       <v-row style="height: 5rem">
-                        <v-col cols="2" style="
+                        <v-col
+                          cols="2"
+                          style="
                             background-color: #dfe8ff;
                             text-align: right;
                             color: #627dff;
-                          ">
+                          "
+                        >
                           <v-icon> mdi-variable </v-icon>
                         </v-col>
                         <v-col>
-                          <b><span style="font-size: 14px">
+                          <b
+                            ><span style="font-size: 14px">
                               {{ item.name }}
-                            </span></b>
+                            </span></b
+                          >
                           {{ item.category }}
                           <div style="color: #9db8fc">
                             {{ getShortDescription(item.description.at(0)) }}
@@ -67,12 +109,18 @@
                   <v-col cols="2" class="pa-0">
                     <m-tooltip bottom>
                       <template v-slot:element>
-                        <v-btn small style="
+                        <v-btn
+                          small
+                          style="
                             min-width: 3.35rem;
                             min-height: 2.3rem;
                             border-radius: 0px;
                             box-shadow: none;
-                          " color="#627dff" dark @click="handleCloseList">
+                          "
+                          color="#627dff"
+                          dark
+                          @click="handleCloseList"
+                        >
                           <v-icon> mdi-check </v-icon>
                         </v-btn>
                       </template>
@@ -84,8 +132,12 @@
                   <v-col class="py-1 text-right">
                     <m-tooltip bottom>
                       <template v-slot:element>
-                        <a style="font-size: 0.8rem" href="https://machinations.io/docs/math-js-functions"
-                          target="_blank">Help Documentation</a>
+                        <a
+                          style="font-size: 0.8rem"
+                          href="https://machinations.io/docs/math-js-functions"
+                          target="_blank"
+                          >Help Documentation</a
+                        >
                       </template>
                       <template v-slot:message>
                         <div>{{ "Do you want to know more about this?" }}</div>
@@ -104,7 +156,14 @@
               <v-col class="text-end">
                 <m-tooltip bottom>
                   <template v-slot:element>
-                    <v-btn class="mx-2" fab x-small color="#627dff" dark @click.stop="displayExampleAndDescription">
+                    <v-btn
+                      class="mx-2"
+                      fab
+                      x-small
+                      color="#627dff"
+                      dark
+                      @click.stop="displayExampleAndDescription"
+                    >
                       <v-icon v-if="!isDivExampleExtended">
                         mdi-arrow-down-bold
                       </v-icon>
@@ -117,8 +176,8 @@
                     <div>
                       {{
                         isDivExampleExtended
-                        ? "Minimize details"
-                        : "Extend details"
+                          ? "Minimize details"
+                          : "Extend details"
                       }}
                     </div>
                   </template>
@@ -140,8 +199,12 @@
                 <m-tooltip bottom>
                   <template v-slot:element>
                     <div class="titleDiv">
-                      <a style="color: grey" target="_blank" href="https://machinations.io/docs/math-js-functions">Find
-                        more</a>
+                      <a
+                        style="color: grey"
+                        target="_blank"
+                        href="https://machinations.io/docs/math-js-functions"
+                        >Find more</a
+                      >
                     </div>
                   </template>
                   <template v-slot:message>
@@ -159,22 +222,14 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import ListContainer from "./ListContainer.vue";
 import axios from "axios";
 import { mathFunctionModel } from "../models/mathFunction.model";
 import MTooltip from "@axten/m-tooltip";
 import { TreeNode } from "./tree";
 
-// Example usage:
-//const input = "sum(cos(20),(sylvester(15,16,7)),variance(2,1,3,4)";
-//const tree = TreeNode.parseTreeFromString(input);
-
-//displayLevels(tree!);
-
 export default defineComponent({
   components: {
     MTooltip,
-    ListContainer,
   },
   data() {
     return {
@@ -183,7 +238,6 @@ export default defineComponent({
       message: "",
       searchText: "",
       showList: false,
-      letter: "",
       searchTextCopy: "",
       showDiv: false,
       divText: "text",
@@ -191,28 +245,17 @@ export default defineComponent({
       exampleDivText: "",
       isDivExampleExtended: false,
       descriptionDivText: "",
-      wordPosition: 0,
-      inputString: "",
-      positionToColor: 2,
-      coloredText: "",
-      selectedColor: "red",
       paramListSplitByOpenBracket: [] as string[],
       paramListSplitByClosedBracket: [] as string[],
       listOfParam: [] as string[],
-      paramNumber: 0,
       commaNr: 0,
       flagSearchIsFromClick: false,
       currentFunction: "",
-      lastFunction: "",
-      isFunctionClosed: 0,
       bracketFlag: false,
       nrFunctions: 0,
-      nrFunctionsPossible: 0,
       possibleFunction: "",
       newFlag: false,
-      dotsParamIndex: Number.MAX_SAFE_INTEGER,
       tempTree: new TreeNode({ name: "" }, 0),
-      function: null,
       functionToSearchFor: "",
     };
   },
@@ -234,8 +277,7 @@ export default defineComponent({
   },
   computed: {
     filteredList(): mathFunctionModel[] {
-      //refactor
-      // Computed property to filter the listItems based on the searchText
+      // Computed property to filter the listItems based on the current function from input text
       return this.listItems.filter((item: mathFunctionModel) =>
         item.name
           .toLowerCase()
@@ -249,6 +291,7 @@ export default defineComponent({
 
   methods: {
     handleArrowKeyPressEvent(event: KeyboardEvent) {
+      //handle each arrow clicking
       const key_code = {
         left: "ArrowLeft",
         up: "ArrowUp",
@@ -268,6 +311,7 @@ export default defineComponent({
     },
 
     getCursorPosition() {
+      //get the current cursor position in text field
       const input = this.$refs["myInput"] as any;
       const cursorPosition = input.$refs.input.selectionStart;
       // console.log(cursorPosition);
@@ -344,7 +388,7 @@ export default defineComponent({
 
       const treeNodeFromCursor = this.getTreeNodeFromIndex(cursorPos);
       if (this.searchText == "(") {
-        console.log(treeNodeFromCursor);
+        //console.log(treeNodeFromCursor);
       }
 
       if (treeNodeFromCursor) {
@@ -357,10 +401,12 @@ export default defineComponent({
           }
         );
         if (searchedNode) {
-          console.log(searchedNode);
           if (searchedNode.children.length != 0) {
             for (let i = 0; i < searchedNode!.children.length; i++) {
-              if (searchedNode.children[i].indexInInput == treeNodeFromCursor.indexInInput)
+              if (
+                searchedNode.children[i].indexInInput ==
+                treeNodeFromCursor.indexInInput
+              )
                 this.commaNr = i;
             }
           } else {
@@ -374,7 +420,7 @@ export default defineComponent({
           try {
             this.checkForFunctionNames(treeNodeFromCursor);
           } catch (error) {
-            console.log("is letter");
+            //console.log("is letter");
           }
 
           // Call the findDetails() function with appropriate arguments
@@ -413,40 +459,39 @@ export default defineComponent({
           currentDivElement.style.backgroundColor = "#627ddf";
           currentDivElement.style.color = "white";
         }
-
-        /*if (currentDivElement && currentDivElement.textContent === " ...") {
-          //if the function has a '...' parameter, let that be the last highlighted one
-          this.dotsParamIndex = this.commaNr;
-        }
-
-        if (this.commaNr < this.dotsParamIndex)
-          //if it hasn't reached it yet for this function, restart it
-          this.dotsParamIndex = Number.MAX_SAFE_INTEGER;
-
-        if (currentDivElement) {
-          if (this.commaNr <= this.dotsParamIndex) {
-            currentDivElement.style.backgroundColor = "#627ddf";
-            currentDivElement.style.color = "white";
+        const childNode = this.getTreeNodeFromIndex(this.getCursorPosition());
+        const searchedNode = this.searchForNode(
+          this.tempTree,
+          childNode,
+          (parentTree: TreeNode, childTree: TreeNode) => {
+            return parentTree.children.includes(childTree);
           }
-        } else if (this.dotsParamIndex != Number.MAX_SAFE_INTEGER) {
-          //checks if the potential '...' parameter was visited
-          const dotsParamElement = document.getElementById(
-            "span-" + this.dotsParamIndex
-          );
-          if (dotsParamElement) {
-            dotsParamElement.style.backgroundColor = "#627ddf";
-            dotsParamElement.style.color = "white";
+        );
+        // when we have in syntax "..." there is an unlimited number of parameters, the parameter "..." will be displayed in bold
+        const selectedItem = this.listItems.find(
+          (item) => item.name === searchedNode?.data.name
+        );
+        if (selectedItem)
+          if (selectedItem.syntax[0].includes("...")) {
+            const params = selectedItem.syntax[0].split(",");
+            if (params.length <= this.commaNr) {
+              const currentDivElement = document.getElementById(
+                "span-" + (params.length - 1)
+              );
+              currentDivElement!.style.backgroundColor = "#627ddf";
+              currentDivElement!.style.color = "white";
+            }
           }
-        }*/
-
-        //handles Comma
 
         this.isDivExampleExtended = false;
       });
     },
 
     findDetails(name: string) {
-      const selectedItem = this.listItems.find((item) => item.name === name.trim());
+      //find syntax, description, examples and update bolding based on a given name
+      const selectedItem = this.listItems.find(
+        (item) => item.name === name.trim()
+      );
       if (selectedItem) {
         this.descriptionDivText = selectedItem.description.toString();
         // this.commaNr = 0;
@@ -456,12 +501,10 @@ export default defineComponent({
             ? " , " + selectedItem.examples[1]
             : "");
         this.divText = selectedItem.syntax[0].toString();
-        this.showList = false;
+        //this.showList = false;
         this.showDiv = true;
         this.showExampleDiv = false;
         this.removeSpansFromDiv();
-        //this.searchText = this.searchTextCopy;
-        //this.possibleFunction = this.searchText;
         this.getParametersForBolding();
 
         this.currentFunction = selectedItem.name;
@@ -473,7 +516,6 @@ export default defineComponent({
         this.boldingSyntaxForInputChange();
       }
     },
-
 
     getTreeNodeFromIndex(index: number): TreeNode | null {
       const separators = "(),";
@@ -494,7 +536,10 @@ export default defineComponent({
           bracketCounter++;
         } else if (this.searchText[i] == "(" && bracketCounter > 0) {
           bracketCounter--;
-        } else if (separators.includes(this.searchText[i]) && bracketCounter == 0) {
+        } else if (
+          separators.includes(this.searchText[i]) &&
+          bracketCounter == 0
+        ) {
           break;
         }
       }
@@ -513,13 +558,6 @@ export default defineComponent({
 
       return searchedNode;
     },
-
-    /*example purpose*/
-    // const searchedNode = this.searchForNode(this.tempTree, childNode, (parentTree: TreeNode, childTree: TreeNode) => {
-    //   return parentTree.children.includes(childTree);
-    // });
-    // console.log("copil!");
-    // console.log(searchedNode);
 
     searchForNode(
       root: TreeNode | null,
@@ -574,6 +612,7 @@ export default defineComponent({
       this.showDiv = false;
     },
     handleClickItemList(mathFunctionItem: mathFunctionModel) {
+      // find syntax, description, example for a function from the list given as a parameter
       if (!this.showDiv) {
         this.showList = true;
         const finalResult = mathFunctionItem.name.trim();
@@ -602,7 +641,7 @@ export default defineComponent({
             : "");
         this.divText = mathFunctionItem.syntax[0].toString();
         this.showList = false;
-        this.showDiv = true;
+
         this.isDivExampleExtended = this.showExampleDiv = false;
         this.flagSearchIsFromClick = true;
       }
@@ -687,42 +726,8 @@ export default defineComponent({
       });
     },
 
-    findingDetailsForListItem() {
-      this.showDiv = true;
-      this.searchText = this.searchText.slice(0, -1);
-      //this.possibleFunction = this.searchText;
-      this.paramNumber = 0;
-
-      this.bracketFlag = true;
-
-      const selectedItem = this.filteredList.find(
-        (item) => item.name === this.searchText
-      );
-
-      if (selectedItem) {
-        // If a match is found, update the divText with the syntax and show the div
-        this.findDetailsAboutFunction();
-        this.flagSearchIsFromClick = true;
-        //remove all the spans that are already in the divElement
-        this.$nextTick(() => {
-          this.commaNr = 0;
-          const divElement = document.getElementById("syntaxDiv");
-          const spans = divElement?.querySelectorAll("span");
-          if (spans) {
-            spans.forEach((span) => {
-              span.remove();
-            });
-          }
-        });
-        this.getParametersForBolding();
-        // Use this.$nextTick to ensure the DOM is updated before accessing the divForBrackets element
-      }
-
-      this.searchText += "(";
-    },
-
     removeSpansFromDiv() {
-      //this.commaNr = this.currentFunction.split(",").length - 1;
+      //remove existing spans from the syntax div
       this.$nextTick(() => {
         const divElement = document.getElementById("syntaxDiv");
         const spans = divElement?.querySelectorAll("span");
@@ -734,168 +739,14 @@ export default defineComponent({
       });
     },
 
-    findDetailsAboutFunction() {
-      const selectedItem = this.filteredList.find(
-        (item) => item.name === this.searchText
-      );
-      if (selectedItem) {
-        this.descriptionDivText = selectedItem.description.toString();
-
-        this.exampleDivText =
-          selectedItem.examples[0] +
-          (selectedItem.examples.length > 1
-            ? " , " + selectedItem.examples[1]
-            : "");
-
-        this.divText = selectedItem.syntax.toString();
-        this.showList = false;
-        this.showDiv = true;
-        this.showExampleDiv = false;
-        if (!this.flagSearchIsFromClick) this.getParametersForBolding();
-        else {
-          this.flagSearchIsFromClick = false;
-        }
-      }
-    },
-
-    verifyIfFunction() {
-      const selectedItem = this.listItems.find(
-        (item) => item.name === this.possibleFunction
-      );
-      if (selectedItem) {
-        this.descriptionDivText = selectedItem.description.toString();
-
-        this.exampleDivText =
-          selectedItem.examples[0] +
-          (selectedItem.examples.length > 1
-            ? " , " + selectedItem.examples[1]
-            : "");
-        this.divText = selectedItem.syntax[0].toString();
-        this.showList = false;
-        this.showDiv = true;
-        this.showExampleDiv = false;
-        this.removeSpansFromDiv();
-        //this.searchText = this.searchTextCopy;
-        //this.possibleFunction = this.searchText;
-        this.getParametersForBolding();
-        this.commaNr = 0;
-        this.currentFunction = selectedItem.name;
-        this.currentFunction += "(";
-        this.boldingSyntaxForInputChange();
-        //this.commaNr++;
-        this.newFlag = true;
-      }
-    },
-
-    handleInputChange() {
-      const isLastCharClosingBracket = this.searchText.slice(-1) === ")";
-      //console.log(this.recentParameters);
-      // Check if the input is a deletion and the last character was ")"
-      if (this.letter === "" && isLastCharClosingBracket) {
-        this.bracketFlag = true;
-        return;
-      }
-
-      const cr = this.areBracketsOpen(this.lastFunction);
-      if (this.nrFunctions !== this.nrFunctionsPossible) {
-        this.nrFunctionsPossible--;
-        //this.searchText = this.lastFunction.slice(0, -1);
-        this.paramListSplitByClosedBracket = this.searchText.split("(");
-        this.searchTextCopy = this.searchText;
-        this.searchText = this.paramListSplitByClosedBracket[0];
-
-        //this.divText = this.searchText;
-        this.showDiv = true;
-        this.removeSpansFromDiv();
-        this.searchText = this.searchTextCopy;
-        //this.possibleFunction = this.searchText;
-        this.getParametersForBolding();
-      }
-
-      this.bracketFlag =
-        this.areBracketsOpen(this.searchText) === 0 ? false : true;
-
-      if (this.searchText === "") {
-        this.showDiv = false;
-        return;
-      }
-
-      //if the input does not contain ( we are not displaying the div that contains details
-      //about the functions
-      //this.showDiv = !this.bracketFlag ? false : this.showDiv;
-
-      this.letter = this.searchText.slice(-1);
-      // Update the searchText
-      if (this.letter == "(" || this.letter == ")" || this.letter == ",") {
-        if (this.letter == "(") {
-        }
-        this.possibleFunction = this.possibleFunction.split(/[ ,()]/).join("");
-        this.verifyIfFunction();
-        this.showDiv = true;
-        this.possibleFunction = "";
-      }
-      this.possibleFunction += this.letter;
-      //If in the input is typed (, we are searching for a possible function with the name of the searchText and
-      // append its syntax to the input
-
-      if (this.searchText.includes("(")) {
-        this.boldingSyntaxForInputChange();
-      }
-      if (this.letter === "(") {
-        //this.showDiv = false;
-        this.nrFunctions++;
-        this.nrFunctionsPossible++;
-        if (this.newFlag == false) {
-          this.currentFunction = this.searchText;
-          this.removeSpansFromDiv();
-          this.searchText = this.searchText.slice(0, -1); // Remove the "("
-          //this.possibleFunction = this.searchText;
-          this.paramNumber = 0;
-          this.bracketFlag = true;
-
-          //try to find a function that has the same name as the input
-          const selectedItem = this.filteredList.find(
-            (item) => item.name === this.searchText
-          );
-
-          if (selectedItem) {
-            // If a match is found, update the divText with the syntax and show the div
-            this.findDetailsAboutFunction();
-            this.flagSearchIsFromClick = true;
-          }
-          this.searchText += "(";
-        }
-
-        if (this.bracketFlag) {
-          this.boldingSyntaxForInputChange();
-        }
-        if (this.flagSearchIsFromClick) {
-          this.flagSearchIsFromClick = false;
-        }
-      }
-      // Check if the input contains ")"
-      if (this.letter === ")") {
-        this.lastFunction = this.currentFunction;
-        //this.lastFunction = this.lastFunction.slice(0, -1); // Remove the ")"
-        this.isFunctionClosed++;
-        this.nrFunctions--;
-
-        this.$nextTick(() => {
-          this.showDiv = false;
-          this.bracketFlag = true; // Set the flag to true when ")" is added back
-        });
-      }
-    },
-
     areBracketsOpen(stringArray: string): number {
+      //verify if brackets are open in the input text
       let counter = 0;
       for (let i = 0; i < stringArray.length; i++) {
         counter += stringArray[i] == "(" ? 1 : stringArray[i] == ")" ? -1 : 0;
         if (counter < 0) return -1;
       }
       return counter == 0 ? 0 : 1;
-
-      //returns -1 for wrong syntax, 0 for equal bracket open/closing and 1 for brackets are open
     },
   },
 });
@@ -940,6 +791,7 @@ export default defineComponent({
   flex: 1;
   height: 2;
   size: 20px;
+  width: 300px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   /* Add a subtle box-shadow */
   resize: none;
