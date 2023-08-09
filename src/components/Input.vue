@@ -257,6 +257,7 @@ export default defineComponent({
       newFlag: false,
       tempTree: new TreeNode({ name: "" }, 0),
       functionToSearchFor: "",
+      copyOfFunction: "",
     };
   },
   props: {
@@ -314,7 +315,6 @@ export default defineComponent({
       //get the current cursor position in text field
       const input = this.$refs["myInput"] as any;
       const cursorPosition = input.$refs.input.selectionStart;
-      // console.log(cursorPosition);
       return cursorPosition;
     },
 
@@ -323,7 +323,27 @@ export default defineComponent({
       return regex.test(textAfterSeparator);
     },
 
+    extractStringAfterLastCommaOrParenthesis(inputString: string) {
+      const lastCommaIndex = inputString.lastIndexOf(",");
+      const lastParenthesisIndex = inputString.lastIndexOf("(");
+      const lastIndex = Math.max(lastCommaIndex, lastParenthesisIndex);
+
+      if (lastIndex === -1) {
+        return inputString;
+      } else {
+        return inputString.slice(lastIndex + 1).trim();
+      }
+    },
+
     handleInputEvent() {
+      const selectedItem = document.getElementById("mainInput");
+      if (this.areBracketsOpen(this.searchText) === -1) {
+        alert("wrong syntax!");
+        selectedItem!.style.color = "red";
+      } else {
+        selectedItem!.style.color = "black";
+      }
+
       if (
         this.searchText.slice(-1) === "(" ||
         this.searchText.slice(-1) === ","
@@ -338,17 +358,26 @@ export default defineComponent({
         this.functionToSearchFor += this.searchText.slice(-1);
       }
 
+      const cursor = this.getCursorPosition();
+      this.functionToSearchFor = this.extractStringAfterLastCommaOrParenthesis(
+        this.searchText
+      );
+
+      if (
+        this.functionToSearchFor.length < this.copyOfFunction.length &&
+        this.functionToSearchFor !== ""
+      ) {
+        const selectedItem = this.listItems.find(
+          (item) => item.name === this.functionToSearchFor
+        );
+        if (selectedItem) this.showDiv = true;
+      }
+
       const cursorPosition = this.getCursorPosition();
       /// create tree
       if (this.dataTree) {
-        this.tempTree = this.dataTree; //we get the temporary tree that corresponds to the current searchText
-        // try {
-        //   this.checkForFunctionNames(this.tempTree);
-        // } catch (error) {
-        //   alert(error);
-        // }
+        this.tempTree = this.dataTree;
       }
-      // console.log(this.tempTree);
       this.handleCursorChange(cursorPosition);
 
       const lastOpenParenthesisIndex = this.searchText.lastIndexOf("(");
@@ -366,10 +395,10 @@ export default defineComponent({
         const selectedItem = this.listItems.find(
           (item) => item.name === textAfterSeparator.trim()
         );
-        if (textAfterSeparator.slice(-1) != "") {
+        if (textAfterSeparator.slice(-1) !== "") {
           if (
             !selectedItem &&
-            this.verifyIfDigit(textAfterSeparator.slice(-1)) == false
+            this.verifyIfDigit(textAfterSeparator.slice(-1)) === false
           ) {
             //this.showDiv = false;
           } else {
@@ -381,14 +410,19 @@ export default defineComponent({
       if (this.searchText.length < 3) {
         this.showDiv = false;
       }
+
+      this.copyOfFunction = this.functionToSearchFor;
     },
 
     handleCursorChange(cursorPos: number) {
       // Time to search for function where cursorPosition is
+      const cursor = this.getCursorPosition();
+      this.functionToSearchFor = this.extractStringAfterLastCommaOrParenthesis(
+        this.searchText
+      );
 
       const treeNodeFromCursor = this.getTreeNodeFromIndex(cursorPos);
       if (this.searchText == "(") {
-        //console.log(treeNodeFromCursor);
       }
 
       if (treeNodeFromCursor) {
@@ -418,9 +452,11 @@ export default defineComponent({
 
         if (treeNodeFromCursor.data.name != "") {
           try {
+            this.showDiv = false;
             this.checkForFunctionNames(treeNodeFromCursor);
           } catch (error) {
-            //console.log("is letter");
+            this.showDiv = false;
+            return;
           }
 
           // Call the findDetails() function with appropriate arguments
@@ -481,6 +517,9 @@ export default defineComponent({
               currentDivElement!.style.backgroundColor = "#627ddf";
               currentDivElement!.style.color = "white";
             }
+          } else {
+            const params = selectedItem.syntax[0].split(",");
+            if (params.length == this.commaNr) alert("too many parameters!");
           }
 
         this.isDivExampleExtended = false;
@@ -512,8 +551,8 @@ export default defineComponent({
         this.boldingSyntaxForInputChange();
         this.newFlag = true;
       } else {
-        console.log(name);
-        this.boldingSyntaxForInputChange();
+        if (this.verifyIfDigit(name.slice(-1)))
+          this.boldingSyntaxForInputChange();
       }
     },
 
@@ -808,7 +847,7 @@ export default defineComponent({
   width: 398px;
   margin: 0 auto;
   padding: 20px;
-  height: 100px;
+  max-height: 300px; /* Set a maximum height if needed */
 }
 
 .example-div {
