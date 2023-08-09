@@ -42,6 +42,11 @@ class LoadMathService {
           let correctSyntax = "subset(value, index)";
           functionObject.syntax = [correctSyntax];
         }
+        if(functionObject.name === "factorial") {
+          let correctSyntax = "factorial(n)";
+          functionObject.syntax = [correctSyntax];
+        }
+
         functionsObjects.push(math.help(allFunctions[index]).doc);
       }
     }
@@ -54,4 +59,4 @@ class LoadMathService {
 
 }
 
-module.exports = LoadMathService;
+// module.exports = LoadMathService;

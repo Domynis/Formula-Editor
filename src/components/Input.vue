@@ -5,28 +5,14 @@
         <div class="main-container">
           <div class="input-container">
             <div class="input-button-container">
-              <v-text-field
-                id="mainInput"
-                class="mx-2 red-input"
-                ref="myInput"
-                v-model="searchText"
-                @input="handleInputEvent"
-                @keyup="handleArrowKeyPressEvent"
-                @mouseup="handleMouseUpEvent"
-                placeholder="Search items"
-                spellcheck="false"
-              />
+              <v-text-field id="mainInput" class="mx-2 red-input" ref="myInput" v-model="searchText"
+                @input="handleInputEvent" @keyup="handleArrowKeyPressEvent" @mouseup="handleMouseUpEvent"
+                placeholder="Search items" spellcheck="false" />
 
               <m-tooltip top>
                 <template v-slot:element>
-                  <v-btn
-                    class="ms-7"
-                    small
-                    fab
-                    color="#627dff"
-                    dark
-                    @click.stop="handleButtonClick"
-                  >
+                  <v-btn class="ms-7" small fab color="#627dff" dark @click.stop="handleButtonClick"
+                    title="Activate extended view">
                     <v-icon> mdi-function-variant </v-icon>
                   </v-btn>
                 </template>
@@ -37,20 +23,11 @@
             </div>
             <v-card class="mx-auto" :ripple="false" v-if="showList">
               <v-toolbar outlined rounded style="box-shadow: none">
-                <v-toolbar-title style="font-size: 0.9rem; font-weight: bold"
-                  >Write formula</v-toolbar-title
-                >
+                <v-toolbar-title style="font-size: 0.9rem; font-weight: bold">Write formula</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <m-tooltip top>
                   <template v-slot:element>
-                    <v-btn
-                      class="mx-2"
-                      fab
-                      x-small
-                      color="#627dff"
-                      dark
-                      @click="handleCloseList"
-                    >
+                    <v-btn class="mx-2" fab x-small color="#627dff" dark @click="handleCloseList">
                       <v-icon dark> mdi-alpha-x </v-icon>
                     </v-btn>
                   </template>
@@ -59,41 +36,23 @@
                   </template>
                 </m-tooltip>
               </v-toolbar>
-              <v-list
-                width="25rem"
-                max-height="28rem"
-                class="py-0"
-                style="overflow-y: scroll"
-              >
-                <template
-                  v-for="(item, index) in filteredList"
-                  @key="item.name"
-                >
-                  <v-list-item
-                    class="pl-0"
-                    style="height: 5rem; font-size: 0.8rem"
-                    :key="item.name"
-                    @click="handleClickItemList(item)"
-                    @mouseover="hoveredIndex = index"
-                  >
+              <v-list width="25rem" max-height="28rem" class="py-0" style="overflow-y: scroll">
+                <template v-for="(item, index) in filteredList" @key="item.name">
+                  <v-list-item class="pl-0" style="height: 5rem; font-size: 0.8rem" :key="item.name"
+                    @click="handleClickItemList(item)" @mouseover="hoveredIndex = index">
                     <v-list-item-content>
                       <v-row style="height: 5rem">
-                        <v-col
-                          cols="2"
-                          style="
+                        <v-col cols="2" style="
                             background-color: #dfe8ff;
                             text-align: right;
                             color: #627dff;
-                          "
-                        >
+                          ">
                           <v-icon> mdi-variable </v-icon>
                         </v-col>
                         <v-col>
-                          <b
-                            ><span style="font-size: 14px">
+                          <b><span style="font-size: 14px">
                               {{ item.name }}
-                            </span></b
-                          >
+                            </span></b>
                           {{ item.category }}
                           <div style="color: #9db8fc">
                             {{ getShortDescription(item.description.at(0)) }}
@@ -109,18 +68,12 @@
                   <v-col cols="2" class="pa-0">
                     <m-tooltip bottom>
                       <template v-slot:element>
-                        <v-btn
-                          small
-                          style="
+                        <v-btn small style="
                             min-width: 3.35rem;
                             min-height: 2.3rem;
                             border-radius: 0px;
                             box-shadow: none;
-                          "
-                          color="#627dff"
-                          dark
-                          @click="handleCloseList"
-                        >
+                          " color="#627dff" dark @click="handleCloseList">
                           <v-icon> mdi-check </v-icon>
                         </v-btn>
                       </template>
@@ -132,12 +85,8 @@
                   <v-col class="py-1 text-right">
                     <m-tooltip bottom>
                       <template v-slot:element>
-                        <a
-                          style="font-size: 0.8rem"
-                          href="https://machinations.io/docs/math-js-functions"
-                          target="_blank"
-                          >Help Documentation</a
-                        >
+                        <a style="font-size: 0.8rem" href="https://machinations.io/docs/math-js-functions"
+                          target="_blank">Help Documentation</a>
                       </template>
                       <template v-slot:message>
                         <div>{{ "Do you want to know more about this?" }}</div>
@@ -156,14 +105,7 @@
               <v-col class="text-end">
                 <m-tooltip bottom>
                   <template v-slot:element>
-                    <v-btn
-                      class="mx-2"
-                      fab
-                      x-small
-                      color="#627dff"
-                      dark
-                      @click.stop="displayExampleAndDescription"
-                    >
+                    <v-btn class="mx-2" fab x-small color="#627dff" dark @click.stop="displayExampleAndDescription">
                       <v-icon v-if="!isDivExampleExtended">
                         mdi-arrow-down-bold
                       </v-icon>
@@ -176,8 +118,8 @@
                     <div>
                       {{
                         isDivExampleExtended
-                          ? "Minimize details"
-                          : "Extend details"
+                        ? "Minimize details"
+                        : "Extend details"
                       }}
                     </div>
                   </template>
@@ -199,12 +141,8 @@
                 <m-tooltip bottom>
                   <template v-slot:element>
                     <div class="titleDiv">
-                      <a
-                        style="color: grey"
-                        target="_blank"
-                        href="https://machinations.io/docs/math-js-functions"
-                        >Find more</a
-                      >
+                      <a style="color: grey" target="_blank" href="https://machinations.io/docs/math-js-functions">Find
+                        more</a>
                     </div>
                   </template>
                   <template v-slot:message>
@@ -265,16 +203,6 @@ export default defineComponent({
       type: Array as () => mathFunctionModel[],
       default: () => [],
     },
-  },
-  mounted() {
-    axios
-      .get("http://localhost:3000/api/hello")
-      .then((response) => {
-        this.message = response.data.message; // Setting the message data property with the response data
-      })
-      .catch((error) => {
-        console.error(error); // Handling errors if the request fails
-      });
   },
   computed: {
     filteredList(): mathFunctionModel[] {
@@ -385,14 +313,19 @@ export default defineComponent({
         const selectedItem = this.listItems.find(
           (item) => item.name === this.functionToSearchFor
         );
-        if (selectedItem) this.showDiv = true;
+        // if (selectedItem) this.showDiv = true;
       }
 
       const cursorPosition = this.getCursorPosition();
       /// create tree
-      if (this.dataTree) {
-        this.tempTree = this.dataTree;
-      }
+      this.tempTree = this.dataTree; //we get the temporary tree that corresponds to the current searchText
+      // try {
+      //   this.checkForFunctionNames(this.tempTree);
+      // } catch (error) {
+      //   alert(error);
+      // }
+
+      // console.log(this.tempTree);
       this.handleCursorChange(cursorPosition);
 
       const lastOpenParenthesisIndex = this.searchText.lastIndexOf("(");
@@ -412,8 +345,8 @@ export default defineComponent({
         );
         if (textAfterSeparator.slice(-1) !== "") {
           if (
-            !selectedItem &&
-            this.verifyIfDigit(textAfterSeparator.slice(-1)) === false
+            !selectedItem ||
+            this.verifyIfDigit(textAfterSeparator.slice(-1)) == false
           ) {
             //this.showDiv = false;
           } else {
@@ -431,11 +364,6 @@ export default defineComponent({
 
     handleCursorChange(cursorPos: number) {
       // Time to search for function where cursorPosition is
-      /*const cursor = this.getCursorPosition();
-      this.functionToSearchFor = this.extractStringAfterLastCommaOrParenthesis(
-        this.searchText
-      );*/
-
       const cursor = this.getCursorPosition();
       const extractedFunction = this.extractFunctionAfterLastSeparator(
         this.searchText,
@@ -445,12 +373,9 @@ export default defineComponent({
       this.functionToSearchFor = extractedFunction;
 
       const treeNodeFromCursor = this.getTreeNodeFromIndex(cursorPos);
-      if (this.searchText == "(") {
-      }
 
       if (treeNodeFromCursor) {
-        let searchedNode = null;
-        searchedNode = this.searchForNode(
+        const searchedNode = this.searchForNode(
           this.tempTree,
           treeNodeFromCursor,
           (parentTree: TreeNode, childTree: TreeNode) => {
@@ -474,12 +399,15 @@ export default defineComponent({
         }
 
         if (treeNodeFromCursor.data.name != "") {
-          try {
-            this.showDiv = false;
-            this.checkForFunctionNames(treeNodeFromCursor);
-          } catch (error) {
-            this.showDiv = false;
-            return;
+
+          if (searchedNode) {
+            if (!this.listItems.find(
+              (item) => item.name === searchedNode.data.name.trim()
+            )) {
+              console.log("isn't good");
+              this.showDiv = false; return;
+            }
+
           }
 
           // Call the findDetails() function with appropriate arguments
@@ -496,6 +424,9 @@ export default defineComponent({
             );
           }
         }
+      }
+      else if(this.areBracketsOpen(this.searchText) === 0){
+        this.showDiv = false;
       }
     },
 
@@ -528,7 +459,7 @@ export default defineComponent({
         );
         // when we have in syntax "..." there is an unlimited number of parameters, the parameter "..." will be displayed in bold
         const selectedItem = this.listItems.find(
-          (item) => item.name === searchedNode?.data.name
+          (item) => item.name === searchedNode?.data.name.trim()
         );
         if (selectedItem)
           if (selectedItem.syntax[0].includes("...")) {
@@ -581,6 +512,7 @@ export default defineComponent({
 
     getTreeNodeFromIndex(index: number): TreeNode | null {
       const separators = "(),";
+      let hadBrackets = false;
       let i = index;
 
       if (i == this.searchText.length && this.searchText[i - 1] === "(") {
@@ -598,6 +530,8 @@ export default defineComponent({
           bracketCounter++;
         } else if (this.searchText[i] == "(" && bracketCounter > 0) {
           bracketCounter--;
+
+          hadBrackets = true;
         } else if (
           separators.includes(this.searchText[i]) &&
           bracketCounter == 0
@@ -608,6 +542,11 @@ export default defineComponent({
 
       if (i !== 0) {
         i++;
+      }
+
+      // code for end of function, if we'd not like for it to show
+      if (hadBrackets && bracketCounter == 0 && i == 0 && index >= this.searchText.trimEnd().length) {
+        i = -1;
       }
 
       const searchedNode = this.searchForNode(
@@ -731,6 +670,8 @@ export default defineComponent({
 
       this.isDivExampleExtended = this.showExampleDiv = false;
       this.flagSearchIsFromClick = true;
+
+      this.handleInputEvent();
     },
 
     handleCloseList() {
@@ -894,7 +835,8 @@ export default defineComponent({
   width: 398px;
   margin: 0 auto;
   padding: 20px;
-  max-height: 300px; /* Set a maximum height if needed */
+  max-height: 300px;
+  /* Set a maximum height if needed */
 }
 
 .example-div {

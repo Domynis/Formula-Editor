@@ -27,76 +27,81 @@ export class TreeNode {
     let currentFunction = "";
 
     let isLastSeparatorAClosingBracket = false;
-    const specialCharsForNumbers = "[];";
+    const specialCharsForNumbers = "[];.";
 
     let index = 0;
     let level = 0;
-    input = input.trim();
+    input = input.trimEnd();
 
     for (const char of input) {
-      if (char === "(") {
-        if (currentFunction !== "") {
+      switch (char) {
+        case "(": {
+          if (currentFunction !== "") {
 
-
-
-          const newNode = new TreeNode(
-            { name: currentFunction },
-            index - currentFunction.length
-          );
-          if (stack.length > 0) {
-            stack[stack.length - 1].addChild(newNode);
+            const newNode = new TreeNode(
+              { name: currentFunction },
+              index - currentFunction.length
+            );
+            if (stack.length > 0) {
+              stack[stack.length - 1].addChild(newNode);
+            }
+            stack.push(newNode);
+            currentFunction = "";
+            currentNumber = "";
+            level++;
           }
-          stack.push(newNode);
-          currentFunction = "";
-          currentNumber = "";
-          level++;
+          isLastSeparatorAClosingBracket = false;
+          break;
         }
-        isLastSeparatorAClosingBracket = false;
-      } else if (char === ",") {
+        case ",": {
+          if (currentNumber !== "") {
+            if (!(isLastSeparatorAClosingBracket && currentNumber.trim() === "") && stack.length) {
+              stack[stack.length - 1].addChild(
+                new TreeNode({ name: currentNumber }, index - currentNumber.length)
+              );
+            }
 
+            currentNumber = "";
+            currentFunction = "";
+          }
+          isLastSeparatorAClosingBracket = false;
+          break;
+        }
+        case ")": {
+          if (currentNumber !== "" && stack.length) {
+            if (!(isLastSeparatorAClosingBracket && currentNumber.trim() === "") && stack.length) {
+              stack[stack.length - 1].addChild(
+                new TreeNode({ name: currentNumber }, index - currentNumber.length)
+              );
+            }
+            currentNumber = "";
+            currentFunction = "";
+            if (index != input.length - 1) {
+              stack.pop();
+              level--;
+            }
+          }
 
-        if (currentNumber !== "") {
-
-          if (!(isLastSeparatorAClosingBracket && currentNumber.trim() === "")) {
+          isLastSeparatorAClosingBracket = true;
+          break;
+        }
+        default: {
+          if (char == " ") {
+            currentNumber += " ";
+            currentFunction += " ";
+          }
+          else if (this.isNumeric(char) || specialCharsForNumbers.includes(char)) {
+            currentNumber += char;
+          } else {
+            currentFunction += char;
+          }
+          if (index == input.length - 1 && stack.length) {
+            const currentData = currentNumber.length >= currentFunction.length ? currentNumber : currentFunction;
             stack[stack.length - 1].addChild(
-              new TreeNode({ name: currentNumber }, index - currentNumber.length)
+              new TreeNode({ name: currentData }, index - currentData.length + 1)
             );
           }
-          currentNumber = "";
-          currentFunction = "";
-        }
-        isLastSeparatorAClosingBracket = false;
-      } else if (char === ")") {
-
-        if (currentNumber !== "") {
-          stack[stack.length - 1].addChild(
-            new TreeNode({ name: currentNumber }, index - currentNumber.length)
-          );
-          currentNumber = "";
-          currentFunction = "";
-
-
-        }
-        if (index != input.length - 1) {
-          stack.pop();
-          level--;
-        }
-        isLastSeparatorAClosingBracket = true;
-      } else {
-        if (char == " ") {
-          currentNumber += " ";
-          currentFunction += " ";
-        }
-        else if (this.isNumeric(char) || specialCharsForNumbers.includes(char)) {
-          currentNumber += char;
-        } else {
-          currentFunction += char;
-        }
-        if (index == input.length - 1 && stack[0]) {
-          const currentData = currentNumber.length >= currentFunction.length ? currentNumber : currentFunction;
-          stack[stack.length - 1].addChild(
-            new TreeNode({ name: currentData }, index - currentData.length + 1)
-          );
+          break;
         }
       }
       index++;
