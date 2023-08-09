@@ -323,16 +323,28 @@ export default defineComponent({
       return regex.test(textAfterSeparator);
     },
 
-    extractStringAfterLastCommaOrParenthesis(inputString: string) {
-      const lastCommaIndex = inputString.lastIndexOf(",");
-      const lastParenthesisIndex = inputString.lastIndexOf("(");
-      const lastIndex = Math.max(lastCommaIndex, lastParenthesisIndex);
+    extractFunctionAfterLastSeparator(
+      inputString: string,
+      cursorPosition: number
+    ) {
+      const substringBeforeCursor = inputString.slice(0, cursorPosition);
+      const lastOpenParenthesisIndex = substringBeforeCursor.lastIndexOf("(");
+      const lastCommaIndex = substringBeforeCursor.lastIndexOf(",");
 
-      if (lastIndex === -1) {
-        return inputString;
-      } else {
-        return inputString.slice(lastIndex + 1).trim();
+      if (lastOpenParenthesisIndex === -1 && lastCommaIndex === -1) {
+        return "";
       }
+
+      const lastSeparatorIndex = Math.max(
+        lastOpenParenthesisIndex,
+        lastCommaIndex
+      );
+
+      if (lastSeparatorIndex >= 0) {
+        return inputString.slice(lastSeparatorIndex + 1, cursorPosition).trim();
+      }
+
+      return "";
     },
 
     handleInputEvent() {
@@ -359,9 +371,12 @@ export default defineComponent({
       }
 
       const cursor = this.getCursorPosition();
-      this.functionToSearchFor = this.extractStringAfterLastCommaOrParenthesis(
-        this.searchText
+      const extractedFunction = this.extractFunctionAfterLastSeparator(
+        this.searchText,
+        cursor
       );
+
+      this.functionToSearchFor = extractedFunction;
 
       if (
         this.functionToSearchFor.length < this.copyOfFunction.length &&
@@ -416,10 +431,18 @@ export default defineComponent({
 
     handleCursorChange(cursorPos: number) {
       // Time to search for function where cursorPosition is
-      const cursor = this.getCursorPosition();
+      /*const cursor = this.getCursorPosition();
       this.functionToSearchFor = this.extractStringAfterLastCommaOrParenthesis(
         this.searchText
+      );*/
+
+      const cursor = this.getCursorPosition();
+      const extractedFunction = this.extractFunctionAfterLastSeparator(
+        this.searchText,
+        cursor
       );
+
+      this.functionToSearchFor = extractedFunction;
 
       const treeNodeFromCursor = this.getTreeNodeFromIndex(cursorPos);
       if (this.searchText == "(") {
@@ -651,39 +674,63 @@ export default defineComponent({
       this.showDiv = false;
     },
     handleClickItemList(mathFunctionItem: mathFunctionModel) {
-      // find syntax, description, example for a function from the list given as a parameter
-      if (!this.showDiv) {
-        this.showList = true;
-        const finalResult = mathFunctionItem.name.trim();
+      this.showList = true;
+      const finalResult = mathFunctionItem.name.trim();
 
-        const lastCommaIndex = this.searchText.lastIndexOf(",");
-        const lastOpenParenthesisIndex = this.searchText.lastIndexOf("(");
+      const cursorPosition = this.getCursorPosition();
+      const firstOpenParenthesisIndex = this.searchText.indexOf(
+        "(",
+        cursorPosition
+      );
 
-        if (lastCommaIndex !== -1 || lastOpenParenthesisIndex !== -1) {
-          const lastSeparatorIndex = Math.max(
-            lastCommaIndex,
-            lastOpenParenthesisIndex
-          );
-          this.searchText =
-            this.searchText.slice(0, lastSeparatorIndex + 1) + finalResult;
-        } else {
-          this.searchText = finalResult;
+      if (firstOpenParenthesisIndex !== -1) {
+        const oldLeftString = this.searchText.slice(
+          0,
+          firstOpenParenthesisIndex + 1
+        );
+        let newLeftString = "";
+
+        let nr = 0;
+        for (let i = oldLeftString.length - 1; i >= 0; i--) {
+          if (oldLeftString[i] == ",") {
+            nr = i;
+            break;
+          }
+        }
+        for (let i = 0; i < oldLeftString.length; i++) {
+          if (nr <= i) {
+            newLeftString += ",";
+            break;
+          }
+          newLeftString += oldLeftString[i];
         }
 
-        this.bracketFlag = true;
-        this.flagSearchIsFromClick = true;
-        this.descriptionDivText = mathFunctionItem.description.toString();
-        this.exampleDivText =
-          mathFunctionItem.examples[0] +
-          (mathFunctionItem.examples.length > 1
-            ? " , " + mathFunctionItem.examples[1]
-            : "");
-        this.divText = mathFunctionItem.syntax[0].toString();
-        this.showList = false;
+        console.log(newLeftString);
+        console.log(finalResult);
+        console.log(this.searchText.slice(firstOpenParenthesisIndex + 1));
 
-        this.isDivExampleExtended = this.showExampleDiv = false;
-        this.flagSearchIsFromClick = true;
+        this.searchText =
+          newLeftString +
+          finalResult +
+          "(" +
+          this.searchText.slice(firstOpenParenthesisIndex + 1);
+      } else {
+        this.searchText = finalResult;
       }
+
+      this.bracketFlag = true;
+      this.flagSearchIsFromClick = true;
+      this.descriptionDivText = mathFunctionItem.description.toString();
+      this.exampleDivText =
+        mathFunctionItem.examples[0] +
+        (mathFunctionItem.examples.length > 1
+          ? " , " + mathFunctionItem.examples[1]
+          : "");
+      this.divText = mathFunctionItem.syntax[0].toString();
+      this.showList = false;
+
+      this.isDivExampleExtended = this.showExampleDiv = false;
+      this.flagSearchIsFromClick = true;
     },
 
     handleCloseList() {
