@@ -55,8 +55,6 @@ class LoadMathService {
     this.mathJsonString = jsonString;//saves the string 
     return this.mathJsonString;
   }
-
-
 }
 
-// module.exports = LoadMathService;
+module.exports = LoadMathService;
