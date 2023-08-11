@@ -612,6 +612,7 @@ export default defineComponent({
 
       let beginString = "";
       let endString = "";
+      let newCursorIndex = 0;
 
       for (let i = 0; i < this.searchText.length; i++) {
         if (i === selectionBeginSeparatorIndex) {
@@ -639,6 +640,7 @@ export default defineComponent({
             finalResult +
             this.searchText[selectionEndSeparatorIndex] +
             endString;
+          newCursorIndex = finalResult.length;
         }
       } else {
         // beginSEPselectionSEPend
@@ -648,6 +650,7 @@ export default defineComponent({
             beginString +
             this.searchText[selectionBeginSeparatorIndex] +
             finalResult;
+          newCursorIndex = this.searchText.length;
         } else {
           // beginSEPselectionSEPend
           this.searchText =
@@ -656,6 +659,7 @@ export default defineComponent({
             finalResult +
             this.searchText[selectionEndSeparatorIndex] +
             endString;
+            newCursorIndex = (beginString + this.searchText[selectionBeginSeparatorIndex] + finalResult).length;
         }
       }
       //with the input string modified, it's time to move onto the flags to show the details div
@@ -674,12 +678,19 @@ export default defineComponent({
       this.flagSearchIsFromClick = true;
 
       //an input change also occured, so we should call this
-      // this.handleInputEvent();
+      this.handleInputEvent();
+
+
+      //set the cursor position at the end of the newly added function
+      const input = this.$refs["myInput"] as any;
+      input.$refs.input.focus()
+      this.$nextTick(() => input.$refs.input.setSelectionRange(newCursorIndex, newCursorIndex));
     },
 
     handleCloseList() {
       this.showList = false; // Hide the list
     },
+
     displayExampleAndDescription() {
       //handle the flags for each value the flagDivExample may take
       if (this.isDivExampleExtended) {
