@@ -1,6 +1,13 @@
 import Vue from "vue";
 import Vuetify from "vuetify/lib";
 
-Vue.use(Vuetify);
+import { VTooltip } from "vuetify/lib";
 
-export default new Vuetify({});
+Vue.use(Vuetify);
+Vue.component("v-tooltip", VTooltip);
+
+export default new Vuetify({
+    components: {
+        VTooltip
+    }
+});
