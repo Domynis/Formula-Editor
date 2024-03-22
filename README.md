@@ -1,24 +1,34 @@
-# app
+# Formula-Editor Repository
 
-## Project setup
-```
-npm install
-```
+This repository contains a Formula-Editor application developed with VueJS, TypeScript, Axios, MathJS, and Vuetify. The Formula-Editor allows users to input and manipulate mathematical formulas.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Features
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### VueJS Framework Familiarization
+- Spent time familiarizing with the VueJS framework using TypeScript.
+- Explored various online resources including VueJS documentation.
+- Learned GIT strategies for efficient collaboration.
 
-### Lints and fixes files
-```
-npm run lint
-```
+### Local Server Setup and API Communication
+- Designed a stable local server.
+- Established communication through Axios API.
+- Handled data processing of MathJS functions on the backend in JSON format.
+- Sent information to the frontend through API calls.
+- Integrated data into a UI list.
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### UI Design with Vuetify
+- Utilized Vuetify UI library to design an HTML input component for mathematical formulas.
+- Designed in a style similar to Google Spreadsheet for user familiarity.
+
+### Testing and Bug Fixing
+- Conducted thorough testing of the application.
+- Addressed bugs and issues identified during testing.
+
+### Implementation of Nested Functionality
+- Implemented a hierarchical solution for nested functions, using a tree-data structure.
+- Enabled interactivity with the cursor for enhanced user experience.
+
+### Refinement and Integration
+- Refined the final component.
+- Prepared the component for integration into the company's application.
+- Conducted additional bug fixing and testing to ensure reliability.
