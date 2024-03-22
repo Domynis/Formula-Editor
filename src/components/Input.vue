@@ -500,7 +500,7 @@ export default defineComponent({
       }
 
       //if cursor is on a separator
-      if (separators.includes(this.searchText[i])) {
+      if (separators.includes(this.searchText[i])) {  
         i--;
       }
 

@@ -52,7 +52,7 @@ class LoadMathService {
     }
 
     let jsonString = JSON.stringify(functionsObjects, null, 2);
-    this.mathJsonString = jsonString;//saves the string 
+    this.mathJsonString = jsonString; //saves the string 
     return this.mathJsonString;
   }
 }
